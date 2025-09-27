@@ -1,0 +1,515 @@
+[
+  {
+    "kategori": "Fotografi & Videograf",
+    "penyedia": [
+      {
+        "nama": "LensArt Studio",
+        "deskripsi": "Fotografi dan videografi pernikahan dengan gaya modern dan elegan.",
+        "rating": 4.8,
+        "harga": {
+          "basic": 3000000,
+          "premium": 7000000,
+          "custom": 12000000
+        },
+        "testimoni": [
+          { "nama": "Andi", "isi": "Hasil fotonya sangat memuaskan!" },
+          { "nama": "Rina", "isi": "Videonya sinematik sekali." },
+          { "nama": "Budi", "isi": "Pelayanan sangat ramah dan profesional." }
+        ],
+        "email": "lensartstudio@mail.com",
+        "telepon": "+628123456789",
+        "image": "https://picsum.photos/id/1011/400/300"
+      },
+      {
+        "nama": "Golden Frame",
+        "deskripsi": "Mengabadikan momen berharga dengan hasil artistik.",
+        "rating": 4.7,
+        "harga": {
+          "basic": 2500000,
+          "premium": 6500000,
+          "custom": 10000000
+        },
+        "testimoni": [
+          { "nama": "Lina", "isi": "Suka dengan hasil editnya, keren banget." },
+          { "nama": "Rudi", "isi": "Harga sepadan dengan kualitas." },
+          { "nama": "Siska", "isi": "Timnya sangat komunikatif." }
+        ],
+        "email": "goldenframe@mail.com",
+        "telepon": "+628987654321",
+        "image": "https://picsum.photos/id/1012/400/300"
+      },
+      {
+        "nama": "Wedding Moments",
+        "deskripsi": "Paket lengkap dokumentasi pernikahan.",
+        "rating": 4.6,
+        "harga": {
+          "basic": 2000000,
+          "premium": 6000000,
+          "custom": 9500000
+        },
+        "testimoni": [
+          { "nama": "Nina", "isi": "Sangat sabar menghadapi request kami." },
+          { "nama": "Fajar", "isi": "Videonya sangat jelas dan indah." },
+          { "nama": "Tomi", "isi": "Puas dengan hasil foto candid." }
+        ],
+        "email": "weddingmoments@mail.com",
+        "telepon": "+628112223344",
+        "image": "https://picsum.photos/id/1013/400/300"
+      },
+      {
+        "nama": "Cinematic Eye",
+        "deskripsi": "Videografi cinematic untuk acara besar.",
+        "rating": 4.9,
+        "harga": {
+          "basic": 3500000,
+          "premium": 8000000,
+          "custom": 13000000
+        },
+        "testimoni": [
+          { "nama": "Ayu", "isi": "Videonya seperti film layar lebar." },
+          { "nama": "Gilang", "isi": "Detailnya luar biasa." },
+          { "nama": "Mira", "isi": "Editingnya halus dan profesional." }
+        ],
+        "email": "cinematiceye@mail.com",
+        "telepon": "+628122334455",
+        "image": "https://picsum.photos/id/1014/400/300"
+      },
+      {
+        "nama": "Memory Capture",
+        "deskripsi": "Spesialis foto candid penuh makna.",
+        "rating": 4.5,
+        "harga": {
+          "basic": 1800000,
+          "premium": 5500000,
+          "custom": 9000000
+        },
+        "testimoni": [
+          { "nama": "Tari", "isi": "Suka sekali dengan gaya candidnya." },
+          { "nama": "Rama", "isi": "Pelayanan cepat dan hasil bagus." },
+          { "nama": "Kiki", "isi": "Fotografer sangat ramah." }
+        ],
+        "email": "memorycapture@mail.com",
+        "telepon": "+628155566677",
+        "image": "https://picsum.photos/id/1015/400/300"
+      }
+    ]
+  },
+  {
+    "kategori": "Event Organizer & Planner",
+    "penyedia": [
+      {
+        "nama": "Happy Day Organizer",
+        "deskripsi": "Mengatur pernikahan dan event spesial dengan detail sempurna.",
+        "rating": 4.9,
+        "harga": {
+          "basic": 5000000,
+          "premium": 12000000,
+          "custom": 20000000
+        },
+        "testimoni": [
+          { "nama": "Dewi", "isi": "Acara berjalan lancar tanpa hambatan." },
+          { "nama": "Bayu", "isi": "Sangat profesional dan detail." },
+          { "nama": "Putri", "isi": "Puas sekali dengan hasilnya." }
+        ],
+        "email": "happyday@mail.com",
+        "telepon": "+628199988877",
+        "image": "https://picsum.photos/id/1021/400/300"
+      },
+      {
+        "nama": "Dream Event",
+        "deskripsi": "Membuat acara impian jadi kenyataan.",
+        "rating": 4.7,
+        "harga": {
+          "basic": 4500000,
+          "premium": 10000000,
+          "custom": 18000000
+        },
+        "testimoni": [
+          { "nama": "Anwar", "isi": "Sangat kreatif dan inovatif." },
+          { "nama": "Rina", "isi": "Acara terasa lebih berkelas." },
+          { "nama": "Arif", "isi": "Teamnya sangat kompak." }
+        ],
+        "email": "dreamevent@mail.com",
+        "telepon": "+628177766655",
+        "image": "https://picsum.photos/id/1022/400/300"
+      },
+      {
+        "nama": "Elegant Planner",
+        "deskripsi": "Spesialis pernikahan elegan dan mewah.",
+        "rating": 4.8,
+        "harga": {
+          "basic": 6000000,
+          "premium": 14000000,
+          "custom": 22000000
+        },
+        "testimoni": [
+          { "nama": "Novi", "isi": "Konsep acaranya luar biasa." },
+          { "nama": "Rio", "isi": "Tertata dengan sangat rapi." },
+          { "nama": "Lina", "isi": "Memberikan solusi terbaik." }
+        ],
+        "email": "elegantplanner@mail.com",
+        "telepon": "+628166655544",
+        "image": "https://picsum.photos/id/1023/400/300"
+      },
+      {
+        "nama": "Perfect Moment",
+        "deskripsi": "EO profesional dengan pengalaman bertahun-tahun.",
+        "rating": 4.6,
+        "harga": {
+          "basic": 4000000,
+          "premium": 9500000,
+          "custom": 17000000
+        },
+        "testimoni": [
+          { "nama": "Joko", "isi": "Acara keluarga kami sukses." },
+          { "nama": "Maya", "isi": "Sangat membantu dari awal." },
+          { "nama": "Bagus", "isi": "Puas dengan hasil kerjanya." }
+        ],
+        "email": "perfectmoment@mail.com",
+        "telepon": "+628144433322",
+        "image": "https://picsum.photos/id/1024/400/300"
+      },
+      {
+        "nama": "Festive Organizer",
+        "deskripsi": "Spesialis event pesta dan gathering.",
+        "rating": 4.5,
+        "harga": {
+          "basic": 3500000,
+          "premium": 8500000,
+          "custom": 15000000
+        },
+        "testimoni": [
+          { "nama": "Dina", "isi": "Acara pesta kami meriah sekali." },
+          { "nama": "Surya", "isi": "Banyak ide-ide kreatif." },
+          { "nama": "Andin", "isi": "Komunikatif dan ramah." }
+        ],
+        "email": "festiveorg@mail.com",
+        "telepon": "+628133322211",
+        "image": "https://picsum.photos/id/1025/400/300"
+      }
+    ]
+  },
+  {
+    "kategori": "Live Band for Wedding & Parties",
+    "penyedia": [
+      {
+        "nama": "Harmony Band",
+        "deskripsi": "Live band profesional untuk pernikahan.",
+        "rating": 4.8,
+        "harga": {
+          "basic": 7000000,
+          "premium": 12000000,
+          "custom": 20000000
+        },
+        "testimoni": [
+          { "nama": "Nia", "isi": "Suaranya bagus banget." },
+          { "nama": "Riko", "isi": "Menghibur semua tamu." },
+          { "nama": "Mona", "isi": "Lagu-lagunya sesuai request." }
+        ],
+        "email": "harmonyband@mail.com",
+        "telepon": "+628122233344",
+        "image": "https://picsum.photos/id/1031/400/300"
+      },
+      {
+        "nama": "Soul Music",
+        "deskripsi": "Band dengan genre soul dan jazz.",
+        "rating": 4.6,
+        "harga": {
+          "basic": 6000000,
+          "premium": 11000000,
+          "custom": 18000000
+        },
+        "testimoni": [
+          { "nama": "Gita", "isi": "Musiknya bikin suasana romantis." },
+          { "nama": "Andre", "isi": "Tamu-tamu puas banget." },
+          { "nama": "Lala", "isi": "Suaranya adem didengar." }
+        ],
+        "email": "soulmusic@mail.com",
+        "telepon": "+628199944422",
+        "image": "https://picsum.photos/id/1032/400/300"
+      },
+      {
+        "nama": "Party Vibes",
+        "deskripsi": "Spesialis musik pesta dan dance.",
+        "rating": 4.7,
+        "harga": {
+          "basic": 5000000,
+          "premium": 10000000,
+          "custom": 16000000
+        },
+        "testimoni": [
+          { "nama": "Doni", "isi": "Semua orang ikut joget." },
+          { "nama": "Fifi", "isi": "Musiknya bikin suasana hidup." },
+          { "nama": "Hadi", "isi": "Seru banget performancenya." }
+        ],
+        "email": "partyvibes@mail.com",
+        "telepon": "+628188877766",
+        "image": "https://picsum.photos/id/1033/400/300"
+      },
+      {
+        "nama": "Romantic Tunes",
+        "deskripsi": "Band akustik romantis.",
+        "rating": 4.5,
+        "harga": {
+          "basic": 4500000,
+          "premium": 9500000,
+          "custom": 15000000
+        },
+        "testimoni": [
+          { "nama": "Mega", "isi": "Pas untuk acara intimate." },
+          { "nama": "Yoga", "isi": "Banyak lagu romantis." },
+          { "nama": "Dita", "isi": "Suaranya bikin baper." }
+        ],
+        "email": "romantictunes@mail.com",
+        "telepon": "+628166677755",
+        "image": "https://picsum.photos/id/1034/400/300"
+      },
+      {
+        "nama": "Classic Band",
+        "deskripsi": "Band klasik dengan instrumen lengkap.",
+        "rating": 4.9,
+        "harga": {
+          "basic": 8000000,
+          "premium": 14000000,
+          "custom": 22000000
+        },
+        "testimoni": [
+          { "nama": "Sari", "isi": "Sangat megah dan berkelas." },
+          { "nama": "Anton", "isi": "Cocok untuk acara resmi." },
+          { "nama": "Indra", "isi": "Performancenya luar biasa." }
+        ],
+        "email": "classicband@mail.com",
+        "telepon": "+628133344455",
+        "image": "https://picsum.photos/id/1035/400/300"
+      }
+    ]
+  },
+  {
+    "kategori": "Dekorasi dan Venue",
+    "penyedia": [
+      {
+        "nama": "Elegant Decor",
+        "deskripsi": "Dekorasi pernikahan elegan dengan berbagai tema.",
+        "rating": 4.8,
+        "harga": {
+          "basic": 3000000,
+          "premium": 8000000,
+          "custom": 15000000
+        },
+        "testimoni": [
+          { "nama": "Mira", "isi": "Dekorasinya sangat indah dan rapi." },
+          { "nama": "Reno", "isi": "Sesuai tema yang kami inginkan." },
+          { "nama": "Lilis", "isi": "Membuat suasana jadi romantis." }
+        ],
+        "email": "elegantdecor@mail.com",
+        "telepon": "+628122211100",
+        "image": "https://picsum.photos/id/1041/400/300"
+      },
+      {
+        "nama": "Venue Harmony",
+        "deskripsi": "Penyedia venue outdoor dan indoor dengan dekorasi cantik.",
+        "rating": 4.7,
+        "harga": {
+          "basic": 4000000,
+          "premium": 9000000,
+          "custom": 16000000
+        },
+        "testimoni": [
+          { "nama": "Bayu", "isi": "Lokasi strategis dan dekorasi cantik." },
+          { "nama": "Tania", "isi": "Venue sangat luas dan nyaman." },
+          { "nama": "Gilang", "isi": "Puas dengan pelayanan venue ini." }
+        ],
+        "email": "venueharmony@mail.com",
+        "telepon": "+628133355688",
+        "image": "https://picsum.photos/id/1042/400/300"
+      },
+      {
+        "nama": "Artistic Venue",
+        "deskripsi": "Dekorasi artistik dengan detail menawan.",
+        "rating": 4.9,
+        "harga": {
+          "basic": 3500000,
+          "premium": 8500000,
+          "custom": 15500000
+        },
+        "testimoni": [
+          { "nama": "Dedi", "isi": "Dekorasinya luar biasa." },
+          { "nama": "Novi", "isi": "Detail dekorasi sangat cantik." },
+          { "nama": "Putra", "isi": "Hasil lebih dari ekspektasi." }
+        ],
+        "email": "artisticvenue@mail.com",
+        "telepon": "+628177788899",
+        "image": "https://picsum.photos/id/1043/400/300"
+      },
+      {
+        "nama": "Romantic Garden",
+        "deskripsi": "Venue taman romantis untuk pesta pernikahan.",
+        "rating": 4.6,
+        "harga": {
+          "basic": 3200000,
+          "premium": 8200000,
+          "custom": 14000000
+        },
+        "testimoni": [
+          { "nama": "Nanda", "isi": "Taman sangat indah dan nyaman." },
+          { "nama": "Agus", "isi": "Sangat cocok untuk pesta outdoor." },
+          { "nama": "Yani", "isi": "Suasana jadi sangat berkesan." }
+        ],
+        "email": "romanticgarden@mail.com",
+        "telepon": "+628122255566",
+        "image": "https://picsum.photos/id/1044/400/300"
+      },
+      {
+        "nama": "Classic Hall",
+        "deskripsi": "Hall megah dengan dekorasi klasik.",
+        "rating": 4.5,
+        "harga": {
+          "basic": 2800000,
+          "premium": 7800000,
+          "custom": 13500000
+        },
+        "testimoni": [
+          { "nama": "Susi", "isi": "Hall luas dan mewah." },
+          { "nama": "Rangga", "isi": "Dekorasi klasik yang mempesona." },
+          { "nama": "Nina", "isi": "Sangat cocok untuk acara formal." }
+        ],
+        "email": "classichall@mail.com",
+        "telepon": "+628199223344",
+        "image": "https://picsum.photos/id/1045/400/300"
+      }
+    ]
+  },
+  {
+    "kategori": "Catering",
+    "penyedia": [
+      {
+        "nama": "Rasa Nusantara",
+        "deskripsi": "Paket catering khas nusantara dengan cita rasa otentik.",
+        "rating": 4.8,
+        "harga": {
+          "basic": 50000,
+          "premium": 120000,
+          "custom": 200000
+        },
+        "testimoni": [
+          { "nama": "Adi", "isi": "Makanannya enak sekali." },
+          { "nama": "Vina", "isi": "Rasa autentik khas Indonesia." },
+          { "nama": "Tono", "isi": "Porsi cukup banyak." }
+        ],
+        "email": "rasanusantara@mail.com",
+        "telepon": "+628122233300",
+        "image": "https://picsum.photos/id/1051/400/300"
+      },
+      
+          
+        { 
+            "nama": "Delish Catering", 
+            "deskripsi": "Menyediakan menu internasional dan lokal.", 
+            "rating": 4.7, 
+            "harga": { "basic": 60000, "premium": 130000, "custom": 210000 }, 
+            "testimoni": [ 
+                { "nama": "Andi", 
+                "isi": "Menu internasionalnya top." }, 
+                { "nama": "Mira", "isi": "Pelayanan sangat ramah." }, 
+                { "nama": "Rika", "isi": "Sangat memuaskan." } ], 
+                "email": "delishcatering@mail.com", "telepon": "+628144455666", 
+                "image": "https://picsum.photos/id/1052/400/300" 
+        }, 
+        { "nama": "Gourmet Feast", 
+        "deskripsi": "Catering premium untuk acara eksklusif.", 
+        "rating": 4.9, 
+        "harga": { "basic": 75000, "premium": 150000, "custom": 250000 }, 
+        "testimoni": [ 
+            { "nama": "Yani", "isi": "Sangat mewah dan enak." }, 
+            { "nama": "Bimo", "isi": "Tamu-tamu puas semua." }, 
+            { "nama": "Tina", "isi": "Worth it untuk harga premium." } 
+            ], "email": "gourmetfeast@mail.com", 
+            "telepon": "+628166677788", 
+        "image": "https://picsum.photos/id/1053/400/300" 
+        }, 
+        { 
+            "nama": "Family Taste", 
+            "deskripsi": "Hidangan khas rumahan untuk acara sederhana.", 
+            "rating": 4.5, "harga": { "basic": 40000, "premium": 100000, "custom": 180000 }, 
+            "testimoni": [ { "nama": "Rudi", "isi": "Makanannya seperti masakan rumah." }, 
+            { "nama": "Santi", "isi": "Harga terjangkau." }, 
+            { "nama": "Gilang", "isi": "Enak dan ramah di kantong." 
+            } 
+            ], 
+            "email": "familytaste@mail.com", 
+            "telepon": "+628199988877", 
+            "image": "https://picsum.photos/id/1054/400/300" 
+            
+           
+         }, 
+         { 
+            "nama": "Fiesta Catering", 
+            "deskripsi": "Spesialis pesta besar dengan menu variatif.", 
+            "rating": 4.6, 
+            "harga": { "basic": 55000, "premium": 125000, "custom": 220000 }, 
+            "testimoni": [ 
+                { "nama": "Lina", "isi": "Porsinya melimpah." }, 
+            { "nama": "Bayu", "isi": "Menu variatif dan enak." }, 
+            { "nama": "Rani", "isi": "Sangat puas dengan servisnya." } 
+            ], "email": "fiestacatering@mail.com", 
+            "telepon": "+628155566677", 
+            "image": "https://picsum.photos/id/1055/400/300" 
+            } 
+        ] 
+    }, 
+    { 
+        "kategori": "Transportation", 
+        "penyedia": [ 
+            { "nama": "Luxury Ride", 
+            "deskripsi": "Mobil mewah untuk pernikahan dan event khusus.", 
+            "rating": 4.9, "harga": { "basic": 2000000, "premium": 5000000, "custom": 8000000 }, 
+            "testimoni": [ 
+                { "nama": "Andi", "isi": "Mobil sangat mewah." }, 
+                { "nama": "Novi", "isi": "Sopir ramah dan profesional." }, 
+                { "nama": "Reno", "isi": "Sangat puas dengan pelayanannya." } ], 
+            "email": "luxuryride@mail.com", "telepon": "+628122277700", 
+            "image": "https://picsum.photos/id/1061/400/300" }, 
+            { "nama": "Wedding Car Rental", 
+            "deskripsi": "Sewa mobil klasik untuk wedding.", 
+            "rating": 4.7, "harga": { "basic": 1500000, "premium": 4000000, "custom": 7000000 }, 
+            "testimoni": [ 
+                { "nama": "Ayu", "isi": "Mobil klasiknya bagus sekali." }, 
+                { "nama": "Raka", "isi": "Harga sepadan." }, 
+                { "nama": "Dian", "isi": "Acara jadi lebih elegan." } ], 
+                "email": "weddingcar@mail.com", 
+                "telepon": "+628144466600", 
+                "image": "https://picsum.photos/id/1062/400/300" }, 
+            { "nama": "Party Bus", 
+            "deskripsi": "Bus pesta dengan interior modern.", 
+            "rating": 4.8, 
+            "harga": { "basic": 3000000, "premium": 7000000, "custom": 12000000 }, 
+            "testimoni": [ { "nama": "Yudi", "isi": "Busnya keren dan nyaman." }, 
+            { "nama": "Fina", "isi": "Acara jadi sangat seru." }, 
+            { "nama": "Bima", "isi": "Cocok untuk pesta besar." } ], 
+            "email": "partybus@mail.com", 
+            "telepon": "+628199933344", 
+            "image": "https://picsum.photos/id/1063/400/300" }, 
+            { "nama": "Elegant Transport", 
+            "deskripsi": "Transportasi eksekutif untuk event resmi.", 
+            "rating": 4.6, "harga": { "basic": 1800000, "premium": 4500000, "custom": 7500000 }, 
+            "testimoni": [ 
+                { "nama": "Tara", "isi": "Mobil bersih dan nyaman." }, 
+            { "nama": "Bagus", "isi": "Sopir profesional." }, 
+            { "nama": "Ika", "isi": "Pelayanan sangat baik." } ],
+             "email": "eleganttransport@mail.com", 
+             "telepon": "+628188822233", 
+             "image": "https://picsum.photos/id/1064/400/300" }, 
+             { "nama": "City Shuttle", 
+             "deskripsi": "Shuttle bus untuk transportasi tamu pernikahan.", 
+             "rating": 4.5, 
+             "harga": { "basic": 1000000, "premium": 3000000, "custom": 6000000 }, 
+             "testimoni": [ { "nama": "Rini", "isi": "Transportasi tamu sangat lancar." }, 
+             { "nama": "Fajar", "isi": "Bus nyaman dan tepat waktu." },
+              { "nama": "Meli", "isi": "Pelayanan sangat memuaskan." } ], 
+              "email": "cityshuttle@mail.com", 
+              "telepon": "+628199000111",
+               "image": "https://picsum.photos/id/1065/400/300" 
+            }
+        ] 
+    }
+]
