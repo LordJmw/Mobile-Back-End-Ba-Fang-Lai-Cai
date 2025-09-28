@@ -36,7 +36,7 @@ class _OrderPageState extends State<OrderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: const Color.fromARGB(255, 243, 243, 245),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -81,6 +81,7 @@ class _OrderPageState extends State<OrderPage> {
 
             // FORM CARD
             Card(
+              color: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -141,7 +142,6 @@ class _OrderPageState extends State<OrderPage> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      value: selectedPackage,
                       hint: const Text("Pilih paket"),
                       items: packages.map((pkg) {
                         return DropdownMenuItem(
