@@ -350,13 +350,20 @@ class _CategoryPageState extends State<CategoryPage> {
                         ),
                     SizedBox(height: 15),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ViewAllPage(),
+                          ),
+                        );
+                      },
                       style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(
+                        backgroundColor: const WidgetStatePropertyAll(
                           Color.fromARGB(255, 223, 83, 129),
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         "Lihat Semua",
                         style: TextStyle(color: Colors.white),
                       ),
