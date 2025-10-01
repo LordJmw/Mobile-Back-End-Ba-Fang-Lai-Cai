@@ -2,27 +2,68 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
-class ViewAllPage extends StatelessWidget {
+class ViewAllPage extends StatefulWidget {
   const ViewAllPage({super.key});
+
+  @override
+  State<ViewAllPage> createState() => _ViewAllPageState();
+}
+
+class _ViewAllPageState extends State<ViewAllPage> {
+  late Future<List<dynamic>> futureData;
+  List<dynamic> allProviders = [];
+  List<dynamic> filteredProviders = [];
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    futureData = fetchData();
+  }
+
   Future<List<dynamic>> fetchData() async {
     final jsonString = await rootBundle.loadString("assets/data.json");
     final List<dynamic> jsonData = json.decode(jsonString);
-    List<dynamic> allProviders = [];
+    List<dynamic> providers = [];
     for (var kategori in jsonData) {
-      allProviders.addAll(kategori["penyedia"]);
+      // untuk menyimpan juga kategori biar bisa dipakai untuk pencarian
+      for (var penyedia in kategori["penyedia"]) {
+        penyedia["kategori"] = kategori["kategori"];
+        providers.add(penyedia);
+      }
     }
-    return allProviders;
+    allProviders = providers;
+    filteredProviders = providers;
+    return providers;
+  }
+
+  void _filterData(String query) {
+    if (query.isEmpty) {
+      setState(() {
+        filteredProviders = allProviders;
+      });
+      return;
+    }
+
+    setState(() {
+      filteredProviders = allProviders.where((item) {
+        final name = (item["nama"] ?? "").toString().toLowerCase();
+        final kategori = (item["kategori"] ?? "").toString().toLowerCase();
+        return name.contains(query.toLowerCase()) ||
+            kategori.contains(query.toLowerCase());
+      }).toList();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Our Product"),
+        title: const Text("Our Product"),
         foregroundColor: Colors.black,
       ),
       body: FutureBuilder<List<dynamic>>(
-        future: fetchData(),
+        future: futureData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -30,24 +71,53 @@ class ViewAllPage extends StatelessWidget {
           if (snapshot.hasError) {
             return Center(child: Text("Error: ${snapshot.error}"));
           }
+          
 
-          final data = snapshot.data ?? [];
-
-          return ListView.separated(
-            padding: const EdgeInsets.all(12),
-            itemCount: data.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 16),
-            itemBuilder: (context, index) {
-              final item = data[index];
-              return buildCard(
-                name: item["nama"],
-                description: item["deskripsi"],
-                rating: (item["rating"] as num).toDouble(),
-                price: item["harga"]["basic"],
-                imageUrl:
-                    item["image"] ?? "https://via.placeholder.com/400x300",
-              );
-            },
+          //Search box untuk mencari berdasarkan nama penyedia jasa atau kategori
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: "Cari penyedia jasa atau kategori...",
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                  ),
+                  onChanged: _filterData,
+                ),
+              ),
+              
+              //Tampilan hasil pencarian dalam bentuk grid
+              Expanded(
+                child: filteredProviders.isEmpty
+                    ? const Center(child: Text("Tidak ada hasil"))
+                    : GridView.builder(
+                        padding: const EdgeInsets.all(12),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 16,
+                          childAspectRatio: 0.7,
+                        ),
+                        itemCount: filteredProviders.length,
+                        itemBuilder: (context, index) {
+                          final item = filteredProviders[index];
+                          return buildCard(
+                            name: item["nama"],
+                            description: item["deskripsi"],
+                            rating: (item["rating"] as num).toDouble(),
+                            price: item["harga"]["basic"],
+                            imageUrl: item["image"] ?? "https://via.placeholder.com/400x300",
+                          );
+                        },
+                      ),
+              ),
+            ],
           );
         },
       ),
@@ -72,82 +142,99 @@ class ViewAllPage extends StatelessWidget {
             borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
             child: Image.network(
               imageUrl,
-              height: 180,
+              height: 140,
               width: double.infinity,
               fit: BoxFit.cover,
-              errorBuilder:
-                  (_, __, ___) => Container(
-                    height: 180,
-                    color: Colors.grey[300],
-                    child: const Icon(Icons.broken_image, size: 50),
-                  ),
+              errorBuilder: (_, __, ___) => Container(
+                height: 140,
+                color: Colors.grey[300],
+                child: const Icon(Icons.broken_image, size: 40),
+              ),
             ),
           ),
           // Isi
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  description,
-                  style: const TextStyle(fontSize: 13, color: Colors.black87),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    const Icon(Icons.star, color: Colors.amber, size: 18),
-                    const SizedBox(width: 4),
-                    Text(rating.toString()),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Rp ${price.toString()}",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.pink[200],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink[200],
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
+                      const SizedBox(height: 4),
+                      Text(
+                        description,
+                        style: const TextStyle(fontSize: 11, color: Colors.black87),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    onPressed: () {
-                      print("View Details clicked!");
-                    },
-                    child: const Text(
-                      "View Details",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    ],
                   ),
-                ),
-              ],
+                  
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.star, color: Colors.amber, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            rating.toString(),
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "Rp ${price.toString()}",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pink[200],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.pink[200],
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                          ),
+                          onPressed: () {
+                            print("View Details clicked!");
+                          },
+                          child: const Text(
+                            "View Details",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],
