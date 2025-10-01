@@ -153,14 +153,14 @@ class _HomePageState extends State<HomePage> {
                   return ListView(
                     scrollDirection: Axis.horizontal,
                     children: [
-                      ElevatedButton(
-                        onPressed: () async {
-                          final prefs = await SharedPreferences.getInstance();
-                          await prefs.clear();
-                          print("Preferences cleared!");
-                        },
-                        child: Text("Clear Prefs"),
-                      ),
+                      // ElevatedButton(
+                      //   onPressed: () async {
+                      //     final prefs = await SharedPreferences.getInstance();
+                      //     await prefs.clear();
+                      //     print("Preferences cleared!");
+                      //   },
+                      //   child: Text("Clear Prefs"),
+                      // ),
                       ...vendors.map(
                         (vendor) => _buildVendorCard(
                           vendor['name'] ?? '',

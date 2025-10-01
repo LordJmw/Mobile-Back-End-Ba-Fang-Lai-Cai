@@ -325,7 +325,9 @@ class _CategoryPageState extends State<CategoryPage> {
                                 SizedBox(width: 10),
                                 Text(
                                   _jumlahBintang > 0
-                                      ? "$_jumlahBintang bintang ke atas"
+                                      ? _jumlahBintang == 5
+                                          ? "5 bintang"
+                                          : "$_jumlahBintang bintang ke atas"
                                       : "Semua",
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 139, 139, 139),
@@ -402,71 +404,91 @@ class _CategoryPageState extends State<CategoryPage> {
                         ? const CircularProgressIndicator()
                         : Column(
                           children:
-                              filterData().map((penyedia) {
-                                return Card(
-                                  elevation: 3,
-                                  color: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  clipBehavior: Clip.antiAlias,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Image.network(
-                                        penyedia["image"],
-                                        height: 180,
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
+                              filterData().length > 0
+                                  ? filterData().map((penyedia) {
+                                    return Card(
+                                      elevation: 3,
+                                      color: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              penyedia["nama"],
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 6),
-                                            Row(
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Image.network(
+                                            penyedia["image"],
+                                            height: 180,
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                const Icon(
-                                                  Icons.star,
-                                                  color: Colors.amber,
-                                                  size: 18,
-                                                ),
-                                                const SizedBox(width: 4),
                                                 Text(
-                                                  "${penyedia["rating"]} (120 ulasan)",
+                                                  penyedia["nama"],
                                                   style: const TextStyle(
-                                                    fontSize: 13,
-                                                    color: Colors.grey,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 6),
+                                                Row(
+                                                  children: [
+                                                    const Icon(
+                                                      Icons.star,
+                                                      color: Colors.amber,
+                                                      size: 18,
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    Text(
+                                                      "${penyedia["rating"]} (120 ulasan)",
+                                                      style: const TextStyle(
+                                                        fontSize: 13,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 6),
+                                                Text(
+                                                  "Rp ${formatPrice(penyedia["harga"]["basic"])}",
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
+                                                    color: Colors.pink,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                            const SizedBox(height: 6),
-                                            Text(
-                                              "Rp ${formatPrice(penyedia["harga"]["basic"])}",
-                                              style: const TextStyle(
-                                                fontSize: 15,
-                                                color: Colors.pink,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList()
+                                  : [
+                                    Card(
+                                      elevation: 3,
+                                      color: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Container(
+                                        width: double.infinity,
+                                        height: 250,
+                                        child: Center(
+                                          child: Text(
+                                            "Tidak ada Produk sesuai filter saat ini!",
+                                          ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                );
-                              }).toList(),
+                                    ),
+                                  ],
                         ),
                     SizedBox(height: 15),
                     ElevatedButton(
