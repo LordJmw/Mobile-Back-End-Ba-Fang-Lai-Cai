@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/category.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,6 +23,74 @@ class _HomePageState extends State<HomePage> {
     {"icon": Icons.local_shipping, "label": "Transportasi &\nLogistik"},
     {"icon": Icons.handshake, "label": "Layanan Pendukung\nLainnya"},
   ];
+
+  Future<List<Map<String, dynamic>>> _loadPortfolios() async {
+    final String jsonString = await rootBundle.loadString('assets/data.json');
+    final List<dynamic> jsonData = json.decode(jsonString);
+
+    List<Map<String, dynamic>> portfolios = [];
+    for (var kategori in jsonData) {
+      if (kategori['penyedia'] != null) {
+        for (var penyedia in kategori['penyedia']) {
+          portfolios.add({
+            'title': penyedia['nama'] ?? '',
+            'desc': penyedia['deskripsi'] ?? '',
+            'imgUrl': penyedia['image'] ?? '',
+          });
+        }
+      }
+    }
+    return portfolios.take(8).toList();
+  }
+
+  Future<List<Map<String, dynamic>>> _loadFeeds() async {
+    final String jsonString = await rootBundle.loadString('assets/data.json');
+    final List<dynamic> jsonData = json.decode(jsonString);
+
+    List<Map<String, dynamic>> feeds = [];
+    for (var kategori in jsonData) {
+      if (kategori['penyedia'] != null) {
+        for (var penyedia in kategori['penyedia']) {
+          feeds.add({
+            'user': penyedia['nama'] ?? '',
+            'text':
+                penyedia['testimoni'] != null &&
+                        penyedia['testimoni'].isNotEmpty
+                    ? penyedia['testimoni'][0]['isi']
+                    : '',
+            'imgUrl': penyedia['image'] ?? '',
+          });
+        }
+      }
+    }
+    return feeds.take(8).toList();
+  }
+
+  Future<List<Map<String, dynamic>>> _loadVendors() async {
+    final String jsonString = await rootBundle.loadString('assets/data.json');
+    final List<dynamic> jsonData = json.decode(jsonString);
+
+    List<Map<String, dynamic>> allVendors = [];
+    for (var kategori in jsonData) {
+      if (kategori['penyedia'] != null) {
+        for (var penyedia in kategori['penyedia']) {
+          allVendors.add({
+            'name': penyedia['nama'] ?? '',
+            'rating': '⭐ ${penyedia['rating']?.toStringAsFixed(1) ?? ''}',
+            'imgUrl': penyedia['image'] ?? '',
+          });
+        }
+      }
+    }
+
+    allVendors.sort((a, b) {
+      double ratingA = double.tryParse(a['rating'].replaceAll('⭐ ', '')) ?? 0.0;
+      double ratingB = double.tryParse(b['rating'].replaceAll('⭐ ', '')) ?? 0.0;
+      return ratingB.compareTo(ratingA);
+    });
+
+    return allVendors.take(8).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,33 +140,37 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(
               height: 200,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      final prefs = await SharedPreferences.getInstance();
-                      await prefs.clear();
-                      print("Preferences cleared!");
-                    },
-                    child: Text("Clear Prefs"),
-                  ),
-                  _buildVendorCard(
-                    "Studio Photo A",
-                    "⭐ 4.9",
-                    "https://www.techmadeplain.com/img/2014/300x200.png",
-                  ),
-                  _buildVendorCard(
-                    "EO WeddingX",
-                    "⭐ 4.8",
-                    "https://www.techmadeplain.com/img/2014/300x200.png",
-                  ),
-                  _buildVendorCard(
-                    "Catering Lezat",
-                    "⭐ 4.7",
-                    "https://www.techmadeplain.com/img/2014/300x200.png",
-                  ),
-                ],
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: _loadVendors(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+                  final vendors = snapshot.data ?? [];
+                  return ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.clear();
+                          print("Preferences cleared!");
+                        },
+                        child: Text("Clear Prefs"),
+                      ),
+                      ...vendors.map(
+                        (vendor) => _buildVendorCard(
+                          vendor['name'] ?? '',
+                          vendor['rating'] ?? '',
+                          vendor['imgUrl'] ?? '',
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
 
@@ -148,7 +222,7 @@ class _HomePageState extends State<HomePage> {
                           (context) => const CategoryPage(
                             category: "",
                             useSavedPreferences: true,
-                          ), // ke halaman kategori
+                          ),
                     ),
                   );
                 },
@@ -169,15 +243,36 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
-            _buildPortfolioCard(
-              "Dekorasi Garden Party",
-              "Dekorasi outdoor dengan konsep elegan dan lampu gantung.",
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuRPz1VrZVdyXSeYIUeB2jEZXcTrLTPxeByA&s",
-            ),
-            _buildPortfolioCard(
-              "Makeup Wisuda",
-              "Natural makeup untuk momen wisuda, hasil flawless.",
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuRPz1VrZVdyXSeYIUeB2jEZXcTrLTPxeByA&s",
+            SizedBox(
+              height: 220,
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: _loadPortfolios(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+                  final portfolios = snapshot.data ?? [];
+                  return ListView(
+                    scrollDirection: Axis.horizontal,
+                    children:
+                        portfolios
+                            .map(
+                              (item) => SizedBox(
+                                width: 260,
+                                child: _buildPortfolioCard(
+                                  item['title'] ?? '',
+                                  item['desc'] ?? '',
+                                  item['imgUrl'] ?? '',
+                                ),
+                              ),
+                            )
+                            .toList(),
+                  );
+                },
+              ),
             ),
 
             const Divider(),
@@ -190,15 +285,36 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
-            _buildFeedItem(
-              "Studio Photo A",
-              "Baru saja handle acara ulang tahun ke-17, hasil fotonya super keren!",
-              "https://www.membergate.com/members/images/3559b.png",
-            ),
-            _buildFeedItem(
-              "EO WeddingX",
-              "Wedding outdoor ala Bali vibes 🌴✨",
-              "https://www.membergate.com/members/images/3559b.png",
+            SizedBox(
+              height: 220,
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: _loadFeeds(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+                  final feeds = snapshot.data ?? [];
+                  return ListView(
+                    scrollDirection: Axis.horizontal,
+                    children:
+                        feeds
+                            .map(
+                              (item) => SizedBox(
+                                width: 300,
+                                child: _buildFeedItem(
+                                  item['user'] ?? '',
+                                  item['text'] ?? '',
+                                  item['imgUrl'] ?? '',
+                                ),
+                              ),
+                            )
+                            .toList(),
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -295,11 +411,10 @@ class _HomePageState extends State<HomePage> {
         children: [
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-            child: Image.network(
-              imgPath,
-              height: 150,
+            child: SizedBox(
+              height: 100,
               width: double.infinity,
-              fit: BoxFit.cover,
+              child: Image.network(imgPath, fit: BoxFit.cover),
             ),
           ),
           Padding(
@@ -346,11 +461,10 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 8),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    imgPath,
-                    height: 150,
+                  child: SizedBox(
+                    height: 100,
                     width: double.infinity,
-                    fit: BoxFit.cover,
+                    child: Image.network(imgPath, fit: BoxFit.cover),
                   ),
                 ),
               ],
