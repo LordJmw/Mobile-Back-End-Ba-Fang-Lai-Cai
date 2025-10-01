@@ -3,9 +3,17 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:projek_uts_mbr/viewall.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CategoryPage extends StatefulWidget {
-  const CategoryPage({super.key});
+  final String category;
+  final bool useSavedPreferences;
+  const CategoryPage({
+    super.key,
+    required this.category,
+    required this.useSavedPreferences,
+  });
 
   @override
   State<CategoryPage> createState() => _CategoryPageState();
@@ -34,36 +42,87 @@ Future<List<dynamic>> loadData() async {
 
 class _CategoryPageState extends State<CategoryPage> {
   RangeValues _rentangHarga = RangeValues(0, 10000000);
+
   List<bool> _starIsclicked = [false, false, false, false, false];
   int _jumlahBintang = 0;
-  List<bool> _layananDipilih = [false, false, false, false, false, false];
-  List<String> _layanan = [
-    'Fotografi & Videograf',
-    "Event Organizer & Planner",
-    "Live Band for Wedding & Parties",
-    "Dekorasi dan Venue",
-    "Catering",
-    "Transportation",
+  List<bool> _layananDipilih = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
   ];
+  List<String> _layanan = [
+    "Fotografi & Videografi",
+    "Event Organizer & Planner",
+    "Makeup & Fashion",
+    "Entertainment & Performers",
+    "Dekorasi & Venue",
+    "Catering & F&B",
+    "Teknologi & Produksi Acara",
+    "Transportasi & Logistik",
+    "Layanan Pendukung Lainnya",
+  ];
+
+  List<String> tapppedCategory = [];
 
   List<dynamic> data = [];
   bool loading = true;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    loadData().then(
-      (res) => {
-        setState(() {
-          data = res;
-          loading = false;
-        }),
-      },
-    );
+    loadData().then((res) async {
+      final prefs = await SharedPreferences.getInstance();
+
+      setState(() {
+        data = res;
+        loading = false;
+
+        // Load preferences berdasarkan key
+        tapppedCategory =
+            prefs.getStringList("${_preferencesKey}_category") ?? [];
+
+        // Jika ini kategori spesifik dan belum ada preferensi, set kategori yang dipilih
+        if (!widget.useSavedPreferences && tapppedCategory.isEmpty) {
+          if (_layanan.contains(widget.category)) {
+            _layananDipilih[_layanan.indexOf(widget.category)] = true;
+            tapppedCategory = [widget.category];
+          }
+        } else {
+          // Load layanan yang dipilih dari preferences
+          for (var i = 0; i < _layanan.length; i++) {
+            _layananDipilih[i] = tapppedCategory.contains(_layanan[i]);
+          }
+        }
+
+        _rentangHarga = RangeValues(
+          prefs.getDouble("${_preferencesKey}_price_min") ?? 0,
+          prefs.getDouble("${_preferencesKey}_price_max") ?? 10000000,
+        );
+
+        _jumlahBintang = prefs.getInt("${_preferencesKey}_rating") ?? 0;
+        for (int i = 0; i < _starIsclicked.length; i++) {
+          _starIsclicked[i] = i < _jumlahBintang;
+        }
+      });
+    });
   }
 
-  List<Map<String, dynamic>> filterData() {
+  String get _preferencesKey {
+    if (widget.useSavedPreferences) {
+      return "global_filter";
+    } else {
+      return "category_${widget.category}";
+    }
+  }
+
+  void saveFilterPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
     //list ubah jadi map dengan key index nya di list
     //dan value nilainya pada index itu di list, lalu filter berdasarkan key(index)
     //yang true, baru map lagi untuk dapay value dari pasangan index dan value yang dipilih
@@ -76,6 +135,37 @@ class _CategoryPageState extends State<CategoryPage> {
             .where((entry) => _layananDipilih[entry.key])
             .map((entry) => entry.value)
             .toList();
+
+    // Simpan dengan key yang sesuai
+    await prefs.setStringList("${_preferencesKey}_category", selectedService);
+    await prefs.setDouble("${_preferencesKey}_price_min", _rentangHarga.start);
+    await prefs.setDouble("${_preferencesKey}_price_max", _rentangHarga.end);
+    await prefs.setInt("${_preferencesKey}_rating", _jumlahBintang);
+  }
+
+  Future<SharedPreferences> getSharedPrefsInstance() async {
+    return await SharedPreferences.getInstance();
+  }
+
+  List<Map<String, dynamic>> filterData() {
+    final selectedService =
+        _layanan
+            .asMap()
+            .entries
+            .where((entry) => _layananDipilih[entry.key])
+            .map((entry) => entry.value)
+            .toList();
+
+    tapppedCategory = selectedService;
+
+    if (widget.useSavedPreferences) {
+      SharedPreferences.getInstance().then((prefs) {
+        prefs.setStringList("category", selectedService);
+        prefs.setDouble("price_min", _rentangHarga.start);
+        prefs.setDouble("price_max", _rentangHarga.end);
+        prefs.setInt("rating", _jumlahBintang);
+      });
+    }
 
     List<Map<String, dynamic>> result = [];
 
@@ -97,17 +187,17 @@ class _CategoryPageState extends State<CategoryPage> {
         if (matchesPrice && matchesRating && matchesService) {
           result.add(penyedia);
         }
-
-        final noFilters =
-            _jumlahBintang == 0 &&
-            selectedService.isEmpty &&
-            _rentangHarga.start == 0 &&
-            _rentangHarga.end == 10000000;
-
-        if (noFilters && result.length > 10) {
-          return result.take(10).toList();
-        }
       }
+    }
+
+    final noFilters =
+        _jumlahBintang == 0 &&
+        selectedService.isEmpty &&
+        _rentangHarga.start == 0 &&
+        _rentangHarga.end == 10000000;
+
+    if (noFilters) {
+      return result.take(20).toList();
     }
 
     return result;
@@ -119,6 +209,7 @@ class _CategoryPageState extends State<CategoryPage> {
     final width = size.width;
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(title: Text("Category Page")),
       body: Padding(
         padding: EdgeInsets.all(10),
         child: SingleChildScrollView(
@@ -173,6 +264,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                     setState(() {
                                       _rentangHarga = values;
                                     });
+                                    saveFilterPreferences();
                                   },
                                   min: 0,
                                   max: 10000000,
@@ -224,6 +316,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                               ? _jumlahBintang += 1
                                               : _jumlahBintang -= 1;
                                         });
+                                        saveFilterPreferences();
                                       },
                                     );
                                   }),
@@ -241,37 +334,64 @@ class _CategoryPageState extends State<CategoryPage> {
                               ],
                             ),
                             SizedBox(height: 10),
-                            Text(
-                              "Jenis Layanan",
-                              style: TextStyle(fontSize: width > 500 ? 15 : 13),
-                            ),
-                            Wrap(
-                              spacing: 10,
-                              runSpacing: 5,
+                            ExpansionTile(
+                              title: Text(
+                                "Jenis Layanan",
+                                style: TextStyle(
+                                  fontSize: width > 500 ? 15 : 13,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              tilePadding: EdgeInsets.symmetric(horizontal: 10),
+                              childrenPadding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 8,
+                              ),
+                              collapsedShape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                side: BorderSide(color: Colors.grey.shade300),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                side: BorderSide(color: Colors.grey.shade300),
+                              ),
+                              collapsedBackgroundColor: Colors.white,
+                              backgroundColor: Colors.white,
+                              children: [
+                                Wrap(
+                                  spacing: 10,
+                                  runSpacing: 5,
 
-                              children: List.generate(5, (index) {
-                                return Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Checkbox(
-                                      activeColor: Color.fromARGB(
-                                        255,
-                                        223,
-                                        83,
-                                        129,
-                                      ),
-                                      checkColor: Colors.white,
-                                      value: _layananDipilih[index],
-                                      onChanged: ((val) {
-                                        setState(() {
-                                          _layananDipilih[index] = val!;
-                                        });
-                                      }),
-                                    ),
-                                    Text("${_layanan[index]}"),
-                                  ],
-                                );
-                              }),
+                                  children: List.generate(_layanan.length, (
+                                    index,
+                                  ) {
+                                    return Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Checkbox(
+                                          activeColor: Color.fromARGB(
+                                            255,
+                                            223,
+                                            83,
+                                            129,
+                                          ),
+                                          checkColor: Colors.white,
+                                          value: _layananDipilih[index],
+                                          onChanged: ((val) {
+                                            setState(() {
+                                              _layananDipilih[index] = val!;
+                                              if (widget.useSavedPreferences) {
+                                                saveFilterPreferences();
+                                              }
+                                            });
+                                          }),
+                                        ),
+                                        Text("${_layanan[index]}"),
+                                      ],
+                                    );
+                                  }),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -350,7 +470,14 @@ class _CategoryPageState extends State<CategoryPage> {
                         ),
                     SizedBox(height: 15),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ViewAllPage(),
+                          ),
+                        );
+                      },
                       style: ButtonStyle(
                         backgroundColor: WidgetStatePropertyAll(
                           Color.fromARGB(255, 223, 83, 129),

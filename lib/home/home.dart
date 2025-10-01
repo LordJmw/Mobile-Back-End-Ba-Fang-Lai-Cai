@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/category.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -59,7 +61,6 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // --- REKOMENDASI VENDOR ---
             const Padding(
               padding: EdgeInsets.all(16),
               child: Text(
@@ -72,6 +73,14 @@ class _HomePageState extends State<HomePage> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.clear();
+                      print("Preferences cleared!");
+                    },
+                    child: Text("Clear Prefs"),
+                  ),
                   _buildVendorCard(
                     "Studio Photo A",
                     "⭐ 4.9",
@@ -90,6 +99,8 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
+
+            SizedBox(height: 15),
 
             const Divider(),
 
@@ -112,6 +123,39 @@ class _HomePageState extends State<HomePage> {
                   final category = _categories[index];
                   return _buildCategory(category["icon"], category["label"]);
                 },
+              ),
+            ),
+
+            const SizedBox(height: 10),
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.pink,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => const CategoryPage(
+                            category: "",
+                            useSavedPreferences: true,
+                          ), // ke halaman kategori
+                    ),
+                  );
+                },
+                child: const Text(
+                  "Lihat Halaman Kategori",
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
 
@@ -163,7 +207,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // --- Widget Kategori ---
-  static Widget _buildCategory(IconData icon, String label) {
+  Widget _buildCategory(IconData icon, String label) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -176,7 +220,16 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(16),
           ),
           onPressed: () {
-            // TODO: action ketika ditekan
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => CategoryPage(
+                      category: label.replaceAll("\n", " "),
+                      useSavedPreferences: false,
+                    ),
+              ),
+            );
           },
           child: Icon(icon, color: Colors.white, size: 28),
         ),
