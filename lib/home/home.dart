@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/category.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -163,6 +164,7 @@ class _HomePageState extends State<HomePage> {
                       // ),
                       ...vendors.map(
                         (vendor) => _buildVendorCard(
+                          context,
                           vendor['name'] ?? '',
                           vendor['rating'] ?? '',
                           vendor['imgUrl'] ?? '',
@@ -263,6 +265,7 @@ class _HomePageState extends State<HomePage> {
                               (item) => SizedBox(
                                 width: 260,
                                 child: _buildPortfolioCard(
+                                  context,
                                   item['title'] ?? '',
                                   item['desc'] ?? '',
                                   item['imgUrl'] ?? '',
@@ -305,6 +308,7 @@ class _HomePageState extends State<HomePage> {
                               (item) => SizedBox(
                                 width: 300,
                                 child: _buildFeedItem(
+                                  context,
                                   item['user'] ?? '',
                                   item['text'] ?? '',
                                   item['imgUrl'] ?? '',
@@ -360,117 +364,163 @@ class _HomePageState extends State<HomePage> {
   }
 
   // --- Widget Vendor Card ---
-  static Widget _buildVendorCard(String name, String rating, String imgPath) {
-    return Container(
-      width: 160,
-      margin: const EdgeInsets.only(left: 16, right: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
-        boxShadow: const [BoxShadow(blurRadius: 4, color: Colors.black12)],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-            child: Image.network(
-              imgPath,
-              height: 100,
-              width: 160,
-              fit: BoxFit.cover,
+  static Widget _buildVendorCard(
+    BuildContext context,
+    String name,
+    String rating,
+    String imgPath,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Carddetail(namaVendor: name)),
+        );
+      },
+      child: Container(
+        width: 160,
+        margin: const EdgeInsets.only(left: 16, right: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+          boxShadow: const [BoxShadow(blurRadius: 4, color: Colors.black12)],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
+              ),
+              child: Image.network(
+                imgPath,
+                height: 100,
+                width: 160,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Text(
-              name,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                name,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(rating),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(rating),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   // --- Widget Portfolio Card ---
-  static Widget _buildPortfolioCard(String title, String desc, String imgPath) {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
-        boxShadow: const [BoxShadow(blurRadius: 4, color: Colors.black12)],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-            child: SizedBox(
-              height: 100,
-              width: double.infinity,
-              child: Image.network(imgPath, fit: BoxFit.cover),
+  static Widget _buildPortfolioCard(
+    BuildContext context,
+    String name,
+    String desc,
+    String imgPath,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Carddetail(namaVendor: name)),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+          boxShadow: const [BoxShadow(blurRadius: 4, color: Colors.black12)],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
+              ),
+              child: SizedBox(
+                height: 100,
+                width: double.infinity,
+                child: Image.network(imgPath, fit: BoxFit.cover),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 6),
-                Text(desc, style: const TextStyle(fontSize: 12)),
-              ],
+                  const SizedBox(height: 6),
+                  Text(desc, style: const TextStyle(fontSize: 12)),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   // --- Widget Feed ---
-  static Widget _buildFeedItem(String user, String text, String imgPath) {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const CircleAvatar(
-            backgroundColor: Colors.pink,
-            child: Icon(Icons.person, color: Colors.white),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(user, style: const TextStyle(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 4),
-                Text(text),
-                const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: SizedBox(
-                    height: 100,
-                    width: double.infinity,
-                    child: Image.network(imgPath, fit: BoxFit.cover),
-                  ),
-                ),
-              ],
+  static Widget _buildFeedItem(
+    BuildContext context,
+    String user,
+    String text,
+    String imgPath,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Carddetail(namaVendor: user)),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const CircleAvatar(
+              backgroundColor: Colors.pink,
+              child: Icon(Icons.person, color: Colors.white),
             ),
-          ),
-        ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    user,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(text),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: SizedBox(
+                      height: 100,
+                      width: double.infinity,
+                      child: Image.network(imgPath, fit: BoxFit.cover),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/services/dataServices.dart';
 
 class OrderPage extends StatefulWidget {
-  const OrderPage({super.key});
+  final String namaVendor;
+  final String? paketDipilih;
+  const OrderPage({super.key, required this.namaVendor, this.paketDipilih});
 
   @override
   State<OrderPage> createState() => _OrderPageState();
@@ -10,14 +13,48 @@ class OrderPage extends StatefulWidget {
 class _OrderPageState extends State<OrderPage> {
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
+
   DateTime? selectedDate;
   String? selectedPackage;
+  int? selectedPrice;
 
-  final List<String> packages = [
-    "Paket 1",
-    "Paket 2",
-    "Paket 3",
-  ];
+  Map<String, int> packages = {};
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  getData() async {
+    Dataservices dataservices = Dataservices();
+    Map<String, dynamic> respond = await dataservices.loadDataDariNama(
+      widget.namaVendor,
+    );
+
+    Map<String, dynamic> tipePaket = respond['harga'] as Map<String, dynamic>;
+    print("Tipe paket: $tipePaket");
+
+    Map<String, int> parsedPackages = {};
+    tipePaket.forEach((key, value) {
+      if (value is int) {
+        parsedPackages[key] = value;
+      } else if (value is Map && value['harga'] is int) {
+        parsedPackages[key] = value['harga'];
+      }
+    });
+
+    setState(() {
+      packages = parsedPackages;
+
+      if (widget.paketDipilih != null &&
+          packages.containsKey(widget.paketDipilih)) {
+        selectedPackage = widget.paketDipilih;
+        selectedPrice = packages[widget.paketDipilih];
+      }
+    });
+
+    print("Parsed packages: $packages");
+  }
 
   Future<void> _pickDate() async {
     final DateTime? picked = await showDatePicker(
@@ -37,15 +74,20 @@ class _OrderPageState extends State<OrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 243, 243, 245),
+      appBar: AppBar(
+        title: const Text("Halaman Pembayaran"),
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // HEADER
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
+              children: const [
+                Text(
                   "EventHub",
                   style: TextStyle(
                     fontSize: 22,
@@ -53,30 +95,8 @@ class _OrderPageState extends State<OrderPage> {
                     color: Colors.pink,
                   ),
                 ),
-                Row(
-                  children: [
-                    OutlinedButton(
-                      onPressed: () {},
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.pink,
-                        side: const BorderSide(color: Colors.pink),
-                      ),
-                      child: const Text("Masuk"),
-                    ),
-                    const SizedBox(width: 10),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.pink,
-                        foregroundColor: Colors.white,
-                      ),
-                      child: const Text("Daftar"),
-                    ),
-                  ],
-                )
               ],
             ),
-
             const SizedBox(height: 30),
 
             // FORM CARD
@@ -93,8 +113,10 @@ class _OrderPageState extends State<OrderPage> {
                   children: [
                     const Text(
                       "Form Pemesanan",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 20),
 
@@ -137,24 +159,28 @@ class _OrderPageState extends State<OrderPage> {
                     const Text("Paket yang Dipilih"),
                     const SizedBox(height: 5),
                     DropdownButtonFormField<String>(
+                      value: selectedPackage,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                       hint: const Text("Pilih paket"),
-                      items: packages.map((pkg) {
-                        return DropdownMenuItem(
-                          value: pkg,
-                          child: Text(pkg),
-                        );
-                      }).toList(),
+                      items:
+                          packages.entries.map((entry) {
+                            return DropdownMenuItem(
+                              value: entry.key,
+                              child: Text("${entry.key} - Rp ${entry.value}"),
+                            );
+                          }).toList(),
                       onChanged: (value) {
                         setState(() {
                           selectedPackage = value;
+                          selectedPrice = packages[value];
                         });
                       },
                     ),
+
                     const SizedBox(height: 20),
 
                     // CATATAN
@@ -167,35 +193,56 @@ class _OrderPageState extends State<OrderPage> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        hintText:
-                            "Tambahkan catatan atau permintaan khusus",
+                        hintText: "Tambahkan catatan atau permintaan khusus",
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Text('Ringkasan Harga',
+
+                    // RINGKASAN HARGA
+                    const Text(
+                      'Ringkasan Harga',
                       style: TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Row(
                       children: [
-                        Text('total harga: '),
-                        Spacer(),
-                        Text('Rp 0.')
+                        const Text('Total harga: '),
+                        const Spacer(),
+                        Text(
+                          selectedPrice == null
+                              ? "Rp 0"
+                              : "Rp ${selectedPrice!}",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 20),
-                    ElevatedButton(onPressed: (){}, child: Text('Bayar Sekarang'),
+
+                    // BUTTON BAYAR
+                    ElevatedButton(
+                      onPressed: () {
+                        print(
+                          "Order dibuat untuk paket $selectedPackage seharga Rp $selectedPrice",
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
-                        minimumSize: Size(double.infinity, 50),
+                        minimumSize: const Size(double.infinity, 50),
                         backgroundColor: Colors.pink,
                         foregroundColor: Colors.white,
-                        textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
+                        textStyle: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    )
+                      child: const Text('Bayar Sekarang'),
+                    ),
                   ],
                 ),
               ),
             ),
+
             const SizedBox(height: 50),
             Center(
               child: Text(

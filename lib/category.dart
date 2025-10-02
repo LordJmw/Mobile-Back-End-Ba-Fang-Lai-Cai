@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:projek_uts_mbr/cardDetail.dart';
+import 'package:projek_uts_mbr/services/dataServices.dart';
 import 'package:projek_uts_mbr/viewall.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,11 +34,25 @@ formatPrice(int price) {
   return result;
 }
 
-Future<List<dynamic>> loadData() async {
-  final String response = await rootBundle.loadString('assets/data.json');
-  final data = await json.decode(response);
-  print(data);
-  return data;
+// Future<List<dynamic>> loadData() async {
+//   final String response = await rootBundle.loadString('assets/data.json');
+//   final data = await json.decode(response);
+//   // print(data);
+//   return data;
+// }
+
+int getBasicPrice(Map<String, dynamic> penyedia) {
+  try {
+    final harga = penyedia["harga"];
+    if (harga is Map) {
+      final basic = harga["basic"];
+      if (basic is int) return basic;
+      if (basic is Map && basic["harga"] is int) return basic["harga"];
+    }
+  } catch (e) {
+    print("Error parsing harga: $e");
+  }
+  return 0;
 }
 
 class _CategoryPageState extends State<CategoryPage> {
@@ -76,7 +91,8 @@ class _CategoryPageState extends State<CategoryPage> {
   @override
   void initState() {
     super.initState();
-    loadData().then((res) async {
+    Dataservices dataservices = Dataservices();
+    dataservices.loadData().then((res) async {
       final prefs = await SharedPreferences.getInstance();
 
       setState(() {
@@ -136,7 +152,6 @@ class _CategoryPageState extends State<CategoryPage> {
             .map((entry) => entry.value)
             .toList();
 
-    // Simpan dengan key yang sesuai
     await prefs.setStringList("${_preferencesKey}_category", selectedService);
     await prefs.setDouble("${_preferencesKey}_price_min", _rentangHarga.start);
     await prefs.setDouble("${_preferencesKey}_price_max", _rentangHarga.end);
@@ -171,8 +186,9 @@ class _CategoryPageState extends State<CategoryPage> {
 
     for (var kategori in data) {
       for (var penyedia in kategori["penyedia"]) {
-        final hargaBasic = penyedia["harga"]["basic"];
-        final rating = penyedia["rating"];
+        int hargaBasic = getBasicPrice(penyedia);
+
+        final rating = penyedia["rating"] ?? 0;
         final kategoriName = kategori["kategori"];
 
         bool matchesPrice =
@@ -406,67 +422,86 @@ class _CategoryPageState extends State<CategoryPage> {
                           children:
                               filterData().length > 0
                                   ? filterData().map((penyedia) {
-                                    return Card(
-                                      elevation: 3,
-                                      color: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      clipBehavior: Clip.antiAlias,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Image.network(
-                                            penyedia["image"],
-                                            height: 180,
-                                            width: double.infinity,
-                                            fit: BoxFit.cover,
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => Carddetail(
+                                                  namaVendor: penyedia['nama'],
+                                                ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(12.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  penyedia["nama"],
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 6),
-                                                Row(
-                                                  children: [
-                                                    const Icon(
-                                                      Icons.star,
-                                                      color: Colors.amber,
-                                                      size: 18,
-                                                    ),
-                                                    const SizedBox(width: 4),
-                                                    Text(
-                                                      "${penyedia["rating"]} (120 ulasan)",
-                                                      style: const TextStyle(
-                                                        fontSize: 13,
-                                                        color: Colors.grey,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 6),
-                                                Text(
-                                                  "Rp ${formatPrice(penyedia["harga"]["basic"])}",
-                                                  style: const TextStyle(
-                                                    fontSize: 15,
-                                                    color: Colors.pink,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
+                                        );
+                                      },
+                                      child: Card(
+                                        elevation: 3,
+                                        color: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        clipBehavior: Clip.antiAlias,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Image.network(
+                                              penyedia["image"],
+                                              height: 180,
+                                              width: double.infinity,
+                                              fit: BoxFit.cover,
                                             ),
-                                          ),
-                                        ],
+                                            Padding(
+                                              padding: const EdgeInsets.all(
+                                                12.0,
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    penyedia["nama"],
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 6),
+                                                  Row(
+                                                    children: [
+                                                      const Icon(
+                                                        Icons.star,
+                                                        color: Colors.amber,
+                                                        size: 18,
+                                                      ),
+                                                      const SizedBox(width: 4),
+                                                      Text(
+                                                        "${penyedia["rating"]}",
+                                                        style: const TextStyle(
+                                                          fontSize: 13,
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 6),
+                                                  Text(
+                                                    "Rp ${formatPrice(getBasicPrice(penyedia))}",
+                                                    style: const TextStyle(
+                                                      fontSize: 15,
+                                                      color: Colors.pink,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     );
                                   }).toList()
