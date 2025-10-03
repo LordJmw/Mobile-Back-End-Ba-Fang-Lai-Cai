@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/category.dart';
 import 'package:projek_uts_mbr/home/home.dart';
+import 'package:projek_uts_mbr/profile/userProfile.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const HomePage(),
+      home: const UserProfile(),
       debugShowCheckedModeBanner: false,
     );
   }
