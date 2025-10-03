@@ -311,34 +311,34 @@ class _CategoryPageState extends State<CategoryPage> {
                               style: TextStyle(fontSize: width > 500 ? 15 : 13),
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Row(
                                   children: List.generate(5, (index) {
-                                    return IconButton(
-                                      padding: EdgeInsets.zero,
-                                      constraints: const BoxConstraints(),
-                                      icon: Icon(
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _starIsclicked[index] =
+                                              !_starIsclicked[index];
+                                          _starIsclicked[index]
+                                              ? _jumlahBintang++
+                                              : _jumlahBintang--;
+                                        });
+                                        saveFilterPreferences();
+                                      },
+                                      child: Icon(
                                         Icons.star,
+                                        size: 20, // shrink size if needed
                                         color:
                                             _starIsclicked[index]
                                                 ? Colors.amber
                                                 : Colors.grey,
                                       ),
-                                      onPressed: () {
-                                        setState(() {
-                                          _starIsclicked[index] =
-                                              !_starIsclicked[index];
-                                          _starIsclicked[index]
-                                              ? _jumlahBintang += 1
-                                              : _jumlahBintang -= 1;
-                                        });
-                                        saveFilterPreferences();
-                                      },
                                     );
                                   }),
                                 ),
 
-                                SizedBox(width: 10),
+                                // SizedBox(width: 10),
                                 Text(
                                   _jumlahBintang > 0
                                       ? _jumlahBintang == 5
@@ -515,7 +515,9 @@ class _CategoryPageState extends State<CategoryPage> {
                                       clipBehavior: Clip.antiAlias,
                                       child: Container(
                                         width: double.infinity,
-                                        height: 250,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                            0.6,
                                         child: Center(
                                           child: Text(
                                             "Tidak ada Produk sesuai filter saat ini!",

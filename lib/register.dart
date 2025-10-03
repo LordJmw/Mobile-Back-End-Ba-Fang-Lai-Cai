@@ -1,0 +1,178 @@
+import 'package:flutter/material.dart';
+import 'login.dart';
+
+class RegisterPage extends StatelessWidget {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmController = TextEditingController();
+
+  RegisterPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              height: 200,
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.pink, Colors.pinkAccent],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(40),
+                  bottomRight: Radius.circular(40),
+                ),
+              ),
+              child: const Center(
+                child: Icon(
+                  Icons.person_add_alt_1,
+                  size: 80,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Card(
+                elevation: 6,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      const Text(
+                        "Buat Akun Baru",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pink,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        "Isi data untuk mendaftar",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      const SizedBox(height: 30),
+
+                      TextField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.email_outlined),
+                          labelText: "Email",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      TextField(
+                        controller: passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.lock_outline),
+                          labelText: "Password",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      TextField(
+                        controller: confirmController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.lock_reset),
+                          labelText: "Konfirmasi Password",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+
+                      ElevatedButton(
+                        onPressed: () {
+                          if (emailController.text.isEmpty ||
+                              passwordController.text.isEmpty == "" ||
+                              confirmController.text.isEmpty == "") {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Harap isi semua field"),
+                                backgroundColor: Colors.pink,
+                              ),
+                            );
+                            return;
+                          }
+                          if (emailController.text.isNotEmpty) {
+                            if (passwordController.text !=
+                                confirmController.text) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: Colors.pink,
+                                  content: Text(
+                                    "Password konfirmasi dengan Password yang diisi berbeda",
+                                  ),
+                                ),
+                              );
+                              return;
+                            }
+                          }
+                          if (!emailController.text.isEmpty != "" &&
+                              !passwordController.text.isEmpty != "" &&
+                              !confirmController.text.isEmpty != "") {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (_) => LoginPage()),
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.pink,
+                          minimumSize: const Size(double.infinity, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 5,
+                        ),
+                        child: const Text(
+                          "Daftar",
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (_) => LoginPage()),
+                          );
+                        },
+                        child: const Text(
+                          "Sudah punya akun? Masuk",
+                          style: TextStyle(color: Colors.pink),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
