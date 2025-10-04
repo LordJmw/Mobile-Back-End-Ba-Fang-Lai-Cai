@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/main.dart';
+import 'package:projek_uts_mbr/login.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/category.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'dart:convert';
+
+import 'package:projek_uts_mbr/register.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -78,7 +82,13 @@ class _HomePageState extends State<HomePage> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              MyApp.of(context).setBottomNavVisibility(false);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+              ).then((_) => MyApp.of(context).setBottomNavVisibility(true));
+            },
             child: const Text("Masuk"),
           ),
           const SizedBox(width: 10),
@@ -90,7 +100,13 @@ class _HomePageState extends State<HomePage> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              MyApp.of(context).setBottomNavVisibility(false);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RegisterPage()),
+              ).then((_) => MyApp.of(context).setBottomNavVisibility(true));
+            },
             child: const Text("Daftar"),
           ),
           const SizedBox(width: 10),

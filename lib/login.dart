@@ -97,11 +97,7 @@ class LoginPage extends StatelessWidget {
                             );
                             return;
                           }
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (_) => const HomePage()),
-                            (route) => false,
-                          );
+                          Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.pink,
@@ -120,7 +116,7 @@ class LoginPage extends StatelessWidget {
 
                       TextButton(
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (_) => RegisterPage()),
                           );
