@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'login.dart';
 
 class RegisterPage extends StatelessWidget {

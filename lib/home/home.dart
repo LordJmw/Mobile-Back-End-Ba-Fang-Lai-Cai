@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/category.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,72 +25,40 @@ class _HomePageState extends State<HomePage> {
     {"icon": Icons.handshake, "label": "Layanan Pendukung\nLainnya"},
   ];
 
-  Future<List<Map<String, dynamic>>> _loadPortfolios() async {
-    final String jsonString = await rootBundle.loadString('assets/data.json');
-    final List<dynamic> jsonData = json.decode(jsonString);
-
-    List<Map<String, dynamic>> portfolios = [];
-    for (var kategori in jsonData) {
-      if (kategori['penyedia'] != null) {
-        for (var penyedia in kategori['penyedia']) {
-          portfolios.add({
-            'title': penyedia['nama'] ?? '',
-            'desc': penyedia['deskripsi'] ?? '',
-            'imgUrl': penyedia['image'] ?? '',
-          });
-        }
-      }
-    }
-    return portfolios.take(8).toList();
-  }
-
-  Future<List<Map<String, dynamic>>> _loadFeeds() async {
-    final String jsonString = await rootBundle.loadString('assets/data.json');
-    final List<dynamic> jsonData = json.decode(jsonString);
-
-    List<Map<String, dynamic>> feeds = [];
-    for (var kategori in jsonData) {
-      if (kategori['penyedia'] != null) {
-        for (var penyedia in kategori['penyedia']) {
-          feeds.add({
-            'user': penyedia['nama'] ?? '',
-            'text':
-                penyedia['testimoni'] != null &&
-                        penyedia['testimoni'].isNotEmpty
-                    ? penyedia['testimoni'][0]['isi']
-                    : '',
-            'imgUrl': penyedia['image'] ?? '',
-          });
-        }
-      }
-    }
-    return feeds.take(8).toList();
-  }
-
-  Future<List<Map<String, dynamic>>> _loadVendors() async {
-    final String jsonString = await rootBundle.loadString('assets/data.json');
-    final List<dynamic> jsonData = json.decode(jsonString);
-
-    List<Map<String, dynamic>> allVendors = [];
-    for (var kategori in jsonData) {
-      if (kategori['penyedia'] != null) {
-        for (var penyedia in kategori['penyedia']) {
-          allVendors.add({
-            'name': penyedia['nama'] ?? '',
-            'rating': '⭐ ${penyedia['rating']?.toStringAsFixed(1) ?? ''}',
-            'imgUrl': penyedia['image'] ?? '',
-          });
-        }
-      }
-    }
-
-    allVendors.sort((a, b) {
-      double ratingA = double.tryParse(a['rating'].replaceAll('⭐ ', '')) ?? 0.0;
-      double ratingB = double.tryParse(b['rating'].replaceAll('⭐ ', '')) ?? 0.0;
-      return ratingB.compareTo(ratingA);
-    });
-
+  Future<List<Vendormodel>> _loadVendors() async {
+    Vendordatabase vendordatabase = Vendordatabase();
+    List<Vendormodel> allVendors = await vendordatabase.getData();
+    allVendors.sort((a, b) => b.rating.compareTo(a.rating));
     return allVendors.take(8).toList();
+  }
+
+  Future<List<Vendormodel>> _loadPortfolios() async {
+    Vendordatabase vendordatabase = Vendordatabase();
+    List<Vendormodel> allVendors = await vendordatabase.getData();
+    return allVendors.take(8).toList();
+  }
+
+  Future<List<Vendormodel>> _loadFeeds() async {
+    Vendordatabase vendordatabase = Vendordatabase();
+    List<Vendormodel> allVendors = await vendordatabase.getData();
+    return allVendors.take(8).toList();
+  }
+
+  getVendorData() async {
+    Vendordatabase vendordatabase = Vendordatabase();
+    List<Vendormodel> respond = await vendordatabase.getData();
+    print("${respond.length} data diterima di home");
+    for (var vendor in respond) {
+      print(vendor);
+    }
+  }
+
+  @override
+  void initState() {
+    Vendordatabase vendordatabase = Vendordatabase();
+    vendordatabase.initDataAwal();
+    getVendorData();
+    super.initState();
   }
 
   @override
@@ -141,7 +109,7 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(
               height: 200,
-              child: FutureBuilder<List<Map<String, dynamic>>>(
+              child: FutureBuilder<List<Vendormodel>>(
                 future: _loadVendors(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -153,34 +121,21 @@ class _HomePageState extends State<HomePage> {
                   final vendors = snapshot.data ?? [];
                   return ListView(
                     scrollDirection: Axis.horizontal,
-                    children: [
-                      // ElevatedButton(
-                      //   onPressed: () async {
-                      //     final prefs = await SharedPreferences.getInstance();
-                      //     await prefs.clear();
-                      //     print("Preferences cleared!");
-                      //   },
-                      //   child: Text("Clear Prefs"),
-                      // ),
-                      ...vendors.map(
-                        (vendor) => _buildVendorCard(
-                          context,
-                          vendor['name'] ?? '',
-                          vendor['rating'] ?? '',
-                          vendor['imgUrl'] ?? '',
-                        ),
-                      ),
-                    ],
+                    children:
+                        vendors.map((vendor) {
+                          return _buildVendorCard(
+                            context,
+                            vendor.nama,
+                            "⭐ ${vendor.rating.toStringAsFixed(1)}",
+                            vendor.image,
+                          );
+                        }).toList(),
                   );
                 },
               ),
             ),
-
-            SizedBox(height: 15),
-
+            const SizedBox(height: 15),
             const Divider(),
-
-            // --- KATEGORI VENDOR ---
             const Padding(
               padding: EdgeInsets.all(16),
               child: Text(
@@ -201,7 +156,6 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
             ),
-
             const SizedBox(height: 10),
             Center(
               child: ElevatedButton(
@@ -234,10 +188,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-
             const Divider(),
-
-            // --- PORTOFOLIO & REVIEW ---
             const Padding(
               padding: EdgeInsets.all(16),
               child: Text(
@@ -247,7 +198,7 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(
               height: 220,
-              child: FutureBuilder<List<Map<String, dynamic>>>(
+              child: FutureBuilder<List<Vendormodel>>(
                 future: _loadPortfolios(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -260,27 +211,22 @@ class _HomePageState extends State<HomePage> {
                   return ListView(
                     scrollDirection: Axis.horizontal,
                     children:
-                        portfolios
-                            .map(
-                              (item) => SizedBox(
-                                width: 260,
-                                child: _buildPortfolioCard(
-                                  context,
-                                  item['title'] ?? '',
-                                  item['desc'] ?? '',
-                                  item['imgUrl'] ?? '',
-                                ),
-                              ),
-                            )
-                            .toList(),
+                        portfolios.map((item) {
+                          return SizedBox(
+                            width: 260,
+                            child: _buildPortfolioCard(
+                              context,
+                              item.nama,
+                              item.deskripsi,
+                              item.image,
+                            ),
+                          );
+                        }).toList(),
                   );
                 },
               ),
             ),
-
             const Divider(),
-
-            // --- FEED / INSPIRASI ---
             const Padding(
               padding: EdgeInsets.all(16),
               child: Text(
@@ -290,7 +236,7 @@ class _HomePageState extends State<HomePage> {
             ),
             SizedBox(
               height: 220,
-              child: FutureBuilder<List<Map<String, dynamic>>>(
+              child: FutureBuilder<List<Vendormodel>>(
                 future: _loadFeeds(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -303,19 +249,19 @@ class _HomePageState extends State<HomePage> {
                   return ListView(
                     scrollDirection: Axis.horizontal,
                     children:
-                        feeds
-                            .map(
-                              (item) => SizedBox(
-                                width: 300,
-                                child: _buildFeedItem(
-                                  context,
-                                  item['user'] ?? '',
-                                  item['text'] ?? '',
-                                  item['imgUrl'] ?? '',
-                                ),
-                              ),
-                            )
-                            .toList(),
+                        feeds.map((item) {
+                          return SizedBox(
+                            width: 300,
+                            child: _buildFeedItem(
+                              context,
+                              item.nama,
+                              jsonDecode(item.testimoni).isNotEmpty
+                                  ? jsonDecode(item.testimoni)[0]['isi']
+                                  : '',
+                              item.image,
+                            ),
+                          );
+                        }).toList(),
                   );
                 },
               ),
@@ -326,7 +272,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // --- Widget Kategori ---
   Widget _buildCategory(IconData icon, String label) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -363,7 +308,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // --- Widget Vendor Card ---
   static Widget _buildVendorCard(
     BuildContext context,
     String name,
@@ -416,7 +360,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // --- Widget Portfolio Card ---
   static Widget _buildPortfolioCard(
     BuildContext context,
     String name,
@@ -473,7 +416,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // --- Widget Feed ---
   static Widget _buildFeedItem(
     BuildContext context,
     String user,

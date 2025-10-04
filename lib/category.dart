@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
+import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/services/dataServices.dart';
 import 'package:projek_uts_mbr/viewall.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,24 +36,23 @@ formatPrice(int price) {
   return result;
 }
 
-// Future<List<dynamic>> loadData() async {
-//   final String response = await rootBundle.loadString('assets/data.json');
-//   final data = await json.decode(response);
-//   // print(data);
-//   return data;
-// }
-
-int getBasicPrice(Map<String, dynamic> penyedia) {
+int getBasicPrice(Vendormodel penyedia) {
   try {
-    final harga = penyedia["harga"];
-    if (harga is Map) {
+    final harga = jsonDecode(penyedia.harga);
+
+    if (harga is Map<String, dynamic>) {
       final basic = harga["basic"];
+
       if (basic is int) return basic;
-      if (basic is Map && basic["harga"] is int) return basic["harga"];
+
+      if (basic is Map<String, dynamic> && basic["harga"] is int) {
+        return basic["harga"] as int;
+      }
     }
   } catch (e) {
     print("Error parsing harga: $e");
   }
+
   return 0;
 }
 
@@ -91,8 +92,8 @@ class _CategoryPageState extends State<CategoryPage> {
   @override
   void initState() {
     super.initState();
-    Dataservices dataservices = Dataservices();
-    dataservices.loadData().then((res) async {
+    Vendordatabase vendordatabase = Vendordatabase();
+    vendordatabase.getData(limit: 20).then((res) async {
       final prefs = await SharedPreferences.getInstance();
 
       setState(() {
@@ -162,7 +163,12 @@ class _CategoryPageState extends State<CategoryPage> {
     return await SharedPreferences.getInstance();
   }
 
-  List<Map<String, dynamic>> filterData() {
+  List<Vendormodel> filterData() {
+    //list ubah jadi map dengan key index nya di list
+    //dan value nilainya pada index itu di list, lalu filter berdasarkan key(index)
+    //yang true, baru map lagi untuk dapay value dari pasangan index dan value yang dipilih
+    //jadi kita pakai entry.value aja, udah dapat satu bilai ini, konversi lagi ke list
+    //dapatlah list yang isinya kategori yang dipilih
     final selectedService =
         _layanan
             .asMap()
@@ -173,36 +179,25 @@ class _CategoryPageState extends State<CategoryPage> {
 
     tapppedCategory = selectedService;
 
-    if (widget.useSavedPreferences) {
-      SharedPreferences.getInstance().then((prefs) {
-        prefs.setStringList("category", selectedService);
-        prefs.setDouble("price_min", _rentangHarga.start);
-        prefs.setDouble("price_max", _rentangHarga.end);
-        prefs.setInt("rating", _jumlahBintang);
-      });
-    }
+    List<Vendormodel> result = [];
 
-    List<Map<String, dynamic>> result = [];
+    for (var vendor in data) {
+      int hargaBasic = 0;
 
-    for (var kategori in data) {
-      for (var penyedia in kategori["penyedia"]) {
-        int hargaBasic = getBasicPrice(penyedia);
+      final hargaJson = jsonDecode(vendor.harga);
+      hargaBasic = (hargaJson['basic']?['harga'] ?? 0) as int;
 
-        final rating = penyedia["rating"] ?? 0;
-        final kategoriName = kategori["kategori"];
+      final rating = vendor.rating;
+      final kategoriName = vendor.kategori;
 
-        bool matchesPrice =
-            hargaBasic >= _rentangHarga.start &&
-            hargaBasic <= _rentangHarga.end;
+      bool matchesPrice =
+          hargaBasic >= _rentangHarga.start && hargaBasic <= _rentangHarga.end;
+      bool matchesRating = _jumlahBintang == 0 || rating >= _jumlahBintang;
+      bool matchesService =
+          selectedService.isEmpty || selectedService.contains(kategoriName);
 
-        bool matchesRating = _jumlahBintang == 0 || rating >= _jumlahBintang;
-
-        bool matchesService =
-            selectedService.isEmpty || selectedService.contains(kategoriName);
-
-        if (matchesPrice && matchesRating && matchesService) {
-          result.add(penyedia);
-        }
+      if (matchesPrice && matchesRating && matchesService) {
+        result.add(vendor);
       }
     }
 
@@ -429,7 +424,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                           MaterialPageRoute(
                                             builder:
                                                 (context) => Carddetail(
-                                                  namaVendor: penyedia['nama'],
+                                                  namaVendor: penyedia.nama,
                                                 ),
                                           ),
                                         );
@@ -448,7 +443,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Image.network(
-                                              penyedia["image"],
+                                              penyedia.image,
                                               height: 180,
                                               width: double.infinity,
                                               fit: BoxFit.cover,
@@ -462,7 +457,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    penyedia["nama"],
+                                                    penyedia.nama,
                                                     style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -479,7 +474,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                                       ),
                                                       const SizedBox(width: 4),
                                                       Text(
-                                                        "${penyedia["rating"]}",
+                                                        "${penyedia.rating}",
                                                         style: const TextStyle(
                                                           fontSize: 13,
                                                           color: Colors.grey,

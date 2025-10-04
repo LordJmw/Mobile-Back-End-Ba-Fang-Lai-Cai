@@ -12,7 +12,6 @@ class Dataservices {
   Future<Map<String, dynamic>> loadDataDariNama(String nama) async {
     final String response = await rootBundle.loadString('assets/data.json');
     final List<dynamic> data = await json.decode(response);
-    List<dynamic> result = [];
 
     for (var kategori in data) {
       for (var penyedia in kategori['penyedia']) {

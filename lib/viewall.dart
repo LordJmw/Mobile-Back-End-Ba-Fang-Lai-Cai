@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:projek_uts_mbr/cardDetail.dart';
+import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/services/dataServices.dart';
 
 class ViewAllPage extends StatefulWidget {
@@ -23,17 +24,43 @@ class _ViewAllPageState extends State<ViewAllPage> {
     futureData = fetchData();
   }
 
+  // Future<List<dynamic>> fetchData() async {
+  //   Dataservices dataservices = Dataservices();
+  //   List<dynamic> data = await dataservices.loadData();
+  //   List<dynamic> providers = [];
+  //   for (var kategori in data) {
+  //     // untuk menyimpan juga kategori biar bisa dipakai untuk pencarian
+  //     for (var penyedia in kategori["penyedia"]) {
+  //       penyedia["kategori"] = kategori["kategori"];
+  //       providers.add(penyedia);
+  //     }
+  //   }
+  //   allProviders = providers;
+  //   filteredProviders = providers;
+  //   return providers;
+  // }
+
   Future<List<dynamic>> fetchData() async {
-    Dataservices dataservices = Dataservices();
-    List<dynamic> data = await dataservices.loadData();
-    List<dynamic> providers = [];
-    for (var kategori in data) {
-      // untuk menyimpan juga kategori biar bisa dipakai untuk pencarian
-      for (var penyedia in kategori["penyedia"]) {
-        penyedia["kategori"] = kategori["kategori"];
-        providers.add(penyedia);
-      }
-    }
+    Vendordatabase vendordatabase = Vendordatabase();
+    final data = await vendordatabase.getData();
+
+    final providers =
+        data
+            .map(
+              (vendor) => {
+                "nama": vendor.nama,
+                "deskripsi": vendor.deskripsi,
+                "rating": vendor.rating,
+                "harga": vendor.harga,
+                "testimoni": vendor.testimoni,
+                "email": vendor.email,
+                "telepon": vendor.telepon,
+                "image": vendor.image,
+                "kategori": vendor.kategori,
+              },
+            )
+            .toList();
+
     allProviders = providers;
     filteredProviders = providers;
     return providers;
@@ -60,7 +87,7 @@ class _ViewAllPageState extends State<ViewAllPage> {
 
   int getBasicPrice(Map<String, dynamic> penyedia) {
     try {
-      final harga = penyedia["harga"];
+      final harga = jsonDecode(penyedia["harga"]);
       if (harga is Map) {
         final basic = harga["basic"];
         if (basic is int) return basic;
