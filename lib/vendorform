@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import 'package:projek_uts_mbr/model/VendorModel.dart';
 
 class VendorForm extends StatefulWidget {
   const VendorForm({super.key});
@@ -8,18 +10,57 @@ class VendorForm extends StatefulWidget {
 }
 
 class _VendorFormState extends State<VendorForm> {
+  final _formKey = GlobalKey<FormState>();
+  final _namaController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _teleponController = TextEditingController();
+
   String? _selectedCategory;
-  final List<String> categories = [
-    "Makanan",
-    "Fashion",
-    "Elektronik",
-    "Jasa",
-    "Lainnya",
-  ];
+  List<String> categories = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCategories();
+  }
+
+  Future<void> _loadCategories() async {
+    final db = Vendordatabase();
+    final cats = await db.getCategories();
+    setState(() {
+      categories = cats;
+    });
+  }
+
+  void _saveVendor() async {
+    if (_formKey.currentState!.validate() && _selectedCategory != null) {
+      final newVendor = Vendormodel(
+        nama: _namaController.text,
+        deskripsi: "Deskripsi baru", 
+        rating: 0.0,
+        harga: "{}", 
+        testimoni: "[]", 
+        email: _emailController.text,
+        telepon: _teleponController.text,
+        image: "https://via.placeholder.com/400x300",
+        kategori: _selectedCategory!,
+      );
+
+      final db = Vendordatabase();
+      await db.insertVendor(newVendor);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Vendor berhasil ditambahkan!")),
+      );
+
+      Navigator.pop(context); 
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text("Register Paket Anda")),
       body: Container(
         color: Colors.pink[50],
         child: Center(
@@ -31,69 +72,72 @@ class _VendorFormState extends State<VendorForm> {
             margin: const EdgeInsets.all(20),
             child: Padding(
               padding: const EdgeInsets.all(20),
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  Text(
-                    "Form Vendor",
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.pink[300], // judul pink muda
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 25),
-
-                  _buildField(Icons.person, "Nama Lengkap"),
-                  const SizedBox(height: 15),
-
-                  _buildField(Icons.email, "Email"),
-                  const SizedBox(height: 15),
-
-                  _buildField(Icons.phone, "No HP", type: TextInputType.phone),
-                  const SizedBox(height: 15),
-
-                  DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
-                      labelText: "Kategori Vendor",
-                      prefixIcon: Icon(
-                        Icons.category,
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    Text(
+                      "Form Vendor",
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
                         color: Colors.pink[300],
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    value: _selectedCategory,
-                    items: categories
-                        .map(
-                          (e) =>
-                              DropdownMenuItem(value: e, child: Text(e)),
-                        )
-                        .toList(),
-                    onChanged:
-                        (value) => setState(() => _selectedCategory = value),
-                  ),
-                  const SizedBox(height: 30),
+                    const SizedBox(height: 25),
 
-                  ElevatedButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.save, color: Colors.white),
-                    label: const Text(
-                      "Simpan",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink[300],
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                    _buildField(Icons.person, "Nama Lengkap", _namaController),
+                    const SizedBox(height: 15),
+
+                    _buildField(Icons.email, "Email", _emailController,
+                        type: TextInputType.emailAddress),
+                    const SizedBox(height: 15),
+
+                    _buildField(Icons.phone, "No HP", _teleponController,
+                        type: TextInputType.phone),
+                    const SizedBox(height: 15),
+
+                    DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        labelText: "Kategori Vendor",
+                        prefixIcon: Icon(Icons.category, color: Colors.pink[300]),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
                       ),
-                      elevation: 6,
+                      value: _selectedCategory,
+                      items: categories
+                          .map(
+                            (e) => DropdownMenuItem(value: e, child: Text(e)),
+                          )
+                          .toList(),
+                      onChanged: (value) =>
+                          setState(() => _selectedCategory = value),
+                      validator: (value) =>
+                          value == null ? "Pilih kategori" : null,
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 30),
+
+                    ElevatedButton.icon(
+                      onPressed: _saveVendor,
+                      icon: const Icon(Icons.save, color: Colors.white),
+                      label: const Text(
+                        "Simpan",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pink[300],
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        elevation: 6,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -104,16 +148,21 @@ class _VendorFormState extends State<VendorForm> {
 
   Widget _buildField(
     IconData icon,
-    String label, {
+    String label,
+    TextEditingController controller, {
     TextInputType type = TextInputType.text,
     int maxLines = 1,
   }) {
-    return TextField(
+    return TextFormField(
+      controller: controller,
       keyboardType: type,
       maxLines: maxLines,
+      validator: (value) => value == null || value.isEmpty
+          ? "Field $label tidak boleh kosong"
+          : null,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: Colors.pink[300]), 
+        prefixIcon: Icon(icon, color: Colors.pink[300]),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
       ),
     );

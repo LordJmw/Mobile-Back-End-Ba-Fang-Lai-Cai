@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/category.dart';
 import 'package:projek_uts_mbr/home/home.dart';
+import 'package:projek_uts_mbr/profile/vendorProfile.dart';
 import 'package:projek_uts_mbr/register.dart';
 
 void main() {
@@ -14,7 +15,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: RegisterPage(), debugShowCheckedModeBanner: false);
+    return MaterialApp(
+      home: Vendorprofile(),
+      debugShowCheckedModeBanner: false,
+    );
   }
 }
 

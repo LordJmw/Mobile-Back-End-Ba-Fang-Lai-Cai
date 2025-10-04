@@ -64,4 +64,15 @@ class Vendordatabase {
     }
     return [];
   }
+
+  Future<List<String>> getCategories() async {
+    final db = await databaserService.getDatabase();
+    final res = await db.rawQuery("SELECT DISTINCT kategori FROM Vendor");
+    return res.map((row) => row["kategori"].toString()).toList();
+  }
+
+  Future<int> insertVendor(Vendormodel vendor) async {
+    final db = await databaserService.getDatabase();
+    return await db.insert("Vendor", vendor.toMap());
+  }
 }
