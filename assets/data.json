@@ -19,6 +19,7 @@
         { "nama": "Yudi", "isi": "Kualitas foto sangat tajam.", "rating": 4 }
       ],
       "email": "lensartstudio@mail.com",
+      "password": "password1",
       "telepon": "+628123456789",
       "image": "https://picsum.photos/id/1011/400/300"
     },
@@ -39,6 +40,7 @@
         { "nama": "Mega", "isi": "Videografernya profesional.", "rating": 4 }
       ],
       "email": "goldenframe@mail.com",
+      "password": "password2",
       "telepon": "+628987654321",
       "image": "https://picsum.photos/id/1012/400/300"
     },
@@ -59,6 +61,7 @@
         { "nama": "Ilham", "isi": "Rekomendasi terbaik untuk pernikahan.", "rating": 4 }
       ],
       "email": "weddingmoments@mail.com",
+      "password": "password3",
       "telepon": "+628112223344",
       "image": "https://picsum.photos/id/1013/400/300"
     },
@@ -88,6 +91,7 @@
       { "nama": "Lisa", "isi": "Kualitas audio sangat jernih.", "rating": 3 }
     ],
     "email": "cinematiceye@mail.com",
+    "password": "password4",
     "telepon": "+628122334455",
     "image": "https://picsum.photos/id/1014/400/300"
   },
@@ -117,6 +121,7 @@
       { "nama": "Doni", "isi": "Rekomendasi untuk foto keluarga.", "rating": 3 }
     ],
     "email": "memorycapture@mail.com",
+    "password": "password5",
     "telepon": "+628155566677",
     "image": "https://picsum.photos/id/1015/400/300"
   }]
@@ -150,6 +155,7 @@
           { "nama": "Novi", "isi": "Koordinasi tim sangat baik.", "rating": 4 }
         ],
         "email": "dreamevents@mail.com",
+        "password": "password6",
         "telepon": "+628133334445",
         "image": "https://picsum.photos/id/1021/400/300"
       },
@@ -179,6 +185,7 @@
           { "nama": "Rani", "isi": "Kordinasi acara rapih.", "rating": 3 }
         ],
         "email": "eliteplanner@mail.com",
+        "password": "password7",
         "telepon": "+628177788899",
         "image": "https://picsum.photos/id/1022/400/300"
       },
@@ -208,6 +215,7 @@
           { "nama": "Leo", "isi": "Konsep kreatif dan fun.", "rating": 4 }
         ],
         "email": "happyday@mail.com",
+        "password": "password8",
         "telepon": "+628199900011",
         "image": "https://picsum.photos/id/1023/400/300"
       },
@@ -237,6 +245,7 @@
           { "nama": "Putri", "isi": "Kursi dan dekorasi nyaman.", "rating": 3 }
         ],
         "email": "royalmoments@mail.com",
+        "password": "password9",
         "telepon": "+628188877766",
         "image": "https://picsum.photos/id/1024/400/300"
       },
@@ -266,6 +275,7 @@
           { "nama": "Andri", "isi": "Cukup memuaskan.", "rating": 4 }
         ],
         "email": "infinityevents@mail.com",
+        "password": "password10",
         "telepon": "+628177766655",
         "image": "https://picsum.photos/id/1025/400/300"
       }
@@ -301,6 +311,7 @@
           { "nama": "Oka", "isi": "Pengerjaan cepat dan rapi.", "rating": 5 }
         ],
         "email": "glambeauty@mail.com",
+        "password": "password11",
         "telepon": "+628144455566",
         "image": "https://picsum.photos/id/1031/400/300"
       },
@@ -330,6 +341,7 @@
           { "nama": "Jihan", "isi": "Harga sesuai kualitas.", "rating": 3 }
         ],
         "email": "styleavenue@mail.com",
+        "password": "password12",
         "telepon": "+628122233344",
         "image": "https://picsum.photos/id/1032/400/300"
       },
@@ -359,6 +371,7 @@
           { "nama": "Puspa", "isi": "Sangat puas dengan hasilnya.", "rating": 4 }
         ],
         "email": "chictouch@mail.com",
+        "password": "password13",
         "telepon": "+628133322211",
         "image": "https://picsum.photos/id/1033/400/300"
       },
@@ -388,6 +401,7 @@
           { "nama": "Lenny", "isi": "Butuh lebih banyak pilihan style.", "rating": 3 }
         ],
         "email": "runwayready@mail.com",
+        "password": "password14",
         "telepon": "+628199988877",
         "image": "https://picsum.photos/id/1025/400/300"
       },
@@ -417,6 +431,7 @@
           { "nama": "Roni", "isi": "Hasilnya sesuai ekspektasi.", "rating": 5 }
         ],
         "email": "royalglow@mail.com",
+        "password": "password15",
         "telepon": "+628122211100",
         "image": "https://picsum.photos/id/1035/400/300"
       }
@@ -452,6 +467,7 @@
           { "nama": "Silvi", "isi": "Lagu sesuai request.", "rating": 4 }
         ],
         "email": "harmonyband@mail.com",
+        "password": "password16",
         "telepon": "+628177755544",
         "image": "https://picsum.photos/id/1041/400/300"
       },
@@ -481,6 +497,7 @@
           { "nama": "Yoga", "isi": "Pertunjukan cukup seru.", "rating": 3 }
         ],
         "email": "magicillusion@mail.com",
+        "password": "password17",
         "telepon": "+628188822233",
         "image": "https://picsum.photos/id/1042/400/300"
       },
@@ -510,6 +527,7 @@
           { "nama": "Winda", "isi": "DJ sangat energik dan profesional.", "rating": 4 }
         ],
         "email": "djnightwave@mail.com",
+        "password": "password18",
         "telepon": "+628199911122",
         "image": "https://picsum.photos/id/1043/400/300"
       },
@@ -539,6 +557,7 @@
           { "nama": "Dewi", "isi": "Puas banget dengan performancenya.", "rating": 4 }
         ],
         "email": "comedycrew@mail.com",
+        "password": "password19",
         "telepon": "+628122255566",
         "image": "https://picsum.photos/id/1044/400/300"
       },
@@ -568,6 +587,7 @@
           { "nama": "Jaya", "isi": "Tarian tradisionalnya autentik.", "rating": 3 }
         ],
         "email": "culturaldance@mail.com",
+        "password": "password20",
         "telepon": "+628166677788",
         "image": "https://picsum.photos/id/1045/400/300"
       },
@@ -597,6 +617,7 @@
           { "nama": "Clara", "isi": "Membuat acara lebih romantis.", "rating": 4 }
         ],
         "email": "starperformer@mail.com",
+        "password": "password21",
         "telepon": "+628155544433",
         "image": "https://picsum.photos/id/1084/400/300"
       }
@@ -632,6 +653,7 @@
           { "nama": "Clara", "isi": "Acara terlihat mewah sekali.", "rating": 4 }
         ],
         "email": "elegantdecor@mail.com",
+        "password": "password22",
         "telepon": "+628133344455",
         "image": "https://picsum.photos/id/1051/400/300"
       },
@@ -661,6 +683,7 @@
           { "nama": "Seno", "isi": "Suasana rustic terasa nyata.", "rating": 4 }
         ],
         "email": "rusticvenue@mail.com",
+        "password": "password23",
         "telepon": "+628199988877",
         "image": "https://picsum.photos/id/1052/400/300"
       },
@@ -690,6 +713,7 @@
           { "nama": "Lala", "isi": "Sangat nyaman untuk tamu.", "rating": 4 }
         ],
         "email": "royalhall@mail.com",
+        "password": "password24",
         "telepon": "+628122255566",
         "image": "https://picsum.photos/id/1053/400/300"
       },
@@ -719,6 +743,7 @@
           { "nama": "Mira", "isi": "Harga cukup sesuai.", "rating": 3 }
         ],
         "email": "bloomdecor@mail.com",
+        "password": "password25",
         "telepon": "+628177755544",
         "image": "https://picsum.photos/id/1054/400/300"
       },
@@ -748,6 +773,7 @@
           { "nama": "Anya", "isi": "Interiornya instagramable.", "rating": 3 }
         ],
         "email": "urbanloft@mail.com",
+        "password": "password26",
         "telepon": "+628155566677",
         "image": "https://picsum.photos/id/1055/400/300"
       }
@@ -782,6 +808,7 @@
           { "nama": "Meta", "isi": "Tamu puas dengan hidangan.", "rating": 5 }
         ],
         "email": "deliciouscatering@mail.com",
+        "password": "password27",
         "telepon": "+628144433322",
         "image": "https://picsum.photos/id/1061/400/300"
       },
@@ -811,6 +838,7 @@
           { "nama": "Santi", "isi": "Tamu puas dengan hidangan.", "rating": 4 }
         ],
         "email": "tasteandstyle@mail.com",
+        "password": "password28",
         "telepon": "+628188877766",
         "image": "https://picsum.photos/id/1062/400/300"
       },
@@ -840,6 +868,7 @@
           { "nama": "Kiki", "isi": "Tampilan makanan cantik.", "rating": 4 }
         ],
         "email": "gourmetchef@mail.com",
+        "password": "password29",
         "telepon": "+628177766655",
         "image": "https://picsum.photos/id/1063/400/300"
       },
@@ -869,6 +898,7 @@
           { "nama": "Hadi", "isi": "Cocok untuk pesta anak muda.", "rating": 3 }
         ],
         "email": "streetfeast@mail.com",
+        "password": "password30",
         "telepon": "+628166655544",
         "image": "https://picsum.photos/id/1064/400/300"
       },
@@ -898,6 +928,7 @@
           { "nama": "Putri", "isi": "Rekomendasi untuk hidup sehat.", "rating": 4 }
         ],
         "email": "healthychoice@mail.com",
+        "password": "password31",
         "telepon": "+628199900011",
         "image": "https://picsum.photos/id/1065/400/300"
       }
@@ -932,6 +963,7 @@
           { "nama": "Bayu", "isi": "Tidak ada gangguan suara.", "rating": 5 }
         ],
         "email": "prosound@mail.com",
+        "password": "password32",
         "telepon": "+628122211100",
         "image": "https://picsum.photos/id/1071/400/300"
       },
@@ -961,6 +993,7 @@
           { "nama": "Yuni", "isi": "Cukup memuaskan.", "rating": 3 }
         ],
         "email": "lightworks@mail.com",
+        "password": "password33",
         "telepon": "+628177788899",
         "image": "https://picsum.photos/id/1072/400/300"
       },
@@ -990,6 +1023,7 @@
           { "nama": "Eka", "isi": "Harga sesuai fasilitas.", "rating": 3 }
         ],
         "email": "stagepro@mail.com",
+        "password": "password34",
         "telepon": "+628133344455",
         "image": "https://picsum.photos/id/1073/400/300"
       },
@@ -1019,6 +1053,7 @@
           { "nama": "Rian", "isi": "Lumayan untuk acara kecil.", "rating": 3 }
         ],
         "email": "eventtech@mail.com",
+        "password": "password35",
         "telepon": "+628188822233",
         "image": "https://picsum.photos/id/1074/400/300"
       },
@@ -1048,6 +1083,7 @@
           { "nama": "Hendra", "isi": "Harganya worth it.", "rating": 4 }
         ],
         "email": "virtuallive@mail.com",
+        "password": "password36",
         "telepon": "+628199911122",
         "image": "https://picsum.photos/id/1075/400/300"
       }
@@ -1083,6 +1119,7 @@
           { "nama": "Tono", "isi": "Pelayanan profesional sekali.", "rating": 4 }
         ],
         "email": "luxuryride@mail.com",
+        "password": "password37",
         "telepon": "+628122233344",
         "image": "https://picsum.photos/id/1081/400/300"
       },
@@ -1112,6 +1149,7 @@
           { "nama": "Reno", "isi": "Harga cukup terjangkau.", "rating": 3 }
         ],
         "email": "eventshuttle@mail.com",
+        "password": "password38",
         "telepon": "+628133355566",
         "image": "https://picsum.photos/id/1082/400/300"
       },
@@ -1141,6 +1179,7 @@
           { "nama": "Siska", "isi": "Cocok untuk event besar.", "rating": 4 }
         ],
         "email": "cargoexpress@mail.com",
+        "password": "password39",
         "telepon": "+628144477788",
         "image": "https://picsum.photos/id/1083/400/300"
       },
@@ -1170,6 +1209,7 @@
           { "nama": "Clara", "isi": "Sopir ramah sekali.", "rating": 3 }
         ],
         "email": "weddingcar@mail.com",
+        "password": "password40",
         "telepon": "+628199900011",
         "image": "https://picsum.photos/id/1084/400/300"
       },
@@ -1199,6 +1239,7 @@
           { "nama": "Putra", "isi": "Membantu event sukses.", "rating": 3 }
         ],
         "email": "fastlogistics@mail.com",
+        "password": "password41",
         "telepon": "+628166655544",
         "image": "https://picsum.photos/id/1070/400/300"
       }
@@ -1234,6 +1275,7 @@
           { "nama": "Agus", "isi": "Profesional dan terlatih.", "rating": 4 }
         ],
         "email": "eventsecurity@mail.com",
+        "password": "password42",
         "telepon": "+628122244455",
         "image": "https://picsum.photos/id/1011/400/300"
       },
@@ -1263,6 +1305,7 @@
           { "nama": "Wati", "isi": "Harga sebanding dengan kualitas.", "rating": 3 }
         ],
         "email": "cleaningpro@mail.com",
+        "password": "password43",
         "telepon": "+628177766655",
         "image": "https://picsum.photos/id/1015/400/300"
       },
@@ -1292,6 +1335,7 @@
           { "nama": "Andra", "isi": "Membuat tamu senang.", "rating": 4 }
         ],
         "email": "mchost@mail.com",
+        "password": "password44",
         "telepon": "+628144433322",
         "image": "https://picsum.photos/id/1025/400/300"
       },
@@ -1321,6 +1365,7 @@
           { "nama": "Fani", "isi": "Harga sesuai manfaat.", "rating": 3 }
         ],
         "email": "eventinsurance@mail.com",
+        "password": "password45",
         "telepon": "+628199988877",
         "image": "https://picsum.photos/id/1035/400/300"
       },
@@ -1350,6 +1395,7 @@
           { "nama": "Lala", "isi": "Acara berjalan lancar.", "rating": 3 }
         ],
         "email": "eventhelpers@mail.com",
+        "password": "password46",
         "telepon": "+628155544433",
         "image": "https://picsum.photos/id/1043/400/300"
       }

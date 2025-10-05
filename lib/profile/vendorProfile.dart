@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
-import 'package:projek_uts_mbr/vendorform';
+import 'package:projek_uts_mbr/vendorform.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 
 class Vendorprofile extends StatefulWidget {
@@ -54,7 +54,9 @@ class _VendorprofileState extends State<Vendorprofile> {
                   ),
                   const Spacer(),
                   ElevatedButton.icon(
-                    onPressed: tambahPaketBaru,
+                    onPressed: (){
+                      tambahPaketBaru();
+                    },
                     icon: const Icon(Icons.add),
                     label: const Text("Tambah Paket"),
                     style: ElevatedButton.styleFrom(

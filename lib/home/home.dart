@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/main.dart';
-import 'package:projek_uts_mbr/login.dart';
+import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/category.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'dart:convert';
 
-import 'package:projek_uts_mbr/register.dart';
+import 'package:projek_uts_mbr/auth/register.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -61,6 +61,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     Vendordatabase vendordatabase = Vendordatabase();
     vendordatabase.initDataAwal();
+    vendordatabase.updatePasswords();
     getVendorData();
     super.initState();
   }
@@ -86,7 +87,7 @@ class _HomePageState extends State<HomePage> {
               MyApp.of(context).setBottomNavVisibility(false);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
+                MaterialPageRoute(builder: (context) => LoginCustomer()),
               ).then((_) => MyApp.of(context).setBottomNavVisibility(true));
             },
             child: const Text("Masuk"),

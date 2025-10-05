@@ -1,12 +1,63 @@
 import 'package:flutter/material.dart';
-import 'home/home.dart';
+import 'package:projek_uts_mbr/auth/loginCostumer.dart';
+import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import '../home/home.dart';
 import 'register.dart';
 
-class LoginPage extends StatelessWidget {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+class LoginVendor extends StatefulWidget {
+  LoginVendor({super.key});
 
-  LoginPage({super.key});
+  @override
+  State<LoginVendor> createState() => _LoginVendorState();
+}
+
+class _LoginVendorState extends State<LoginVendor> {
+  final TextEditingController _namatokoController = TextEditingController();
+
+  final TextEditingController _emailController = TextEditingController();
+
+  final TextEditingController _passwordController = TextEditingController();
+
+Future <void> loginvendor() async {
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.pink,
+          content: Text("Harap isi semua field"),
+          ),
+      );
+      return;
+    }
+
+    final db = Vendordatabase();
+    final vendor = await db.LoginVendor(
+      _emailController.text,
+      _passwordController.text,
+    );
+    print('Vendor login result: $vendor');
+
+    if (vendor != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.green,
+          content: Text("Login berhasil!"),
+        ),
+      );
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => HomePage()),
+        (Route<dynamic> route) => false,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.pink,
+          content: Text("Email atau password salah!"),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +112,19 @@ class LoginPage extends StatelessWidget {
                       const SizedBox(height: 30),
 
                       TextField(
-                        controller: emailController,
+                        controller: _namatokoController,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.store_mall_directory_outlined),
+                          labelText: "Nama Toko",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      TextField(
+                        controller: _emailController,
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.email_outlined),
                           labelText: "Email",
@@ -73,7 +136,7 @@ class LoginPage extends StatelessWidget {
                       const SizedBox(height: 20),
 
                       TextField(
-                        controller: passwordController,
+                        controller: _passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.lock_outline),
@@ -87,17 +150,7 @@ class LoginPage extends StatelessWidget {
 
                       ElevatedButton(
                         onPressed: () {
-                          if (emailController.text.isEmpty ||
-                              passwordController.text.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor: Colors.pink,
-                                content: Text("Harap isi semua field"),
-                              ),
-                            );
-                            return;
-                          }
-                          Navigator.pop(context);
+                          loginvendor();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.pink,
@@ -126,6 +179,18 @@ class LoginPage extends StatelessWidget {
                           style: TextStyle(color: Colors.pink),
                         ),
                       ),
+
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (_) => LoginCustomer()),
+                          );
+                        },
+                        child: const Text(
+                          "Login sebagai Customer",
+                          style: TextStyle(color: Colors.pink,decoration: TextDecoration.underline,decorationColor: Colors.pink,decorationThickness: 1)),
+                        ),
                     ],
                   ),
                 ),

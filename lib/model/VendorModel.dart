@@ -8,6 +8,8 @@ class Vendormodel {
   final String telepon;
   final String image;
   final String kategori;
+  final String alamat; 
+  final String password; 
 
   Vendormodel({
     required this.nama,
@@ -19,20 +21,24 @@ class Vendormodel {
     required this.telepon,
     required this.image,
     required this.kategori,
+    required this.alamat,
+    required this.password,
   });
 
   //agar hasil kueri diubah ke tipe data yang sesuai
   static Vendormodel fromMap(Map<String, dynamic> map) {
     return Vendormodel(
-      nama: map['nama'],
-      deskripsi: map['deskripsi'],
-      rating: (map['rating'] as num).toDouble(),
-      harga: map['harga'],
-      testimoni: map['testimoni'],
-      email: map['email'],
-      telepon: map['telepon'],
-      image: map['image'],
-      kategori: map['kategori'],
+      nama: map['nama'] ?? '',
+      deskripsi: map['deskripsi'] ?? '',
+      rating: (map['rating'] as num?)?.toDouble() ?? 0.0,
+      harga: map['harga'] ?? '{}',
+      testimoni: map['testimoni'] ?? '[]',
+      email: map['email'] ?? '',
+      telepon: map['telepon'] ?? '',
+      image: map['image'] ?? '',
+      kategori: map['kategori'] ?? '',
+      alamat: map['alamat'] ?? '',
+      password: map['password'] ?? '',
     );
   }
 
@@ -48,6 +54,8 @@ class Vendormodel {
       'telepon': telepon,
       'image': image,
       'kategori': kategori,
+      'alamat': alamat,
+      'password': password, 
     };
   }
 }

@@ -39,6 +39,8 @@ class Vendordatabase {
           'telepon': penyedia['telepon'],
           'image': penyedia['image'],
           'kategori': kategori['kategori'],
+          'alamat': penyedia['alamat'],
+          'password': penyedia['password'], 
         });
       }
     }
@@ -50,6 +52,20 @@ class Vendordatabase {
         0;
 
     print("Selesai insert, total data vendor di DB: $total");
+  }
+
+  Future<Vendormodel?> LoginVendor(String email, String password) async {
+    Database db = await databaserService.getDatabase();
+    List<Map<String, dynamic>> result = await db.query(
+      'Vendor',
+      where: 'email = ? AND password = ?',
+      whereArgs: [email, password],
+    );
+
+    if (result.isNotEmpty) {
+      return Vendormodel.fromMap(result.first);
+    }
+    return null;
   }
 
   Future<List<Vendormodel>> getData({int limit = 0}) async {
@@ -74,5 +90,31 @@ class Vendordatabase {
   Future<int> insertVendor(Vendormodel vendor) async {
     final db = await databaserService.getDatabase();
     return await db.insert("Vendor", vendor.toMap());
+  }
+
+  Future<void> printAllVendors() async {
+  final db = await databaserService.getDatabase();
+  final vendors = await db.query('Vendor'); // ambil semua data
+  print("Daftar vendor:");
+  for (var v in vendors) {
+    print(v);
+  }
+}
+
+  Future<void> updatePasswords() async {
+    Database db = await databaserService.getDatabase();
+    List<dynamic> respond = await dataservices.loadData();
+
+    for (var kategori in respond) {
+      for (var penyedia in kategori['penyedia']) {
+        await db.update(
+          'Vendor',
+          {'password': penyedia['password']},
+          where: 'email = ?',
+          whereArgs: [penyedia['email']],
+        );
+      }
+    }
+    print("Passwords updated successfully.");
   }
 }

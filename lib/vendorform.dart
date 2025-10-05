@@ -44,6 +44,8 @@ class _VendorFormState extends State<VendorForm> {
         telepon: _teleponController.text,
         image: "https://via.placeholder.com/400x300",
         kategori: _selectedCategory!,
+        alamat: "Alamat baru",
+        password: "password123",
       );
 
       final db = Vendordatabase();

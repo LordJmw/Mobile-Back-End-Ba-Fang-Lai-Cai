@@ -1,13 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
-import 'login.dart';
+import 'package:projek_uts_mbr/auth/loginVendor.dart';
+import 'package:projek_uts_mbr/databases/customerDatabase.dart';
+import '../home/home.dart';
+import 'register.dart';
 
-class RegisterPage extends StatelessWidget {
+class LoginCustomer extends StatefulWidget {
+  LoginCustomer({super.key});
+
+  @override
+  State<LoginCustomer> createState() => _LoginCustomerState();
+}
+
+class _LoginCustomerState extends State<LoginCustomer> {
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmController = TextEditingController();
 
-  RegisterPage({super.key});
+  final TextEditingController passwordController = TextEditingController();
+
+  Future <void> logincustomers() async {
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.pink,
+          content: Text("Harap isi semua field"),
+          ),
+      );
+      return;
+    }
+
+    final db = CustomerDatabase();
+    final customer = await db.LoginCustomer(
+      emailController.text,
+      passwordController.text,
+    );
+    print('Customer login result: $customer');
+
+    if (customer != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.green,
+          content: Text("Login berhasil!"),
+        ),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => HomePage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.pink,
+          content: Text("Email atau password salah!"),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +77,7 @@ class RegisterPage extends StatelessWidget {
                 ),
               ),
               child: const Center(
-                child: Icon(
-                  Icons.person_add_alt_1,
-                  size: 80,
-                  color: Colors.white,
-                ),
+                child: Icon(Icons.lock_outline, size: 80, color: Colors.white),
               ),
             ),
             const SizedBox(height: 30),
@@ -51,7 +94,7 @@ class RegisterPage extends StatelessWidget {
                   child: Column(
                     children: [
                       const Text(
-                        "Buat Akun Baru",
+                        "Selamat Datang!",
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -60,7 +103,7 @@ class RegisterPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                       const Text(
-                        "Isi data untuk mendaftar",
+                        "Masuk untuk melanjutkan",
                         style: TextStyle(color: Colors.grey),
                       ),
                       const SizedBox(height: 30),
@@ -88,56 +131,11 @@ class RegisterPage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
-
-                      TextField(
-                        controller: confirmController,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.lock_reset),
-                          labelText: "Konfirmasi Password",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
                       const SizedBox(height: 30),
 
                       ElevatedButton(
-                        onPressed: () {
-                          if (emailController.text.isEmpty ||
-                              passwordController.text.isEmpty == "" ||
-                              confirmController.text.isEmpty == "") {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text("Harap isi semua field"),
-                                backgroundColor: Colors.pink,
-                              ),
-                            );
-                            return;
-                          }
-                          if (emailController.text.isNotEmpty) {
-                            if (passwordController.text !=
-                                confirmController.text) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  backgroundColor: Colors.pink,
-                                  content: Text(
-                                    "Password konfirmasi dengan Password yang diisi berbeda",
-                                  ),
-                                ),
-                              );
-                              return;
-                            }
-                          }
-                          if (!emailController.text.isEmpty != "" &&
-                              !passwordController.text.isEmpty != "" &&
-                              !confirmController.text.isEmpty != "") {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (_) => LoginPage()),
-                            );
-                          }
+                        onPressed: () async {
+                          logincustomers();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.pink,
@@ -148,24 +146,37 @@ class RegisterPage extends StatelessWidget {
                           elevation: 5,
                         ),
                         child: const Text(
-                          "Daftar",
+                          "Masuk",
                           style: TextStyle(fontSize: 16, color: Colors.white),
                         ),
                       ),
+
                       const SizedBox(height: 20),
 
                       TextButton(
                         onPressed: () {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (_) => LoginPage()),
+                            MaterialPageRoute(builder: (_) => RegisterPage()),
                           );
                         },
                         child: const Text(
-                          "Sudah punya akun? Masuk",
+                          "Belum punya akun? Daftar",
                           style: TextStyle(color: Colors.pink),
                         ),
                       ),
+
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (_) => LoginVendor()),
+                          );
+                        },
+                        child: const Text(
+                          "Login sebagai Vendor",
+                          style: TextStyle(color: Colors.pink,decoration: TextDecoration.underline,decorationColor: Colors.pink,decorationThickness: 1)),
+                        ),
                     ],
                   ),
                 ),

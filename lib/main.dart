@@ -3,7 +3,7 @@ import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/category.dart';
 import 'package:projek_uts_mbr/home/home.dart';
 import 'package:projek_uts_mbr/profile/vendorProfile.dart';
-import 'package:projek_uts_mbr/register.dart';
+import 'package:projek_uts_mbr/auth/register.dart';
 import 'package:projek_uts_mbr/searchPage.dart';
 
 void main() {
