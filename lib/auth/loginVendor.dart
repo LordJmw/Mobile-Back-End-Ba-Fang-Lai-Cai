@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import 'package:projek_uts_mbr/services/sessionManager.dart';
 import '../home/home.dart';
 import 'register.dart';
 
@@ -12,52 +13,8 @@ class LoginVendor extends StatefulWidget {
 }
 
 class _LoginVendorState extends State<LoginVendor> {
-  final TextEditingController _namatokoController = TextEditingController();
-
   final TextEditingController _emailController = TextEditingController();
-
   final TextEditingController _passwordController = TextEditingController();
-
-Future <void> loginvendor() async {
-    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.pink,
-          content: Text("Harap isi semua field"),
-          ),
-      );
-      return;
-    }
-
-    final db = Vendordatabase();
-    final vendor = await db.LoginVendor(
-      _emailController.text,
-      _passwordController.text,
-    );
-    print('Vendor login result: $vendor');
-
-    if (vendor != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.green,
-          content: Text("Login berhasil!"),
-        ),
-      );
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => HomePage()),
-        (Route<dynamic> route) => false,
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.pink,
-          content: Text("Email atau password salah!"),
-        ),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,17 +68,6 @@ Future <void> loginvendor() async {
                       ),
                       const SizedBox(height: 30),
 
-                      TextField(
-                        controller: _namatokoController,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.store_mall_directory_outlined),
-                          labelText: "Nama Toko",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
 
                       TextField(
                         controller: _emailController,
@@ -149,8 +95,8 @@ Future <void> loginvendor() async {
                       const SizedBox(height: 30),
 
                       ElevatedButton(
-                        onPressed: () {
-                          loginvendor();
+                        onPressed: () async {
+                          await loginvendors();
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.pink,
@@ -200,5 +146,48 @@ Future <void> loginvendor() async {
         ),
       ),
     );
+  }
+
+  Future<void> loginvendors() async {
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.pink,
+          content: Text("Harap isi semua field"),
+        ),
+      );
+      return;
+    }
+
+    final db = Vendordatabase();
+    final vendor = await db.LoginVendor(
+      _emailController.text,
+      _passwordController.text,
+    );
+
+    if (vendor != null) {
+      final sessionManager = SessionManager();
+      await sessionManager.createLoginSession(vendor.email);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.green,
+          content: Text("Login berhasil!"),
+        ),
+      );
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => HomePage()),
+        (route) => false,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.pink,
+          content: Text("Email atau password salah!"),
+        ),
+      );
+    }
   }
 }

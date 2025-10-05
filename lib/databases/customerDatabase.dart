@@ -19,30 +19,11 @@ class CustomerDatabase {
     );
 
      if (maps.isNotEmpty) {
-      final customer = CustomerModel.fromMap(maps.first);
-      await db.update(
-        'Customer',
-        {'isLoggedIn': 1},
-        where: 'id = ?',
-        whereArgs: [customer.id],
-      );
-      return customer;
-    }
-    return null;
-  }
-
-    Future<CustomerModel?> getLoggedInCustomer() async {
-    final db = await _dbService.getDatabase();
-    final maps = await db.query(
-      'Customer',
-      where: 'isLoggedIn = ?',
-      whereArgs: [1],
-    );
-    if (maps.isNotEmpty) {
       return CustomerModel.fromMap(maps.first);
     }
     return null;
   }
+
 
 
   Future<CustomerModel?> getCustomerByEmail(String email) async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/services/sessionManager.dart';
 import 'package:projek_uts_mbr/main.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
@@ -17,6 +18,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final SessionManager _sessionManager = SessionManager();
+  bool _isLoggedIn = false;
+  String? _email;
+
   final List<Map<String, dynamic>> _categories = [
     {"icon": Icons.camera_alt_outlined, "label": "Fotografi &\nVideografi"},
     {"icon": Icons.event, "label": "Event Organizer\n& Planner"},
@@ -28,6 +33,29 @@ class _HomePageState extends State<HomePage> {
     {"icon": Icons.local_shipping, "label": "Transportasi &\nLogistik"},
     {"icon": Icons.handshake, "label": "Layanan Pendukung\nLainnya"},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+    Vendordatabase vendordatabase = Vendordatabase();
+    vendordatabase.initDataAwal();
+    vendordatabase.updatePasswords();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final isLoggedIn = await _sessionManager.isLoggedIn();
+    final email = await _sessionManager.getEmail();
+    setState(() {
+      _isLoggedIn = isLoggedIn;
+      _email = email;
+    });
+  }
+
+  Future<void> _logout() async {
+    await _sessionManager.logout();
+    _checkLoginStatus();
+  }
 
   Future<List<Vendormodel>> _loadVendors() async {
     Vendordatabase vendordatabase = Vendordatabase();
@@ -48,70 +76,75 @@ class _HomePageState extends State<HomePage> {
     return allVendors.take(8).toList();
   }
 
-  getVendorData() async {
-    Vendordatabase vendordatabase = Vendordatabase();
-    List<Vendormodel> respond = await vendordatabase.getData();
-    print("${respond.length} data diterima di home");
-    for (var vendor in respond) {
-      print(vendor);
-    }
-  }
-
-  @override
-  void initState() {
-    Vendordatabase vendordatabase = Vendordatabase();
-    vendordatabase.initDataAwal();
-    vendordatabase.updatePasswords();
-    getVendorData();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: const Text("Home Page"),
+      appBar: _isLoggedIn ? AppBar(
+        title: const Text("Ba Fang Lai Cai"),
         backgroundColor: Colors.pink,
-        actions: [
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.pink,
-              shape: RoundedRectangleBorder(
-                side: const BorderSide(color: Colors.pink),
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            onPressed: () {
-              MyApp.of(context).setBottomNavVisibility(false);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LoginCustomer()),
-              ).then((_) => MyApp.of(context).setBottomNavVisibility(true));
-            },
-            child: const Text("Masuk"),
-          ),
-          const SizedBox(width: 10),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.pink,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            onPressed: () {
-              MyApp.of(context).setBottomNavVisibility(false);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => RegisterPage()),
-              ).then((_) => MyApp.of(context).setBottomNavVisibility(true));
-            },
-            child: const Text("Daftar"),
-          ),
-          const SizedBox(width: 10),
-        ],
+      ) : 
+      AppBar(
+        title: const Text("Ba Fang Lai Cai"),
+        backgroundColor: Colors.pink,
+        actions: _isLoggedIn
+            ? [
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      _email ?? '',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.logout),
+                  onPressed: _logout,
+                ),
+              ]
+            : [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.pink,
+                    shape: RoundedRectangleBorder(
+                      side: const BorderSide(color: Colors.pink),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () {
+                    MyApp.of(context).setBottomNavVisibility(false);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginCustomer()),
+                    ).then((_) {
+                      MyApp.of(context).setBottomNavVisibility(true);
+                      _checkLoginStatus();
+                    });
+                  },
+                  child: const Text("Masuk"),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pink,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () {
+                    MyApp.of(context).setBottomNavVisibility(false);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterPage()),
+                    ).then((_) => MyApp.of(context).setBottomNavVisibility(true));
+                  },
+                  child: const Text("Daftar"),
+                ),
+                const SizedBox(width: 10),
+              ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -484,3 +517,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+

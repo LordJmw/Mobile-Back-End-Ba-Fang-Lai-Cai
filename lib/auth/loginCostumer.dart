@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/auth/loginVendor.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
+import 'package:projek_uts_mbr/services/sessionManager.dart';
 import '../home/home.dart';
 import 'register.dart';
 
@@ -16,7 +17,7 @@ class _LoginCustomerState extends State<LoginCustomer> {
 
   final TextEditingController passwordController = TextEditingController();
 
-  Future <void> logincustomers() async {
+  Future<void> logincustomers() async {
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -35,6 +36,9 @@ class _LoginCustomerState extends State<LoginCustomer> {
     print('Customer login result: $customer');
 
     if (customer != null) {
+      final sessionManager = SessionManager();
+      await sessionManager.createLoginSession(customer.email);
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           backgroundColor: Colors.green,
@@ -42,9 +46,10 @@ class _LoginCustomerState extends State<LoginCustomer> {
         ),
       );
 
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => HomePage()),
+        (route) => false,
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

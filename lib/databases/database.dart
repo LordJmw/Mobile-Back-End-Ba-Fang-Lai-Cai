@@ -17,7 +17,7 @@ class DatabaserService {
 
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: _createDb,
       onUpgrade: _upgradeDb,
     );
@@ -37,7 +37,7 @@ class DatabaserService {
         image TEXT,
         kategori TEXT,
         alamat TEXT,
-        password TEXT,
+        password TEXT
       )
     ''');
 
@@ -48,7 +48,7 @@ class DatabaserService {
         email TEXT,
         password TEXT,
         telepon TEXT,
-        alamat TEXT,
+        alamat TEXT
       )
     ''');
 
@@ -64,19 +64,12 @@ class DatabaserService {
   }
 
   void _upgradeDb(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 3) {
-      // This will add the column if it doesn't exist.
-      // A try-catch is used to prevent crashes if the column already exists.
-      try {
-        await db.execute("DELETE FROM Customer WHERE isLoggedIn");
-      } catch (e) {
-        print("Could not add isLoggedIn to Customer, maybe it already exists: $e");
-      }
-      try {
-        await db.execute("DELETE FROM Vendor WHERE isLoggedIn");
-      } catch (e) {
-        print("Could not add isLoggedIn to Vendor, maybe it already exists: $e");
-      }
+    if (oldVersion < 4) {
+      // Drop the old tables and recreate them to remove the isLoggedIn column
+      await db.execute("DROP TABLE IF EXISTS PurchaseHistory");
+      await db.execute("DROP TABLE IF EXISTS Vendor");
+      await db.execute("DROP TABLE IF EXISTS Customer");
+      _createDb(db, newVersion);
     }
   }
 }
