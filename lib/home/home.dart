@@ -165,16 +165,18 @@ class _HomePageState extends State<HomePage> {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   }
                   final vendors = snapshot.data ?? [];
-                  return ListView(
+                  return ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    children: vendors.map((vendor) {
+                    itemCount: vendors.length,
+                    itemBuilder: (context, index) {
+                      final vendor = vendors[index];
                       return _buildVendorCard(
                         context,
                         vendor.nama,
                         "⭐ ${vendor.rating.toStringAsFixed(1)}",
                         vendor.image,
                       );
-                    }).toList(),
+                    },
                   );
                 },
               ),

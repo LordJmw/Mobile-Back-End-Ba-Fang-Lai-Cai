@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import 'package:projek_uts_mbr/services/sessionManager.dart';
 import 'package:projek_uts_mbr/vendorform.dart';
 
 class Vendorprofile extends StatefulWidget {
@@ -12,23 +13,31 @@ class Vendorprofile extends StatefulWidget {
 }
 
 class _VendorprofileState extends State<Vendorprofile> {
-  List<Vendormodel> paketList = [];
+  Vendormodel? currentVendor;
+  bool isLoading = true;
   final Vendordatabase vendorDb = Vendordatabase();
-
+  final SessionManager sessionManager = SessionManager();
   @override
   void initState() {
     super.initState();
-    loadPaketFromDb();
+    loadVendorData();
   }
 
-  Future<void> loadPaketFromDb() async {
-    final data = await vendorDb.getData();
-    print("Data dari database: $data"); // Debug print
-    if (data.isNotEmpty) {
-      print("Harga pertama: ${data.first.harga}"); // Debug harga
-    }
+  Future<void> loadVendorData() async {
     setState(() {
-      paketList = data;
+      isLoading = true;
+    });
+    final String? vendorEmail = await sessionManager.getEmail();
+
+    if (vendorEmail != null) {
+      final vendor = await vendorDb.getVendorByEmail(vendorEmail);
+      setState(() {
+        currentVendor = vendor;
+      });
+    }
+
+    setState(() {
+      isLoading = false;
     });
   }
 
@@ -37,114 +46,139 @@ class _VendorprofileState extends State<Vendorprofile> {
       context,
       MaterialPageRoute(builder: (context) => const VendorForm()),
     );
-    loadPaketFromDb();
+    loadVendorData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Profil Vendor")),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Row(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(12),
+              child: Column(
                 children: [
-                  const Text(
-                    "Paket Anda",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  const Spacer(),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      tambahPaketBaru();
-                    },
-                    icon: const Icon(Icons.add),
-                    label: const Text("Tambah Paket"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink,
-                      foregroundColor: Colors.white,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Paket Anda (${currentVendor?.nama ?? 'Vendor'})",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const Spacer(),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            tambahPaketBaru();
+                          },
+                          icon: const Icon(Icons.add),
+                          label: const Text("Tambah Paket"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.pink,
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+
+                  if (currentVendor == null)
+                    Card(
+                      child: Container(
+                        padding: const EdgeInsets.all(24),
+                        width: double.infinity,
+                        child: Column(
+                          children: const [
+                            Icon(Icons.inbox, size: 40, color: Colors.grey),
+                            SizedBox(height: 10),
+                            Text(
+                              "Tidak dapat memuat data vendor.",
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    _buildPackageList(currentVendor!),
                 ],
               ),
             ),
+    );
+  }
 
-            if (paketList.isEmpty)
-              Card(
-                child: Container(
-                  padding: const EdgeInsets.all(24),
-                  width: double.infinity,
-                  child: Column(
-                    children: const [
-                      Icon(Icons.inbox, size: 40, color: Colors.grey),
-                      SizedBox(height: 10),
-                      Text(
-                        "Belum ada paket.\nKlik 'Tambah Paket' untuk menambahkan.",
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+  Widget _buildPackageList(Vendormodel vendor) {
+    Map<String, dynamic> hargaMap;
+    try {
+      if (vendor.harga.isNotEmpty) {
+        hargaMap = jsonDecode(vendor.harga);
+      } else {
+        hargaMap = {};
+      }
+    } catch (e) {
+      print("error decode harga untuk ${vendor.nama}:$e");
+      hargaMap = {};
+    }
+
+    if (hargaMap.isEmpty) {
+      return Card(
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          width: double.infinity,
+          child: Column(
+            children: const [
+              Icon(Icons.inbox, size: 40, color: Colors.grey),
+              SizedBox(height: 10),
+              Text(
+                "Belum ada paket. \nKlik 'Tambah Paket untuk menambahkan.",
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    return Column(
+      children: hargaMap.entries.map((entry) {
+        final packageName = entry.key;
+        final packageData = entry.value as Map<String, dynamic>;
+        final harga = packageData['harga'] ?? 0;
+        final jasa = packageData['jasa'] ?? 'tidak ada deskripsi';
+
+        return Card(
+          margin: const EdgeInsets.only(bottom: 12),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  packageName.toUpperCase(),
+                  style: const TextStyle(
+                    color: Colors.pink,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
                   ),
                 ),
-              )
-            else
-              Column(
-                children: paketList.map((paket) {
-                  Map<String, dynamic> hargaMap = {};
-
-                  try {
-                    // Pastikan harga tidak null dan bisa di-decode
-                    if (paket.harga != null && paket.harga.isNotEmpty) {
-                      hargaMap = jsonDecode(paket.harga);
-                    } else {
-                      // Jika harga null, gunakan default structure
-                      hargaMap = jsonDecode(Vendormodel.defaultHargaJson);
-                    }
-                  } catch (e) {
-                    print("Error decoding harga for ${paket.nama}: $e");
-                    // Fallback ke default structure jika error
-                    hargaMap = jsonDecode(Vendormodel.defaultHargaJson);
-                  }
-
-                  // Safe access dengan null-aware operators
-                  final basicHarga = hargaMap["basic"]?["harga"] ?? 0;
-                  final basicJasa =
-                      hargaMap["basic"]?["jasa"] ?? "Deskripsi tidak tersedia";
-
-                  return Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            paket.nama,
-                            style: const TextStyle(
-                              color: Colors.pink,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            "Rp ${basicHarga}",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                          Text(basicJasa, style: const TextStyle(fontSize: 14)),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-          ],
-        ),
-      ),
+                const SizedBox(height: 10),
+                Text(
+                  "Rp $harga",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(jasa, style: const TextStyle(fontSize: 14)),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }
