@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/databases/customerDatabase.dart';
+import 'package:projek_uts_mbr/main.dart';
 import 'package:projek_uts_mbr/services/dataServices.dart';
+import 'package:projek_uts_mbr/services/sessionManager.dart';
 
 class OrderPage extends StatefulWidget {
   final String namaVendor;
@@ -70,6 +75,95 @@ class _OrderPageState extends State<OrderPage> {
     }
   }
 
+  beliPaket() async {
+    SessionManager sessionManager = SessionManager();
+    String? userType = await sessionManager.getUserType();
+    String? email = await sessionManager.getEmail();
+
+    //Cek jika yang login adalah vendor
+    if (userType == "vendor") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.pink,
+          content: Text("Login sebagai customer untuk dapat membeli paket"),
+        ),
+      );
+      return;
+    }
+
+    if (selectedDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text("Pilih tanggal acara terlebih dahulu"),
+        ),
+      );
+      return;
+    }
+
+    if (_locationController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text("Masukkan lokasi acara"),
+        ),
+      );
+      return;
+    }
+
+    if (selectedPackage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text("Pilih paket terlebih dahulu"),
+        ),
+      );
+      return;
+    }
+
+    final customerDb = CustomerDatabase();
+    final customer = await customerDb.getCustomerByEmail(email!);
+
+    if (customer == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text("Customer tidak ditemukan"),
+        ),
+      );
+      return;
+    }
+
+    final purchaseDetails = {
+      'vendor': widget.namaVendor,
+      'package': selectedPackage,
+      'price': selectedPrice,
+      'date': selectedDate!.toIso8601String(),
+      'location': _locationController.text,
+      'notes': _notesController.text,
+      'status': 'pending',
+    };
+
+    await customerDb.addPurchaseHistory(
+      customer.id!,
+      jsonEncode(purchaseDetails),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: Colors.green,
+        content: Text(
+          "Pembelian berhasil! Paket telah ditambahkan ke profil Anda.",
+        ),
+      ),
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MainScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,7 +193,6 @@ class _OrderPageState extends State<OrderPage> {
             ),
             const SizedBox(height: 30),
 
-            // FORM CARD
             Card(
               color: Colors.white,
               shape: RoundedRectangleBorder(
@@ -166,13 +259,12 @@ class _OrderPageState extends State<OrderPage> {
                         ),
                       ),
                       hint: const Text("Pilih paket"),
-                      items:
-                          packages.entries.map((entry) {
-                            return DropdownMenuItem(
-                              value: entry.key,
-                              child: Text("${entry.key} - Rp ${entry.value}"),
-                            );
-                          }).toList(),
+                      items: packages.entries.map((entry) {
+                        return DropdownMenuItem(
+                          value: entry.key,
+                          child: Text("${entry.key} - Rp ${entry.value}"),
+                        );
+                      }).toList(),
                       onChanged: (value) {
                         setState(() {
                           selectedPackage = value;
@@ -198,7 +290,6 @@ class _OrderPageState extends State<OrderPage> {
                     ),
                     const SizedBox(height: 20),
 
-                    // RINGKASAN HARGA
                     const Text(
                       'Ringkasan Harga',
                       style: TextStyle(
@@ -220,9 +311,9 @@ class _OrderPageState extends State<OrderPage> {
                     ),
                     const SizedBox(height: 20),
 
-                    // BUTTON BAYAR
                     ElevatedButton(
                       onPressed: () {
+                        beliPaket();
                         print(
                           "Order dibuat untuk paket $selectedPackage seharga Rp $selectedPrice",
                         );

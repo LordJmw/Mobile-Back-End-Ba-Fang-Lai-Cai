@@ -40,6 +40,50 @@ class _VendorprofileState extends State<Vendorprofile> {
     loadPaketFromDb();
   }
 
+  int getBasicPrice(Vendormodel penyedia) {
+    try {
+      final harga = jsonDecode(penyedia.harga);
+
+      if (harga is Map<String, dynamic>) {
+        final basic = harga["basic"];
+
+        if (basic is int) return basic;
+
+        if (basic is Map<String, dynamic> && basic["harga"] is int) {
+          return basic["harga"] as int;
+        }
+      }
+    } catch (e) {
+      print("Error parsing harga: $e");
+    }
+
+    return 0;
+  }
+
+  String getBasicService(Vendormodel penyedia) {
+    try {
+      final harga = jsonDecode(penyedia.harga);
+
+      if (harga is Map<String, dynamic>) {
+        final basic = harga["basic"];
+
+        // Jika basic adalah Map dan ada field jasa
+        if (basic is Map<String, dynamic>) {
+          return basic["jasa"]?.toString() ?? "Layanan fotografi profesional";
+        }
+
+        // Jika basic adalah int (harga langsung), berikan deskripsi default
+        if (basic is int) {
+          return "Layanan fotografi profesional";
+        }
+      }
+    } catch (e) {
+      print("Error parsing service: $e");
+    }
+
+    return "Layanan fotografi profesional";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,27 +136,10 @@ class _VendorprofileState extends State<Vendorprofile> {
             else
               Column(
                 children: paketList.map((paket) {
-                  Map<String, dynamic> hargaMap = {};
-
-                  try {
-                    // Pastikan harga tidak null dan bisa di-decode
-                    if (paket.harga != null && paket.harga.isNotEmpty) {
-                      hargaMap = jsonDecode(paket.harga);
-                    } else {
-                      // Jika harga null, gunakan default structure
-                      hargaMap = jsonDecode(Vendormodel.defaultHargaJson);
-                    }
-                  } catch (e) {
-                    print("Error decoding harga for ${paket.nama}: $e");
-                    // Fallback ke default structure jika error
-                    hargaMap = jsonDecode(Vendormodel.defaultHargaJson);
-                  }
-
-                  // Safe access dengan null-aware operators
-                  final basicHarga = hargaMap["basic"]?["harga"] ?? 0;
-                  final basicJasa =
-                      hargaMap["basic"]?["jasa"] ?? "Deskripsi tidak tersedia";
-
+                  final basicHarga = getBasicPrice(paket);
+                  final basicJasa = getBasicService(
+                    paket,
+                  ); // Buat fungsi serupa untuk jasa
                   return Card(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
