@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import 'package:projek_uts_mbr/main.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 import '../home/home.dart';
 import 'register.dart';
@@ -68,7 +69,6 @@ class _LoginVendorState extends State<LoginVendor> {
                       ),
                       const SizedBox(height: 30),
 
-
                       TextField(
                         controller: _emailController,
                         decoration: InputDecoration(
@@ -135,8 +135,14 @@ class _LoginVendorState extends State<LoginVendor> {
                         },
                         child: const Text(
                           "Login sebagai Customer",
-                          style: TextStyle(color: Colors.pink,decoration: TextDecoration.underline,decorationColor: Colors.pink,decorationThickness: 1)),
+                          style: TextStyle(
+                            color: Colors.pink,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.pink,
+                            decorationThickness: 1,
+                          ),
                         ),
+                      ),
                     ],
                   ),
                 ),
@@ -167,7 +173,7 @@ class _LoginVendorState extends State<LoginVendor> {
 
     if (vendor != null) {
       final sessionManager = SessionManager();
-      await sessionManager.createLoginSession(vendor.email);
+      await sessionManager.createLoginSession(vendor.email, "vendor");
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -178,7 +184,7 @@ class _LoginVendorState extends State<LoginVendor> {
 
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => HomePage()),
+        MaterialPageRoute(builder: (context) => MainScreen()),
         (route) => false,
       );
     } else {

@@ -8,8 +8,8 @@ class Vendormodel {
   final String telepon;
   final String image;
   final String kategori;
-  final String alamat; 
-  final String password; 
+  final String alamat;
+  final String password;
 
   Vendormodel({
     required this.nama,
@@ -25,13 +25,16 @@ class Vendormodel {
     required this.password,
   });
 
+  static String get defaultHargaJson =>
+      '{"basic":{"harga":0,"jasa":"Harga belum tersedia"}}';
+
   //agar hasil kueri diubah ke tipe data yang sesuai
   static Vendormodel fromMap(Map<String, dynamic> map) {
     return Vendormodel(
       nama: map['nama'] ?? '',
       deskripsi: map['deskripsi'] ?? '',
       rating: (map['rating'] as num?)?.toDouble() ?? 0.0,
-      harga: map['harga'] ?? '{}',
+      harga: map['harga']?.toString() ?? defaultHargaJson,
       testimoni: map['testimoni'] ?? '[]',
       email: map['email'] ?? '',
       telepon: map['telepon'] ?? '',
@@ -55,7 +58,7 @@ class Vendormodel {
       'image': image,
       'kategori': kategori,
       'alamat': alamat,
-      'password': password, 
+      'password': password,
     };
   }
 }

@@ -17,7 +17,7 @@ class DatabaserService {
 
     return await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onCreate: _createDb,
       onUpgrade: _upgradeDb,
     );
@@ -25,47 +25,46 @@ class DatabaserService {
 
   void _createDb(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE Vendor (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nama TEXT,
-        deskripsi TEXT,
-        rating REAL,
-        harga TEXT,
-        testimoni TEXT,
-        email TEXT,
-        telepon TEXT,
-        image TEXT,
-        kategori TEXT,
-        alamat TEXT,
-        password TEXT
-      )
-    ''');
+    CREATE TABLE Vendor (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nama TEXT,
+      deskripsi TEXT,
+      rating REAL,
+      harga TEXT,
+      testimoni TEXT,
+      email TEXT,
+      telepon TEXT,
+      image TEXT,
+      kategori TEXT,
+      alamat TEXT,
+      password TEXT
+    )
+  ''');
 
     await db.execute('''
-      CREATE TABLE Customer (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nama TEXT,
-        email TEXT,
-        password TEXT,
-        telepon TEXT,
-        alamat TEXT
-      )
-    ''');
+    CREATE TABLE Customer (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nama TEXT,
+      email TEXT,
+      password TEXT,
+      telepon TEXT,
+      alamat TEXT
+    )
+  ''');
 
     await db.execute('''
-      CREATE TABLE PurchaseHistory (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        customer_id INTEGER,
-        purchase_details TEXT,
-        purchase_date TEXT,
-        FOREIGN KEY (customer_id) REFERENCES Customer (id)
-      )
-    ''');
+    CREATE TABLE PurchaseHistory (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      customer_id INTEGER,
+      purchase_details TEXT,
+      purchase_date TEXT,
+      FOREIGN KEY (customer_id) REFERENCES Customer (id)
+    )
+  ''');
   }
 
   void _upgradeDb(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 4) {
-      // Drop the old tables and recreate them to remove the isLoggedIn column
       await db.execute("DROP TABLE IF EXISTS PurchaseHistory");
       await db.execute("DROP TABLE IF EXISTS Vendor");
       await db.execute("DROP TABLE IF EXISTS Customer");

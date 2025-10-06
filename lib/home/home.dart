@@ -80,71 +80,67 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: _isLoggedIn ? AppBar(
+      appBar: AppBar(
         title: const Text("Ba Fang Lai Cai"),
         backgroundColor: Colors.pink,
-      ) : 
-      AppBar(
-        title: const Text("Ba Fang Lai Cai"),
-        backgroundColor: Colors.pink,
-        actions: _isLoggedIn
-            ? [
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      _email ?? '',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.logout),
-                  onPressed: _logout,
-                ),
-              ]
-            : [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.pink,
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(color: Colors.pink),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  onPressed: () {
-                    MyApp.of(context).setBottomNavVisibility(false);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginCustomer()),
-                    ).then((_) {
-                      MyApp.of(context).setBottomNavVisibility(true);
-                      _checkLoginStatus();
-                    });
-                  },
-                  child: const Text("Masuk"),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.pink,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  onPressed: () {
-                    MyApp.of(context).setBottomNavVisibility(false);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => RegisterPage()),
-                    ).then((_) => MyApp.of(context).setBottomNavVisibility(true));
-                  },
-                  child: const Text("Daftar"),
-                ),
-                const SizedBox(width: 10),
-              ],
+        // actions: _isLoggedIn
+        //     ? [
+        //         Center(
+        //           child: Padding(
+        //             padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        //             child: Text(
+        //               _email ?? '',
+        //               style: TextStyle(color: Colors.white),
+        //             ),
+        //           ),
+        //         ),
+        //         IconButton(
+        //           icon: const Icon(Icons.logout),
+        //           onPressed: _logout,
+        //         ),
+        //       ]
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.pink,
+              shape: RoundedRectangleBorder(
+                side: const BorderSide(color: Colors.pink),
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: () {
+              MyApp.of(context).setBottomNavVisibility(false);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginCustomer()),
+              ).then((_) {
+                MyApp.of(context).setBottomNavVisibility(true);
+                _checkLoginStatus();
+              });
+            },
+            child: const Text("Masuk"),
+          ),
+          const SizedBox(width: 10),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.pink,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: () {
+              MyApp.of(context).setBottomNavVisibility(false);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RegisterPage()),
+              ).then((_) => MyApp.of(context).setBottomNavVisibility(true));
+            },
+            child: const Text("Daftar"),
+          ),
+          const SizedBox(width: 10),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -171,15 +167,14 @@ class _HomePageState extends State<HomePage> {
                   final vendors = snapshot.data ?? [];
                   return ListView(
                     scrollDirection: Axis.horizontal,
-                    children:
-                        vendors.map((vendor) {
-                          return _buildVendorCard(
-                            context,
-                            vendor.nama,
-                            "⭐ ${vendor.rating.toStringAsFixed(1)}",
-                            vendor.image,
-                          );
-                        }).toList(),
+                    children: vendors.map((vendor) {
+                      return _buildVendorCard(
+                        context,
+                        vendor.nama,
+                        "⭐ ${vendor.rating.toStringAsFixed(1)}",
+                        vendor.image,
+                      );
+                    }).toList(),
                   );
                 },
               ),
@@ -224,11 +219,10 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder:
-                          (context) => const CategoryPage(
-                            category: "",
-                            useSavedPreferences: true,
-                          ),
+                      builder: (context) => const CategoryPage(
+                        category: "",
+                        useSavedPreferences: true,
+                      ),
                     ),
                   );
                 },
@@ -260,18 +254,17 @@ class _HomePageState extends State<HomePage> {
                   final portfolios = snapshot.data ?? [];
                   return ListView(
                     scrollDirection: Axis.horizontal,
-                    children:
-                        portfolios.map((item) {
-                          return SizedBox(
-                            width: 260,
-                            child: _buildPortfolioCard(
-                              context,
-                              item.nama,
-                              item.deskripsi,
-                              item.image,
-                            ),
-                          );
-                        }).toList(),
+                    children: portfolios.map((item) {
+                      return SizedBox(
+                        width: 260,
+                        child: _buildPortfolioCard(
+                          context,
+                          item.nama,
+                          item.deskripsi,
+                          item.image,
+                        ),
+                      );
+                    }).toList(),
                   );
                 },
               ),
@@ -298,20 +291,19 @@ class _HomePageState extends State<HomePage> {
                   final feeds = snapshot.data ?? [];
                   return ListView(
                     scrollDirection: Axis.horizontal,
-                    children:
-                        feeds.map((item) {
-                          return SizedBox(
-                            width: 300,
-                            child: _buildFeedItem(
-                              context,
-                              item.nama,
-                              jsonDecode(item.testimoni).isNotEmpty
-                                  ? jsonDecode(item.testimoni)[0]['isi']
-                                  : '',
-                              item.image,
-                            ),
-                          );
-                        }).toList(),
+                    children: feeds.map((item) {
+                      return SizedBox(
+                        width: 300,
+                        child: _buildFeedItem(
+                          context,
+                          item.nama,
+                          jsonDecode(item.testimoni).isNotEmpty
+                              ? jsonDecode(item.testimoni)[0]['isi']
+                              : '',
+                          item.image,
+                        ),
+                      );
+                    }).toList(),
                   );
                 },
               ),
@@ -338,11 +330,10 @@ class _HomePageState extends State<HomePage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder:
-                    (context) => CategoryPage(
-                      category: label.replaceAll("\n", " "),
-                      useSavedPreferences: false,
-                    ),
+                builder: (context) => CategoryPage(
+                  category: label.replaceAll("\n", " "),
+                  useSavedPreferences: false,
+                ),
               ),
             );
           },
@@ -517,4 +508,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-

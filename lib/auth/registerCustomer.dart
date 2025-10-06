@@ -18,7 +18,7 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
   final TextEditingController _teleponController = TextEditingController();
   final TextEditingController _alamatController = TextEditingController();
 
-  Future <void> _saveCustomer() async {
+  Future<void> _saveCustomer() async {
     if (_namaController.text.isEmpty ||
         _emailController.text.isEmpty ||
         _passwordController.text.isEmpty ||
@@ -45,7 +45,6 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
     final db = CustomerDatabase();
     await db.insertCustomer(customer);
     await db.printAllCustomers();
-    
   }
 
   @override
@@ -54,9 +53,7 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
         elevation: 6,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: SingleChildScrollView(
@@ -163,7 +160,7 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
                     elevation: 5,
                   ),
                   child: const Text(
-                    "Daftar Vendor",
+                    "Daftar",
                     style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
@@ -221,10 +218,9 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         backgroundColor: Colors.green,
-        content: Text("Vendor berhasil didaftarkan!"),
+        content: Text("Akun berhasil didaftarkan!"),
       ),
     );
-
 
     Navigator.pushReplacement(
       context,

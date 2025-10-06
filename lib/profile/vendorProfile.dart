@@ -23,6 +23,10 @@ class _VendorprofileState extends State<Vendorprofile> {
 
   Future<void> loadPaketFromDb() async {
     final data = await vendorDb.getData();
+    print("Data dari database: $data"); // Debug print
+    if (data.isNotEmpty) {
+      print("Harga pertama: ${data.first.harga}"); // Debug harga
+    }
     setState(() {
       paketList = data;
     });
@@ -54,7 +58,7 @@ class _VendorprofileState extends State<Vendorprofile> {
                   ),
                   const Spacer(),
                   ElevatedButton.icon(
-                    onPressed: (){
+                    onPressed: () {
                       tambahPaketBaru();
                     },
                     icon: const Icon(Icons.add),
@@ -87,40 +91,56 @@ class _VendorprofileState extends State<Vendorprofile> {
               )
             else
               Column(
-                children:
-                    paketList.map((paket) {
-                      final harga = jsonDecode(paket.harga);
-                      return Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                paket.nama,
-                                style: const TextStyle(
-                                  color: Colors.pink,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                "Rp ${harga["basic"]["harga"] ?? 0}",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              Text(
-                                harga["basic"]["jasa"] ?? "",
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                            ],
+                children: paketList.map((paket) {
+                  Map<String, dynamic> hargaMap = {};
+
+                  try {
+                    // Pastikan harga tidak null dan bisa di-decode
+                    if (paket.harga != null && paket.harga.isNotEmpty) {
+                      hargaMap = jsonDecode(paket.harga);
+                    } else {
+                      // Jika harga null, gunakan default structure
+                      hargaMap = jsonDecode(Vendormodel.defaultHargaJson);
+                    }
+                  } catch (e) {
+                    print("Error decoding harga for ${paket.nama}: $e");
+                    // Fallback ke default structure jika error
+                    hargaMap = jsonDecode(Vendormodel.defaultHargaJson);
+                  }
+
+                  // Safe access dengan null-aware operators
+                  final basicHarga = hargaMap["basic"]?["harga"] ?? 0;
+                  final basicJasa =
+                      hargaMap["basic"]?["jasa"] ?? "Deskripsi tidak tersedia";
+
+                  return Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            paket.nama,
+                            style: const TextStyle(
+                              color: Colors.pink,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
                           ),
-                        ),
-                      );
-                    }).toList(),
+                          const SizedBox(height: 10),
+                          Text(
+                            "Rp ${basicHarga}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          Text(basicJasa, style: const TextStyle(fontSize: 14)),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
               ),
           ],
         ),
