@@ -40,7 +40,7 @@ class Vendordatabase {
           'image': penyedia['image'],
           'kategori': kategori['kategori'],
           'alamat': penyedia['alamat'],
-          'password': penyedia['password']
+          'password': penyedia['password'],
         });
       }
     }
@@ -52,6 +52,21 @@ class Vendordatabase {
         0;
 
     print("Selesai insert, total data vendor di DB: $total");
+  }
+
+  Future<Vendormodel?> getVendorByEmail(String email) async {
+    final db = await databaserService.getDatabase();
+    final maps = await db.query(
+      'Vendor',
+      where: 'email = ?',
+      whereArgs: [email],
+      limit: 1,
+    );
+
+    if (maps.isNotEmpty) {
+      return Vendormodel.fromMap(maps.first);
+    }
+    return null;
   }
 
   Future<List<Vendormodel>> getData({int limit = 0}) async {
@@ -93,13 +108,13 @@ class Vendordatabase {
   }
 
   Future<void> printAllVendors() async {
-  final db = await databaserService.getDatabase();
-  final vendors = await db.query('Vendor'); // ambil semua data
-  print("Daftar vendor:");
-  for (var v in vendors) {
-    print(v);
+    final db = await databaserService.getDatabase();
+    final vendors = await db.query('Vendor'); // ambil semua data
+    print("Daftar vendor:");
+    for (var v in vendors) {
+      print(v);
+    }
   }
-}
 
   Future<void> updatePasswords() async {
     Database db = await databaserService.getDatabase();
