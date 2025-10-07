@@ -91,6 +91,16 @@ class CustomerDatabase {
     );
   }
 
+  Future<int> updateCustomerProfile(CustomerModel customer) async {
+    final db = await getDatabase();
+    return await db.update(
+      'Customer',
+      customer.toMap(),
+      where: 'id = ?',
+      whereArgs: [customer.id],
+    );
+  }
+
   Future<void> printAllCustomers() async {
     final db = await _dbService.getDatabase();
     final Customers = await db.query('Customer'); // ambil semua data

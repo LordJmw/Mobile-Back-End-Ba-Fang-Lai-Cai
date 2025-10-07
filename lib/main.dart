@@ -5,9 +5,9 @@ import 'package:projek_uts_mbr/home/home.dart';
 import 'package:projek_uts_mbr/profile/userProfile.dart';
 import 'package:projek_uts_mbr/profile/vendorProfile.dart';
 import 'package:projek_uts_mbr/auth/register.dart';
-import 'package:projek_uts_mbr/searchPage.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 import 'package:projek_uts_mbr/viewall.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -36,6 +36,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    //loginCustomer --> MainScreen
+    //refresh, ga balik ke login, mainscreen
+
     return MaterialApp(debugShowCheckedModeBanner: false, home: MainScreen());
   }
 }

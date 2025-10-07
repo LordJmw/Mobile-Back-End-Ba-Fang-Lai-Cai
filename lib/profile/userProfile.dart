@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
+import 'package:projek_uts_mbr/model/CustomerModel.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 
 class UserProfile extends StatefulWidget {
@@ -11,58 +13,233 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  List<Map<String, dynamic>> purchaseHistory = [];
+  late StreamController<CustomerModel?> _customerController;
+  late StreamController<List<Map<String, dynamic>>> _purchaseHistoryController;
   final CustomerDatabase customerDb = CustomerDatabase();
-  bool isLoading = true;
+  final SessionManager sessionManager = SessionManager();
 
   @override
   void initState() {
     super.initState();
-    loadPurchaseHistory();
+    _customerController = StreamController<CustomerModel?>();
+    _purchaseHistoryController = StreamController<List<Map<String, dynamic>>>();
+    _loadCustomerData();
   }
 
-  Future<void> loadPurchaseHistory() async {
+  @override
+  void dispose() {
+    _customerController.close();
+    _purchaseHistoryController.close();
+    super.dispose();
+  }
+
+  Future<void> _loadCustomerData() async {
     try {
-      final sessionManager = SessionManager();
-      String? email = await sessionManager.getEmail();
+      final String? customerEmail = await sessionManager.getEmail();
+      if (customerEmail != null) {
+        final customer = await customerDb.getCustomerByEmail(customerEmail);
+        if (!_customerController.isClosed) {
+          _customerController.add(customer);
+        }
 
-      print("Loading purchase history for email: $email");
-
-      if (email == null) {
-        print("Email is null");
-        setState(() {
-          isLoading = false;
-        });
-        return;
+        // Load purchase history jika customer ditemukan
+        if (customer != null) {
+          await _loadPurchaseHistory(customer.id!);
+        }
+      } else {
+        if (!_customerController.isClosed) {
+          _customerController.add(null);
+        }
+        if (!_purchaseHistoryController.isClosed) {
+          _purchaseHistoryController.add([]);
+        }
       }
-
-      final customer = await customerDb.getCustomerByEmail(email);
-      if (customer == null) {
-        print("Customer not found for email: $email");
-        setState(() {
-          isLoading = false;
-        });
-        return;
+    } catch (e) {
+      print("Error loading customer data: $e");
+      if (!_customerController.isClosed) {
+        _customerController.addError(e);
       }
+    }
+  }
 
-      print("Customer found: ${customer.nama}");
-
+  Future<void> _loadPurchaseHistory(int customerId) async {
+    try {
       final history = await customerDb.getPurchaseHistoryByCustomerId(
-        customer.id!,
+        customerId,
       );
-
-      print("Purchase history loaded: ${history.length} items");
-
-      setState(() {
-        purchaseHistory = history;
-        isLoading = false;
-      });
+      if (!_purchaseHistoryController.isClosed) {
+        _purchaseHistoryController.add(history);
+      }
     } catch (e) {
       print("Error loading purchase history: $e");
-      setState(() {
-        isLoading = false;
-      });
+      if (!_purchaseHistoryController.isClosed) {
+        _purchaseHistoryController.addError(e);
+      }
     }
+  }
+
+  Future<void> _editProfile() async {
+    try {
+      final String? customerEmail = await sessionManager.getEmail();
+      if (customerEmail == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.red,
+            content: Text("Tidak dapat memuat data customer"),
+          ),
+        );
+        return;
+      }
+
+      final currentCustomer = await customerDb.getCustomerByEmail(
+        customerEmail,
+      );
+      if (currentCustomer == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.red,
+            content: Text("Customer tidak ditemukan"),
+          ),
+        );
+        return;
+      }
+
+      // Buat controller dengan data lama (TANPA EMAIL)
+      TextEditingController namaController = TextEditingController(
+        text: currentCustomer.nama,
+      );
+      TextEditingController teleponController = TextEditingController(
+        text: currentCustomer.telepon,
+      );
+      TextEditingController alamatController = TextEditingController(
+        text: currentCustomer.alamat,
+      );
+
+      await showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Edit Profil"),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: namaController,
+                    decoration: const InputDecoration(
+                      labelText: "Nama Lengkap",
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.person),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: teleponController,
+                    decoration: const InputDecoration(
+                      labelText: "Nomor Telepon",
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.phone),
+                    ),
+                    keyboardType: TextInputType.phone,
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: alamatController,
+                    maxLines: 3,
+                    decoration: const InputDecoration(
+                      labelText: "Alamat",
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.location_on),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Batal"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  // Validasi input (TANPA EMAIL)
+                  if (namaController.text.isEmpty ||
+                      teleponController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: Colors.red,
+                        content: Text("Nama dan telepon harus diisi"),
+                      ),
+                    );
+                    return;
+                  }
+
+                  try {
+                    // Buat customer model dengan data baru (EMAIL TETAP)
+                    final updatedCustomer = CustomerModel(
+                      id: currentCustomer.id,
+                      nama: namaController.text,
+                      email: currentCustomer.email, // EMAIL TETAP SAMA
+                      password: currentCustomer.password,
+                      telepon: teleponController.text,
+                      alamat: alamatController.text,
+                    );
+
+                    // Update ke database
+                    final result = await customerDb.updateCustomerProfile(
+                      updatedCustomer,
+                    );
+
+                    if (result > 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.green,
+                          content: Text("Profil berhasil diupdate"),
+                        ),
+                      );
+
+                      Navigator.pop(context);
+                      await _refreshData(); // Refresh data
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text("Gagal mengupdate profil"),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    print("Error updating profile: $e");
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: Colors.red,
+                        content: Text("Error: $e"),
+                      ),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.pink),
+                child: const Text(
+                  "Simpan",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (e) {
+      print("Error loading customer for edit: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(backgroundColor: Colors.red, content: Text("Error: $e")),
+      );
+    }
+  }
+
+  Future<void> _refreshData() async {
+    await _loadCustomerData();
   }
 
   Future<void> _editPurchase(Map<String, dynamic> purchase) async {
@@ -76,7 +253,6 @@ class _UserProfileState extends State<UserProfile> {
     );
     DateTime? selectedDate;
 
-    // Parse existing date
     if (details['date'] != null) {
       try {
         selectedDate = DateTime.parse(details['date']);
@@ -88,7 +264,6 @@ class _UserProfileState extends State<UserProfile> {
     await showDialog(
       context: context,
       builder: (context) {
-        // Gunakan StatefulBuilder untuk manage state di dalam dialog
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
@@ -97,7 +272,6 @@ class _UserProfileState extends State<UserProfile> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Tanggal Acara
                     const Text(
                       "Tanggal Acara",
                       style: TextStyle(fontWeight: FontWeight.bold),
@@ -112,7 +286,6 @@ class _UserProfileState extends State<UserProfile> {
                           lastDate: DateTime(2030),
                         );
                         if (picked != null) {
-                          // Gunakan setDialogState untuk update UI di dalam dialog
                           setDialogState(() {
                             selectedDate = picked;
                           });
@@ -131,8 +304,6 @@ class _UserProfileState extends State<UserProfile> {
                       ),
                     ),
                     const SizedBox(height: 15),
-
-                    // Lokasi
                     const Text(
                       "Lokasi",
                       style: TextStyle(fontWeight: FontWeight.bold),
@@ -145,8 +316,6 @@ class _UserProfileState extends State<UserProfile> {
                       ),
                     ),
                     const SizedBox(height: 15),
-
-                    // Catatan
                     const Text(
                       "Catatan Khusus",
                       style: TextStyle(fontWeight: FontWeight.bold),
@@ -181,7 +350,6 @@ class _UserProfileState extends State<UserProfile> {
                     }
 
                     try {
-                      // Update purchase details
                       final updatedDetails = {
                         'vendor': details['vendor'],
                         'package': details['package'],
@@ -205,7 +373,7 @@ class _UserProfileState extends State<UserProfile> {
                       );
 
                       Navigator.pop(context);
-                      await loadPurchaseHistory(); // Refresh data
+                      await _refreshData(); // Refresh data setelah edit
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -257,15 +425,13 @@ class _UserProfileState extends State<UserProfile> {
     if (confirm) {
       try {
         await customerDb.deletePurchaseHistory(purchaseId);
-
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: Colors.green,
             content: Text("Pesanan berhasil dihapus"),
           ),
         );
-
-        await loadPurchaseHistory();
+        await _refreshData(); // Refresh data setelah delete
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(backgroundColor: Colors.red, content: Text("Error: $e")),
@@ -276,58 +442,59 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator(color: Colors.pink)),
-      );
-    }
-
     return Scaffold(
-      appBar: AppBar(title: const Text("Profil Pengguna")),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Row(
-                children: const [
-                  Text(
-                    "Riwayat Pembelian Anda",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      appBar: AppBar(
+        title: const Text("Profil Pengguna"),
+        actions: [
+          IconButton(icon: const Icon(Icons.refresh), onPressed: _refreshData),
+        ],
+      ),
+      body: StreamBuilder<CustomerModel?>(
+        stream: _customerController.stream,
+        builder: (context, customerSnapshot) {
+          if (customerSnapshot.connectionState == ConnectionState.waiting &&
+              !customerSnapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.pink),
+            );
+          }
+
+          if (customerSnapshot.hasError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error, size: 64, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text('Error: ${customerSnapshot.error}'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _refreshData,
+                    child: const Text('Coba Lagi'),
                   ),
                 ],
               ),
-            ),
+            );
+          }
 
-            if (purchaseHistory.isEmpty)
-              Card(
-                child: Container(
-                  padding: const EdgeInsets.all(24),
-                  width: double.infinity,
-                  child: Column(
-                    children: const [
-                      Icon(
-                        Icons.shopping_bag_outlined,
-                        size: 40,
-                        color: Colors.grey,
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        "Belum ada pembelian.\nSilakan beli paket dari vendor.",
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            else
-              Column(
-                children: purchaseHistory.map((purchase) {
-                  try {
-                    final details = jsonDecode(purchase['purchase_details']);
+          final currentCustomer = customerSnapshot.data;
 
-                    return Card(
+          if (currentCustomer == null) {
+            return const Center(
+              child: Text("Tidak dapat memuat data customer"),
+            );
+          }
+
+          return StreamBuilder<List<Map<String, dynamic>>>(
+            stream: _purchaseHistoryController.stream,
+            builder: (context, historySnapshot) {
+              final purchaseHistory = historySnapshot.data ?? [];
+
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  children: [
+                    Card(
                       child: Container(
                         width: double.infinity,
                         child: Padding(
@@ -335,111 +502,211 @@ class _UserProfileState extends State<UserProfile> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Header dengan tombol edit/delete
                               Row(
                                 children: [
-                                  Expanded(
-                                    child: Text(
-                                      details['vendor']?.toString() ??
-                                          'Vendor tidak diketahui',
-                                      style: const TextStyle(
-                                        color: Colors.pink,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                      ),
+                                  const Text(
+                                    "Profil Saya",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.pink,
                                     ),
                                   ),
-                                  // Tombol Edit dan Delete
-                                  PopupMenuButton<String>(
-                                    icon: const Icon(Icons.more_vert),
-                                    onSelected: (value) {
-                                      if (value == 'edit') {
-                                        _editPurchase(purchase);
-                                      } else if (value == 'delete') {
-                                        _deletePurchase(
-                                          purchase['id'],
-                                          details['vendor']?.toString() ??
-                                              'Vendor',
-                                        );
-                                      }
+                                  const Spacer(),
+                                  IconButton(
+                                    icon: const Icon(Icons.edit, size: 20),
+                                    onPressed: () {
+                                      _editProfile();
                                     },
-                                    itemBuilder: (context) => [
-                                      const PopupMenuItem(
-                                        value: 'edit',
-                                        child: Row(
-                                          children: [
-                                            Icon(Icons.edit, size: 20),
-                                            SizedBox(width: 8),
-                                            Text('Edit'),
-                                          ],
-                                        ),
-                                      ),
-                                      const PopupMenuItem(
-                                        value: 'delete',
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.delete,
-                                              size: 20,
-                                              color: Colors.red,
-                                            ),
-                                            SizedBox(width: 8),
-                                            Text(
-                                              'Hapus',
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                    color: Colors.pink,
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.network(
+                                    'https://cdn-icons-png.flaticon.com/512/149/149071.png',
+                                    fit: BoxFit.cover,
+                                    width: 100,
+                                    height: 100,
+                                  ),
+                                ],
+                              ),
+
                               Text(
-                                "${details['package'] ?? 'Paket'} - Rp ${details['price'] ?? 0}",
+                                currentCustomer.nama,
                                 style: const TextStyle(
+                                  fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                  color: Colors.pink,
                                 ),
                               ),
-                              Text(
-                                "Tanggal acara: ${_formatDate(details['date'])}",
-                              ),
-                              Text("Lokasi: ${details['location'] ?? '-'}"),
-                              if (details['notes'] != null &&
-                                  details['notes'].isNotEmpty)
-                                Text("Catatan: ${details['notes']}"),
                               const SizedBox(height: 8),
-                              Text(
-                                "Dibeli pada: ${_formatDate(purchase['purchase_date'])}",
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                ),
-                              ),
+                              Text("Email: ${currentCustomer.email}"),
+                              Text("Telepon: ${currentCustomer.telepon}"),
+                              Text("Alamat: ${currentCustomer.alamat}"),
                             ],
                           ),
                         ),
                       ),
-                    );
-                  } catch (e) {
-                    print("Error parsing purchase details: $e");
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text("Error menampilkan data pembelian: $e"),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Purchase History Section
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Row(
+                        children: const [
+                          Text(
+                            "Riwayat Pembelian Anda",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  }
-                }).toList(),
-              ),
+                    ),
+
+                    if (historySnapshot.connectionState ==
+                        ConnectionState.waiting)
+                      const Center(
+                        child: CircularProgressIndicator(color: Colors.pink),
+                      )
+                    else if (purchaseHistory.isEmpty)
+                      _buildEmptyState()
+                    else
+                      Column(
+                        children: purchaseHistory
+                            .map((purchase) => _buildPurchaseCard(purchase))
+                            .toList(),
+                      ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Card(
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        width: double.infinity,
+        child: Column(
+          children: const [
+            Icon(Icons.shopping_bag_outlined, size: 40, color: Colors.grey),
+            SizedBox(height: 10),
+            Text(
+              "Belum ada pembelian.\nSilakan beli paket dari vendor.",
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildPurchaseCard(Map<String, dynamic> purchase) {
+    try {
+      final details = jsonDecode(purchase['purchase_details']);
+
+      return Card(
+        child: Container(
+          width: double.infinity,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        details['vendor']?.toString() ??
+                            'Vendor tidak diketahui',
+                        style: const TextStyle(
+                          color: Colors.pink,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                    PopupMenuButton<String>(
+                      icon: const Icon(Icons.more_vert),
+                      onSelected: (value) {
+                        if (value == 'edit') {
+                          _editPurchase(purchase);
+                        } else if (value == 'delete') {
+                          _deletePurchase(
+                            purchase['id'],
+                            details['vendor']?.toString() ?? 'Vendor',
+                          );
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        const PopupMenuItem(
+                          value: 'edit',
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit, size: 20),
+                              SizedBox(width: 8),
+                              Text('Edit'),
+                            ],
+                          ),
+                        ),
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              Icon(Icons.delete, size: 20, color: Colors.red),
+                              SizedBox(width: 8),
+                              Text(
+                                'Hapus',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "${details['package'] ?? 'Paket'} - Rp ${details['price'] ?? 0}",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                Text("Tanggal acara: ${_formatDate(details['date'])}"),
+                Text("Lokasi: ${details['location'] ?? '-'}"),
+                if (details['notes'] != null && details['notes'].isNotEmpty)
+                  Text("Catatan: ${details['notes']}"),
+                const SizedBox(height: 8),
+                Text(
+                  "Dibeli pada: ${_formatDate(purchase['purchase_date'])}",
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    } catch (e) {
+      print("Error parsing purchase details: $e");
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text("Error menampilkan data pembelian: $e"),
+        ),
+      );
+    }
   }
 
   String _formatDate(String? dateString) {
