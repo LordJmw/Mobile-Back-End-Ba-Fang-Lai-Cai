@@ -44,22 +44,21 @@ class _ViewAllPageState extends State<ViewAllPage> {
     Vendordatabase vendordatabase = Vendordatabase();
     final data = await vendordatabase.getData();
 
-    final providers =
-        data
-            .map(
-              (vendor) => {
-                "nama": vendor.nama,
-                "deskripsi": vendor.deskripsi,
-                "rating": vendor.rating,
-                "harga": vendor.harga,
-                "testimoni": vendor.testimoni,
-                "email": vendor.email,
-                "telepon": vendor.telepon,
-                "image": vendor.image,
-                "kategori": vendor.kategori,
-              },
-            )
-            .toList();
+    final providers = data
+        .map(
+          (vendor) => {
+            "nama": vendor.nama,
+            "deskripsi": vendor.deskripsi,
+            "rating": vendor.rating,
+            "harga": vendor.harga,
+            "testimoni": vendor.testimoni,
+            "email": vendor.email,
+            "telepon": vendor.telepon,
+            "image": vendor.image,
+            "kategori": vendor.kategori,
+          },
+        )
+        .toList();
 
     allProviders = providers;
     filteredProviders = providers;
@@ -75,26 +74,36 @@ class _ViewAllPageState extends State<ViewAllPage> {
     }
 
     setState(() {
-      filteredProviders =
-          allProviders.where((item) {
-            final name = (item["nama"] ?? "").toString().toLowerCase();
-            final kategori = (item["kategori"] ?? "").toString().toLowerCase();
-            return name.contains(query.toLowerCase()) ||
-                kategori.contains(query.toLowerCase());
-          }).toList();
+      filteredProviders = allProviders.where((item) {
+        final name = (item["nama"] ?? "").toString().toLowerCase();
+        final kategori = (item["kategori"] ?? "").toString().toLowerCase();
+        return name.contains(query.toLowerCase()) ||
+            kategori.contains(query.toLowerCase());
+      }).toList();
     });
   }
 
   int getBasicPrice(Map<String, dynamic> penyedia) {
     try {
-      final harga = jsonDecode(penyedia["harga"]);
-      if (harga is Map) {
-        final basic = harga["basic"];
-        if (basic is int) return basic;
-        if (basic is Map && basic["harga"] is int) return basic["harga"];
+      final hargaMap = jsonDecode(penyedia['harga']) as Map<String, dynamic>;
+      if (hargaMap.isEmpty) {
+        return 0;
       }
+
+      int minPrice = -1;
+
+      for (var packageData in hargaMap.values) {
+        if (packageData is Map<String, dynamic> &&
+            packageData['harga'] is int) {
+          final currentPrice = packageData['harga'] as int;
+          if (minPrice == -1 || currentPrice < minPrice) {
+            minPrice = currentPrice;
+          }
+        }
+      }
+      return minPrice == -1 ? 0 : minPrice;
     } catch (e) {
-      print("Error parsing harga: $e");
+      print("Error parsing harga for lowest price in viewall: $e");
     }
     return 0;
   }
@@ -140,32 +149,31 @@ class _ViewAllPageState extends State<ViewAllPage> {
 
               //Tampilan hasil pencarian dalam bentuk grid
               Expanded(
-                child:
-                    filteredProviders.isEmpty
-                        ? const Center(child: Text("Tidak ada hasil"))
-                        : GridView.builder(
-                          padding: const EdgeInsets.all(12),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 12,
-                                mainAxisSpacing: 16,
-                                childAspectRatio: 0.7,
-                              ),
-                          itemCount: filteredProviders.length,
-                          itemBuilder: (context, index) {
-                            final item = filteredProviders[index];
-                            return buildCard(
-                              name: item["nama"],
-                              description: item["deskripsi"],
-                              rating: (item["rating"] as num).toDouble(),
-                              price: getBasicPrice(item),
-                              imageUrl:
-                                  item["image"] ??
-                                  "https://via.placeholder.com/400x300",
-                            );
-                          },
-                        ),
+                child: filteredProviders.isEmpty
+                    ? const Center(child: Text("Tidak ada hasil"))
+                    : GridView.builder(
+                        padding: const EdgeInsets.all(12),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 16,
+                              childAspectRatio: 0.7,
+                            ),
+                        itemCount: filteredProviders.length,
+                        itemBuilder: (context, index) {
+                          final item = filteredProviders[index];
+                          return buildCard(
+                            name: item["nama"],
+                            description: item["deskripsi"],
+                            rating: (item["rating"] as num).toDouble(),
+                            price: getBasicPrice(item),
+                            imageUrl:
+                                item["image"] ??
+                                "https://via.placeholder.com/400x300",
+                          );
+                        },
+                      ),
               ),
             ],
           );
@@ -204,12 +212,11 @@ class _ViewAllPageState extends State<ViewAllPage> {
                 height: 140,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder:
-                    (_, __, ___) => Container(
-                      height: 140,
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.broken_image, size: 40),
-                    ),
+                errorBuilder: (_, __, ___) => Container(
+                  height: 140,
+                  color: Colors.grey[300],
+                  child: const Icon(Icons.broken_image, size: 40),
+                ),
               ),
             ),
             // Isi

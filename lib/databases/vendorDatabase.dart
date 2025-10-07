@@ -54,12 +54,68 @@ class Vendordatabase {
     print("Selesai insert, total data vendor di DB: $total");
   }
 
+  Future<void> deletePackage(String vendorEmail, String packageName) async {
+    final db = await databaserService.getDatabase();
+    final vendor = await getVendorByEmail(vendorEmail);
+
+    if (vendor != null) {
+      final hargaMap = jsonDecode(vendor.harga) as Map<String, dynamic>;
+      hargaMap.remove(packageName);
+
+      await db.update(
+        'Vendor',
+        {'harga': jsonEncode(hargaMap)},
+        where: 'email = ?',
+        whereArgs: [vendorEmail],
+      );
+    }
+  }
+
+  Future<void> updatePackage(
+    String vendorEmail,
+    String oldPackageName,
+    String newPackageName,
+    Map<String, dynamic> newPackageData,
+  ) async {
+    final db = await databaserService.getDatabase();
+    final vendor = await getVendorByEmail(vendorEmail);
+
+    if (vendor != null) {
+      final hargaMap = jsonDecode(vendor.harga) as Map<String, dynamic>;
+
+      hargaMap.remove(oldPackageName);
+      hargaMap[newPackageName] = newPackageData;
+
+      await db.update(
+        'Vendor',
+        {'harga': jsonEncode(hargaMap)},
+        where: 'email = ?',
+        whereArgs: [vendorEmail],
+      );
+    }
+  }
+
   Future<Vendormodel?> getVendorByEmail(String email) async {
     final db = await databaserService.getDatabase();
     final maps = await db.query(
       'Vendor',
       where: 'email = ?',
       whereArgs: [email],
+      limit: 1,
+    );
+
+    if (maps.isNotEmpty) {
+      return Vendormodel.fromMap(maps.first);
+    }
+    return null;
+  }
+
+  Future<Vendormodel?> getVendorByName(String name) async {
+    final db = await databaserService.getDatabase();
+    final maps = await db.query(
+      'Vendor',
+      where: 'nama = ?',
+      whereArgs: [name],
       limit: 1,
     );
 
@@ -109,7 +165,7 @@ class Vendordatabase {
 
   Future<void> printAllVendors() async {
     final db = await databaserService.getDatabase();
-    final vendors = await db.query('Vendor'); // ambil semua data
+    final vendors = await db.query('Vendor');
     print("Daftar vendor:");
     for (var v in vendors) {
       print(v);

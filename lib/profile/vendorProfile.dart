@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
+import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/vendorform.dart';
+import 'package:projek_uts_mbr/profile/editPackageForm.dart';
 
 class Vendorprofile extends StatefulWidget {
   const Vendorprofile({super.key});
@@ -22,6 +24,62 @@ class _VendorprofileState extends State<Vendorprofile> {
   void initState() {
     super.initState();
     _vendorController = StreamController<Vendormodel?>();
+    loadVendorData();
+  }
+
+  void _showDeleteConfirmationDialog(Vendormodel vendor, String packageName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Konfirmasi Hapus"),
+          content: Text(
+            "Apakah Anda yakin ingin menghapus paket '$packageName'?",
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Batal"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text("Hapus", style: TextStyle(color: Colors.red)),
+              onPressed: () {
+                _deletePackage(vendor.email, packageName);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deletePackage(String vendorEmail, String packageName) async {
+    await vendorDb.deletePackage(vendorEmail, packageName);
+
+    loadVendorData();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Paket '$packageName' berhasil dihapus.")),
+    );
+  }
+
+  void _navigateToEditForm(
+    Vendormodel vendor,
+    String packageName,
+    Map<String, dynamic> packageData,
+  ) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditPackageForm(
+          vendorEmail: vendor.email,
+          packageName: packageName,
+          packageData: packageData,
+        ),
+      ),
+    );
+
     loadVendorData();
   }
 
@@ -51,6 +109,15 @@ class _VendorprofileState extends State<Vendorprofile> {
       MaterialPageRoute(builder: (context) => const VendorForm()),
     );
     loadVendorData();
+  }
+
+  void _logout() async {
+    await sessionManager.logout();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginCustomer()),
+      (route) => false,
+    );
   }
 
   @override
@@ -83,15 +150,6 @@ class _VendorprofileState extends State<Vendorprofile> {
                         ),
                       ),
                       const Spacer(),
-                      ElevatedButton.icon(
-                        onPressed: tambahPaketBaru,
-                        icon: const Icon(Icons.add),
-                        label: const Text("Tambah Paket"),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.pink,
-                          foregroundColor: Colors.white,
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -135,61 +193,136 @@ class _VendorprofileState extends State<Vendorprofile> {
       hargaMap = {};
     }
 
+    List<Widget> packageWidgets = [];
     if (hargaMap.isEmpty) {
-      return Card(
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          width: double.infinity,
-          child: Column(
-            children: const [
-              Icon(Icons.inbox, size: 40, color: Colors.grey),
-              SizedBox(height: 10),
-              Text(
-                "Belum ada paket. \nKlik 'Tambah Paket untuk menambahkan.",
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      );
-    }
-    return Column(
-      children: hargaMap.entries.map((entry) {
-        final packageName = entry.key;
-        final packageData = entry.value as Map<String, dynamic>;
-        final harga = packageData['harga'] ?? 0;
-        final jasa = packageData['jasa'] ?? 'tidak ada deskripsi';
-
-        return Card(
-          margin: const EdgeInsets.only(bottom: 12),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
+      packageWidgets.add(
+        Card(
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            width: double.infinity,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: const [
+                Icon(Icons.inbox, size: 40, color: Colors.grey),
+                SizedBox(height: 10),
                 Text(
-                  packageName.toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.pink,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
+                  "Belum ada paket. \nKlik 'Tambah Paket untuk menambahkan.",
+                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  "Rp $harga",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(jasa, style: const TextStyle(fontSize: 14)),
               ],
             ),
           ),
-        );
-      }).toList(),
+        ),
+      );
+    } else {
+      packageWidgets.addAll(
+        hargaMap.entries.map((entry) {
+          final packageName = entry.key;
+          final packageData = entry.value as Map<String, dynamic>;
+          final harga = packageData['harga'] ?? 0;
+          final jasa = packageData['jasa'] ?? 'tidak ada deskripsi';
+
+          return Card(
+            margin: const EdgeInsets.only(bottom: 12),
+            child: Container(
+              height: 160,
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              child: Stack(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            packageName.toUpperCase(),
+                            style: const TextStyle(
+                              color: Colors.pink,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            "Rp $harga",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        jasa,
+                        style: const TextStyle(fontSize: 14),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    top: -10,
+                    right: -10,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.edit,
+                            color: Colors.blue,
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            // ke halaman edit
+                            print("Edit paket: $packageName");
+                            _navigateToEditForm(
+                              vendor,
+                              packageName,
+                              packageData,
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            _showDeleteConfirmationDialog(vendor, packageName);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      );
+    }
+
+    return Column(
+      children: [
+        ...packageWidgets,
+        const SizedBox(height: 20),
+        ElevatedButton.icon(
+          onPressed: _logout,
+          icon: const Icon(Icons.logout),
+          label: const Text("Logout"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.pink,
+            foregroundColor: Colors.white,
+            minimumSize: const Size(double.infinity, 50),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -76,6 +76,22 @@ class _HomePageState extends State<HomePage> {
     return allVendors.take(8).toList();
   }
 
+  String _getFirstTestimonial(String testimoniJson) {
+    if (testimoniJson.isEmpty) {
+      return "";
+    }
+    try {
+      final List<dynamic> testimoniList = jsonDecode(testimoniJson);
+      if (testimoniList.isNotEmpty) {
+        return testimoniList[0]['isi'] ?? '';
+      }
+    } catch (e) {
+      print("Error decoding testimoni in home.dart: $e");
+      return '';
+    }
+    return '';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -299,9 +315,7 @@ class _HomePageState extends State<HomePage> {
                         child: _buildFeedItem(
                           context,
                           item.nama,
-                          jsonDecode(item.testimoni).isNotEmpty
-                              ? jsonDecode(item.testimoni)[0]['isi']
-                              : '',
+                          _getFirstTestimonial(item.testimoni),
                           item.image,
                         ),
                       );
