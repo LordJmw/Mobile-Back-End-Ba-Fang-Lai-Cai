@@ -38,21 +38,25 @@ formatPrice(int price) {
 
 int getBasicPrice(Vendormodel penyedia) {
   try {
-    final harga = jsonDecode(penyedia.harga);
+    final hargaMap = jsonDecode(penyedia.harga) as Map<String, dynamic>;
+    if (hargaMap.isEmpty) {
+      return 0;
+    }
 
-    if (harga is Map<String, dynamic>) {
-      final basic = harga["basic"];
+    int minPrice = -1;
 
-      if (basic is int) return basic;
-
-      if (basic is Map<String, dynamic> && basic["harga"] is int) {
-        return basic["harga"] as int;
+    for (var packageData in hargaMap.values) {
+      if (packageData is Map<String, dynamic> && packageData['harga'] is int) {
+        final currentPrice = packageData['harga'] as int;
+        if (minPrice == -1 || currentPrice < minPrice) {
+          minPrice = currentPrice;
+        }
       }
     }
+    return minPrice == -1 ? 0 : minPrice;
   } catch (e) {
-    print("Error parsing harga: $e");
+    print("Error parsing harga for lowest price: $e");
   }
-
   return 0;
 }
 
@@ -99,19 +103,14 @@ class _CategoryPageState extends State<CategoryPage> {
       setState(() {
         data = res;
         loading = false;
-
-        // Load preferences berdasarkan key
         tapppedCategory =
             prefs.getStringList("${_preferencesKey}_category") ?? [];
-
-        // Jika ini kategori spesifik dan belum ada preferensi, set kategori yang dipilih
         if (!widget.useSavedPreferences && tapppedCategory.isEmpty) {
           if (_layanan.contains(widget.category)) {
             _layananDipilih[_layanan.indexOf(widget.category)] = true;
             tapppedCategory = [widget.category];
           }
         } else {
-          // Load layanan yang dipilih dari preferences
           for (var i = 0; i < _layanan.length; i++) {
             _layananDipilih[i] = tapppedCategory.contains(_layanan[i]);
           }
@@ -140,18 +139,12 @@ class _CategoryPageState extends State<CategoryPage> {
 
   void saveFilterPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-    //list ubah jadi map dengan key index nya di list
-    //dan value nilainya pada index itu di list, lalu filter berdasarkan key(index)
-    //yang true, baru map lagi untuk dapay value dari pasangan index dan value yang dipilih
-    //jadi kita pakai entry.value aja, udah dapat satu bilai ini, konversi lagi ke list
-    //dapatlah list yang isinya kategori yang dipilih
-    final selectedService =
-        _layanan
-            .asMap()
-            .entries
-            .where((entry) => _layananDipilih[entry.key])
-            .map((entry) => entry.value)
-            .toList();
+    final selectedService = _layanan
+        .asMap()
+        .entries
+        .where((entry) => _layananDipilih[entry.key])
+        .map((entry) => entry.value)
+        .toList();
 
     await prefs.setStringList("${_preferencesKey}_category", selectedService);
     await prefs.setDouble("${_preferencesKey}_price_min", _rentangHarga.start);
@@ -164,18 +157,12 @@ class _CategoryPageState extends State<CategoryPage> {
   }
 
   List<Vendormodel> filterData() {
-    //list ubah jadi map dengan key index nya di list
-    //dan value nilainya pada index itu di list, lalu filter berdasarkan key(index)
-    //yang true, baru map lagi untuk dapay value dari pasangan index dan value yang dipilih
-    //jadi kita pakai entry.value aja, udah dapat satu bilai ini, konversi lagi ke list
-    //dapatlah list yang isinya kategori yang dipilih
-    final selectedService =
-        _layanan
-            .asMap()
-            .entries
-            .where((entry) => _layananDipilih[entry.key])
-            .map((entry) => entry.value)
-            .toList();
+    final selectedService = _layanan
+        .asMap()
+        .entries
+        .where((entry) => _layananDipilih[entry.key])
+        .map((entry) => entry.value)
+        .toList();
 
     tapppedCategory = selectedService;
 
@@ -184,8 +171,7 @@ class _CategoryPageState extends State<CategoryPage> {
     for (var vendor in data) {
       int hargaBasic = 0;
 
-      final hargaJson = jsonDecode(vendor.harga);
-      hargaBasic = (hargaJson['basic']?['harga'] ?? 0) as int;
+      hargaBasic = getBasicPrice(vendor);
 
       final rating = vendor.rating;
       final kategoriName = vendor.kategori;
@@ -323,22 +309,20 @@ class _CategoryPageState extends State<CategoryPage> {
                                       },
                                       child: Icon(
                                         Icons.star,
-                                        size: 20, // shrink size if needed
-                                        color:
-                                            _starIsclicked[index]
-                                                ? Colors.amber
-                                                : Colors.grey,
+                                        size: 20,
+                                        color: _starIsclicked[index]
+                                            ? Colors.amber
+                                            : Colors.grey,
                                       ),
                                     );
                                   }),
                                 ),
 
-                                // SizedBox(width: 10),
                                 Text(
                                   _jumlahBintang > 0
                                       ? _jumlahBintang == 5
-                                          ? "5 bintang"
-                                          : "$_jumlahBintang bintang ke atas"
+                                            ? "5 bintang"
+                                            : "$_jumlahBintang bintang ke atas"
                                       : "Semua",
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 139, 139, 139),
@@ -414,18 +398,16 @@ class _CategoryPageState extends State<CategoryPage> {
                     loading
                         ? const CircularProgressIndicator()
                         : Column(
-                          children:
-                              filterData().length > 0
-                                  ? filterData().map((penyedia) {
+                            children: filterData().length > 0
+                                ? filterData().map((penyedia) {
                                     return GestureDetector(
                                       onTap: () {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder:
-                                                (context) => Carddetail(
-                                                  namaVendor: penyedia.nama,
-                                                ),
+                                            builder: (context) => Carddetail(
+                                              namaVendor: penyedia.nama,
+                                            ),
                                           ),
                                         );
                                       },
@@ -500,7 +482,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                       ),
                                     );
                                   }).toList()
-                                  : [
+                                : [
                                     Card(
                                       elevation: 3,
                                       color: Colors.white,
@@ -521,7 +503,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                       ),
                                     ),
                                   ],
-                        ),
+                          ),
                     SizedBox(height: 15),
                     ElevatedButton(
                       onPressed: () {

@@ -6,6 +6,7 @@ import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/vendorform.dart';
+import 'package:projek_uts_mbr/profile/editPackageForm.dart';
 
 class Vendorprofile extends StatefulWidget {
   const Vendorprofile({super.key});
@@ -23,6 +24,62 @@ class _VendorprofileState extends State<Vendorprofile> {
   void initState() {
     super.initState();
     _vendorController = StreamController<Vendormodel?>();
+    loadVendorData();
+  }
+
+  void _showDeleteConfirmationDialog(Vendormodel vendor, String packageName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Konfirmasi Hapus"),
+          content: Text(
+            "Apakah Anda yakin ingin menghapus paket '$packageName'?",
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Batal"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text("Hapus", style: TextStyle(color: Colors.red)),
+              onPressed: () {
+                _deletePackage(vendor.email, packageName);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deletePackage(String vendorEmail, String packageName) async {
+    await vendorDb.deletePackage(vendorEmail, packageName);
+
+    loadVendorData();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Paket '$packageName' berhasil dihapus.")),
+    );
+  }
+
+  void _navigateToEditForm(
+    Vendormodel vendor,
+    String packageName,
+    Map<String, dynamic> packageData,
+  ) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditPackageForm(
+          vendorEmail: vendor.email,
+          packageName: packageName,
+          packageData: packageData,
+        ),
+      ),
+    );
+
     loadVendorData();
   }
 
@@ -93,15 +150,6 @@ class _VendorprofileState extends State<Vendorprofile> {
                         ),
                       ),
                       const Spacer(),
-                      ElevatedButton.icon(
-                        onPressed: tambahPaketBaru,
-                        icon: const Icon(Icons.add),
-                        label: const Text("Tambah Paket"),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.pink,
-                          foregroundColor: Colors.white,
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -179,38 +227,78 @@ class _VendorprofileState extends State<Vendorprofile> {
               height: 160,
               width: double.infinity,
               padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Stack(
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        packageName.toUpperCase(),
-                        style: const TextStyle(
-                          color: Colors.pink,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            packageName.toUpperCase(),
+                            style: const TextStyle(
+                              color: Colors.pink,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            "Rp $harga",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        "Rp $harga",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
+                        jasa,
+                        style: const TextStyle(fontSize: 14),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
-                  Text(
-                    jasa,
-                    style: const TextStyle(fontSize: 14),
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
+                  Positioned(
+                    top: -10,
+                    right: -10,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.edit,
+                            color: Colors.blue,
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            // ke halaman edit
+                            print("Edit paket: $packageName");
+                            _navigateToEditForm(
+                              vendor,
+                              packageName,
+                              packageData,
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            _showDeleteConfirmationDialog(vendor, packageName);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
