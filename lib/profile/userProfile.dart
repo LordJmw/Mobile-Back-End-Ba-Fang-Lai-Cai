@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
+import 'package:projek_uts_mbr/auth/loginCostumer.dart';
+
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -20,6 +22,18 @@ class _UserProfileState extends State<UserProfile> {
     super.initState();
     loadPurchaseHistory();
   }
+
+  Future<void> _logout() async {
+  final session = SessionManager();
+  await session.logout();
+
+  Navigator.pushAndRemoveUntil(
+    context,
+    MaterialPageRoute(builder: (context) => LoginCustomer()),
+    (route) => false,
+  );
+}
+
 
   Future<void> loadPurchaseHistory() async {
     try {
@@ -436,6 +450,19 @@ class _UserProfileState extends State<UserProfile> {
                   }
                 }).toList(),
               ),
+              const SizedBox(height: 25),
+
+            // 🔽 Tombol Logout Baru di Bawah 🔽
+            ElevatedButton.icon(
+              onPressed: _logout,
+              icon: const Icon(Icons.logout),
+              label: const Text("Logout"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.pink,
+                foregroundColor: Colors.white,
+                minimumSize: const Size(double.infinity, 50),
+              ),
+            ),
           ],
         ),
       ),
