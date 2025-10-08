@@ -56,7 +56,6 @@ class _VendorprofileState extends State<Vendorprofile> {
 
   Future<void> _deletePackage(String vendorEmail, String packageName) async {
     await vendorDb.deletePackage(vendorEmail, packageName);
-
     loadVendorData();
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -138,13 +137,56 @@ class _VendorprofileState extends State<Vendorprofile> {
             padding: const EdgeInsets.all(12),
             child: Column(
               children: [
+                // ======= TAMBAHAN BAGIAN PROFIL VENDOR DI SINI =======
+                if (currentVendor != null) ...[
+                  Center(
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(
+                        currentVendor.image.isNotEmpty
+                            ? currentVendor.image
+                            : 'https://via.placeholder.com/400x300',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    currentVendor.nama,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    currentVendor.kategori,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    currentVendor.deskripsi.isNotEmpty
+                        ? currentVendor.deskripsi
+                        : "Belum ada deskripsi",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.star, color: Colors.amber[600]),
+                      const SizedBox(width: 5),
+                      Text(currentVendor.rating.toStringAsFixed(1)),
+                    ],
+                  ),
+                  const Divider(height: 30),
+                ],
+                // ========================================================
+
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Row(
                     children: [
                       Text(
                         "Paket Anda (${currentVendor?.nama ?? 'Vendor'})",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
@@ -158,8 +200,8 @@ class _VendorprofileState extends State<Vendorprofile> {
                     child: Container(
                       padding: const EdgeInsets.all(24),
                       width: double.infinity,
-                      child: Column(
-                        children: const [
+                      child: const Column(
+                        children: [
                           Icon(Icons.inbox, size: 40, color: Colors.grey),
                           SizedBox(height: 10),
                           Text(
@@ -200,12 +242,12 @@ class _VendorprofileState extends State<Vendorprofile> {
           child: Container(
             padding: const EdgeInsets.all(24),
             width: double.infinity,
-            child: Column(
-              children: const [
+            child: const Column(
+              children: [
                 Icon(Icons.inbox, size: 40, color: Colors.grey),
                 SizedBox(height: 10),
                 Text(
-                  "Belum ada paket. \nKlik 'Tambah Paket untuk menambahkan.",
+                  "Belum ada paket. \nKlik 'Tambah Paket' untuk menambahkan.",
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -278,8 +320,6 @@ class _VendorprofileState extends State<Vendorprofile> {
                             size: 20,
                           ),
                           onPressed: () {
-                            // ke halaman edit
-                            print("Edit paket: $packageName");
                             _navigateToEditForm(
                               vendor,
                               packageName,
