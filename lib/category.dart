@@ -97,7 +97,7 @@ class _CategoryPageState extends State<CategoryPage> {
   void initState() {
     super.initState();
     Vendordatabase vendordatabase = Vendordatabase();
-    vendordatabase.getData(limit: 20).then((res) async {
+    vendordatabase.getData().then((res) async {
       final prefs = await SharedPreferences.getInstance();
 
       setState(() {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 
 class EditPackageForm extends StatefulWidget {
@@ -19,15 +20,16 @@ class EditPackageForm extends StatefulWidget {
 
 class _EditPackageFormState extends State<EditPackageForm> {
   final _formKey = GlobalKey<FormState>();
-  late TextEditingController _nameController;
+  late TextEditingController _hargaController;
   late TextEditingController _jasaController;
   final Vendordatabase _vendorDb = Vendordatabase();
 
   @override
   void initState() {
     super.initState();
-    // Isi controller dengan data paket yang ada
-    _nameController = TextEditingController(text: widget.packageName);
+    _hargaController = TextEditingController(
+      text: widget.packageData['harga'].toString(),
+    );
     _jasaController = TextEditingController(
       text: widget.packageData['jasa'] ?? '',
     );
@@ -35,32 +37,27 @@ class _EditPackageFormState extends State<EditPackageForm> {
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _hargaController.dispose();
     _jasaController.dispose();
     super.dispose();
   }
 
   Future<void> _saveChanges() async {
     if (_formKey.currentState!.validate()) {
-      final newPackageName = _nameController.text;
-      final newJasa = _jasaController.text;
+      final newHarga = int.parse(_hargaController.text.trim());
+      final newJasa = _jasaController.text.trim();
 
-      // Siapkan data paket yang baru, harga tetap sama
-      final newPackageData = {
-        'harga': widget.packageData['harga'],
-        'jasa': newJasa,
-      };
+      final newPackageData = {'harga': newHarga, 'jasa': newJasa};
 
-      // Panggil fungsi update dari database
       await _vendorDb.updatePackage(
         widget.vendorEmail,
-        widget.packageName, // Nama paket lama
-        newPackageName, // Nama paket baru
-        newPackageData, // Data paket baru
+        widget.packageName,
+        widget.packageName,
+        newPackageData,
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Paket berhasil diperbarui!")),
+        const SnackBar(content: Text("Harga paket berhasil diperbarui!")),
       );
       Navigator.pop(context);
     }
@@ -69,7 +66,7 @@ class _EditPackageFormState extends State<EditPackageForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Edit Paket"), centerTitle: true),
+      appBar: AppBar(title: const Text("Edit Harga Paket"), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -77,25 +74,42 @@ class _EditPackageFormState extends State<EditPackageForm> {
           child: ListView(
             children: [
               TextFormField(
-                controller: _nameController,
+                initialValue: widget.packageName,
                 decoration: const InputDecoration(
                   labelText: "Nama Paket",
                   border: OutlineInputBorder(),
-                  helperText:
-                      "Nama unik untuk paket Anda (misal: Basic, Premium).",
                 ),
+                readOnly: true,
+              ),
+              const SizedBox(height: 20),
+
+              TextFormField(
+                controller: _hargaController,
+                decoration: const InputDecoration(
+                  labelText: "Harga Paket",
+                  prefixText: "Rp ",
+                  border: OutlineInputBorder(),
+                  hintText: "Masukkan harga paket (contoh: 500000)",
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Nama paket tidak boleh kosong';
+                    return 'Harga tidak boleh kosong';
+                  }
+                  final number = int.tryParse(value);
+                  if (number == null || number <= 0) {
+                    return 'Masukkan harga yang valid';
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 20),
+
               TextFormField(
                 controller: _jasaController,
                 decoration: const InputDecoration(
-                  labelText: "Deskripsi Jasa / Kategori",
+                  labelText: "Deskripsi Jasa (Pisahkan dengan koma)",
                   hintText: "Contoh: Fotografer, Videografer, Album Cetak",
                   border: OutlineInputBorder(),
                 ),
@@ -104,10 +118,16 @@ class _EditPackageFormState extends State<EditPackageForm> {
                   if (value == null || value.isEmpty) {
                     return 'Deskripsi jasa tidak boleh kosong';
                   }
+
+                  final invalidSeparators = RegExp(r'[.;:/\-]');
+                  if (invalidSeparators.hasMatch(value)) {
+                    return 'Gunakan koma (,) untuk memisahkan jasa';
+                  }
                   return null;
                 },
               ),
               const SizedBox(height: 30),
+
               ElevatedButton(
                 onPressed: _saveChanges,
                 style: ElevatedButton.styleFrom(

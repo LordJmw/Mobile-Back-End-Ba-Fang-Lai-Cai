@@ -115,48 +115,48 @@ class _HomePageState extends State<HomePage> {
         //           onPressed: _logout,
         //         ),
         //       ]
-        actions: [
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.pink,
-              shape: RoundedRectangleBorder(
-                side: const BorderSide(color: Colors.pink),
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            onPressed: () {
-              MyApp.of(context).setBottomNavVisibility(false);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LoginCustomer()),
-              ).then((_) {
-                MyApp.of(context).setBottomNavVisibility(true);
-                _checkLoginStatus();
-              });
-            },
-            child: const Text("Masuk"),
-          ),
-          const SizedBox(width: 10),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.pink,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            onPressed: () {
-              MyApp.of(context).setBottomNavVisibility(false);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => RegisterPage()),
-              ).then((_) => MyApp.of(context).setBottomNavVisibility(true));
-            },
-            child: const Text("Daftar"),
-          ),
-          const SizedBox(width: 10),
-        ],
+        // actions: [
+        //   ElevatedButton(
+        //     style: ElevatedButton.styleFrom(
+        //       backgroundColor: Colors.white,
+        //       foregroundColor: Colors.pink,
+        //       shape: RoundedRectangleBorder(
+        //         side: const BorderSide(color: Colors.pink),
+        //         borderRadius: BorderRadius.circular(10),
+        //       ),
+        //     ),
+        //     onPressed: () {
+        //       MyApp.of(context).setBottomNavVisibility(false);
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute(builder: (context) => LoginCustomer()),
+        //       ).then((_) {
+        //         MyApp.of(context).setBottomNavVisibility(true);
+        //         _checkLoginStatus();
+        //       });
+        //     },
+        //     child: const Text("Masuk"),
+        //   ),
+        //   const SizedBox(width: 10),
+        //   ElevatedButton(
+        //     style: ElevatedButton.styleFrom(
+        //       backgroundColor: Colors.pink,
+        //       foregroundColor: Colors.white,
+        //       shape: RoundedRectangleBorder(
+        //         borderRadius: BorderRadius.circular(10),
+        //       ),
+        //     ),
+        //     onPressed: () {
+        //       MyApp.of(context).setBottomNavVisibility(false);
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute(builder: (context) => RegisterPage()),
+        //       ).then((_) => MyApp.of(context).setBottomNavVisibility(true));
+        //     },
+        //     child: const Text("Daftar"),
+        //   ),
+        //   const SizedBox(width: 10),
+        // ],
       ),
       body: SingleChildScrollView(
         child: Column(

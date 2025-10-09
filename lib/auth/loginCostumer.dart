@@ -14,27 +14,18 @@ class LoginCustomer extends StatefulWidget {
 }
 
 class _LoginCustomerState extends State<LoginCustomer> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
-
   final TextEditingController passwordController = TextEditingController();
 
   Future<void> logincustomers() async {
-    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.pink,
-          content: Text("Harap isi semua field"),
-        ),
-      );
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
     final db = CustomerDatabase();
     final customer = await db.LoginCustomer(
       emailController.text,
       passwordController.text,
     );
-    print('Customer login result: $customer');
 
     if (customer != null) {
       final sessionManager = SessionManager();
@@ -87,7 +78,6 @@ class _LoginCustomerState extends State<LoginCustomer> {
               ),
             ),
             const SizedBox(height: 30),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Card(
@@ -97,99 +87,110 @@ class _LoginCustomerState extends State<LoginCustomer> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      const Text(
-                        "Selamat Datang!",
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.pink,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        "Masuk untuk melanjutkan",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      const SizedBox(height: 30),
-
-                      TextField(
-                        controller: emailController,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.email_outlined),
-                          labelText: "Email",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
-                      TextField(
-                        controller: passwordController,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.lock_outline),
-                          labelText: "Password",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-
-                      ElevatedButton(
-                        onPressed: () async {
-                          logincustomers();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.pink,
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 5,
-                        ),
-                        child: const Text(
-                          "Masuk",
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (_) => RegisterPage()),
-                          );
-                        },
-                        child: const Text(
-                          "Belum punya akun? Daftar",
-                          style: TextStyle(color: Colors.pink),
-                        ),
-                      ),
-
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (_) => LoginVendor()),
-                          );
-                        },
-                        child: const Text(
-                          "Login sebagai Vendor",
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        const Text(
+                          "Selamat Datang!",
                           style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
                             color: Colors.pink,
-                            decoration: TextDecoration.underline,
-                            decorationColor: Colors.pink,
-                            decorationThickness: 1,
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 10),
+                        const Text(
+                          "Masuk untuk melanjutkan",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        const SizedBox(height: 30),
+                        TextFormField(
+                          controller: emailController,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.email_outlined),
+                            labelText: "Email",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) return "Email wajib diisi";
+                            final regex = RegExp(
+                              r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                            );
+                            if (!regex.hasMatch(value))
+                              return "Format email tidak valid";
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: passwordController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.lock_outline),
+                            labelText: "Password",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) return "Password wajib diisi";
+                            if (value.length < 6) return "Minimal 6 karakter";
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 30),
+                        ElevatedButton(
+                          onPressed: () async {
+                            await logincustomers();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.pink,
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 5,
+                          ),
+                          child: const Text(
+                            "Masuk",
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (_) => RegisterPage()),
+                            );
+                          },
+                          child: const Text(
+                            "Belum punya akun? Daftar",
+                            style: TextStyle(color: Colors.pink),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (_) => LoginVendor()),
+                            );
+                          },
+                          child: const Text(
+                            "Login sebagai Vendor",
+                            style: TextStyle(
+                              color: Colors.pink,
+                              decoration: TextDecoration.underline,
+                              decorationColor: Colors.pink,
+                              decorationThickness: 1,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

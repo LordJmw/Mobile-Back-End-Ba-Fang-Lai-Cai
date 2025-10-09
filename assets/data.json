@@ -10,7 +10,7 @@
       "harga": {
         "basic": { "harga": 1200000, "jasa": "Foto liputan 4 jam dengan 1 fotografer, 50 foto edit." },
         "premium": { "harga": 3500000, "jasa": "Foto & video liputan seharian, 2 fotografer + 1 videografer, 200 foto edit, highlight video." },
-        "custom": { "harga": 5000000, "jasa": "Paket sesuai permintaan: prewedding, album cetak, cinematic video." }
+        "custom": { "harga": 5000000, "jasa": "Paket sesuai permintaan prewedding, album cetak, cinematic video." }
       },
       "testimoni": [
         { "nama": "Andi", "isi": "Hasil fotonya sangat memuaskan!", "rating": 4 },

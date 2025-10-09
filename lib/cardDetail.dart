@@ -174,7 +174,6 @@ class _CarddetailState extends State<Carddetail> {
                           ),
                         ),
 
-                        // --- Tentang Vendor ---
                         Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 16,
@@ -207,18 +206,21 @@ class _CarddetailState extends State<Carddetail> {
                             children: [
                               Expanded(
                                 child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => OrderPage(
-                                          namaVendor: this.widget.namaVendor,
-                                        ),
-                                      ),
-                                    );
-                                  },
+                                  onPressed: (infoPaket.isEmpty)
+                                      ? null
+                                      : () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => OrderPage(
+                                                namaVendor:
+                                                    this.widget.namaVendor,
+                                              ),
+                                            ),
+                                          );
+                                        },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color.fromARGB(
+                                    backgroundColor: const Color.fromARGB(
                                       255,
                                       223,
                                       83,
@@ -231,11 +233,13 @@ class _CarddetailState extends State<Carddetail> {
                                       vertical: 14,
                                     ),
                                   ),
-                                  child: const Text(
+                                  child: Text(
                                     "Pesan Sekarang",
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color: Colors.white,
+                                      color: infoPaket.isEmpty
+                                          ? Colors.white.withOpacity(0.5)
+                                          : Colors.white,
                                     ),
                                   ),
                                 ),

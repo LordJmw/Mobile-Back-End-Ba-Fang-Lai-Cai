@@ -62,6 +62,7 @@ class _ViewAllPageState extends State<ViewAllPage> {
 
     allProviders = providers;
     filteredProviders = providers;
+    print("viewall ${filteredProviders}");
     return providers;
   }
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/model/CustomerModel.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
@@ -31,6 +32,17 @@ class _UserProfileState extends State<UserProfile> {
     _customerController.close();
     _purchaseHistoryController.close();
     super.dispose();
+  }
+
+  Future<void> _logout() async {
+    final session = SessionManager();
+    await session.logout();
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginCustomer()),
+      (route) => false,
+    );
   }
 
   Future<void> _loadCustomerData() async {
@@ -79,6 +91,9 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future<void> _editProfile() async {
+    // Kita perlu mendapatkan current customer data dengan cara yang berbeda
+    // Karena StreamController tidak punya .value, kita akan gunakan session manager
+
     try {
       final String? customerEmail = await sessionManager.getEmail();
       if (customerEmail == null) {
@@ -104,9 +119,12 @@ class _UserProfileState extends State<UserProfile> {
         return;
       }
 
-      // Buat controller dengan data lama (TANPA EMAIL)
+      // Buat controller dengan data lama
       TextEditingController namaController = TextEditingController(
         text: currentCustomer.nama,
+      );
+      TextEditingController emailController = TextEditingController(
+        text: currentCustomer.email,
       );
       TextEditingController teleponController = TextEditingController(
         text: currentCustomer.telepon,
@@ -133,7 +151,15 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                   ),
                   const SizedBox(height: 12),
-
+                  // TextField(
+                  //   controller: emailController,
+                  //   decoration: const InputDecoration(
+                  //     labelText: "Email",
+                  //     border: OutlineInputBorder(),
+                  //     prefixIcon: Icon(Icons.email),
+                  //   ),
+                  //   keyboardType: TextInputType.emailAddress,
+                  // ),
                   const SizedBox(height: 12),
                   TextField(
                     controller: teleponController,
@@ -164,25 +190,26 @@ class _UserProfileState extends State<UserProfile> {
               ),
               ElevatedButton(
                 onPressed: () async {
-                  // Validasi input (TANPA EMAIL)
+                  // Validasi input
                   if (namaController.text.isEmpty ||
+                      emailController.text.isEmpty ||
                       teleponController.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         backgroundColor: Colors.red,
-                        content: Text("Nama dan telepon harus diisi"),
+                        content: Text("Nama, email, dan telepon harus diisi"),
                       ),
                     );
                     return;
                   }
 
                   try {
-                    // Buat customer model dengan data baru (EMAIL TETAP)
+                    // Buat customer model dengan data baru
                     final updatedCustomer = CustomerModel(
                       id: currentCustomer.id,
                       nama: namaController.text,
-                      email: currentCustomer.email, // EMAIL TETAP SAMA
-                      password: currentCustomer.password,
+                      email: emailController.text,
+                      password: currentCustomer.password, // Password tetap
                       telepon: teleponController.text,
                       alamat: alamatController.text,
                     );
@@ -582,6 +609,19 @@ class _UserProfileState extends State<UserProfile> {
                             .map((purchase) => _buildPurchaseCard(purchase))
                             .toList(),
                       ),
+
+                    const SizedBox(height: 25),
+
+                    ElevatedButton.icon(
+                      onPressed: _logout,
+                      icon: const Icon(Icons.logout),
+                      label: const Text("Logout"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pink,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(double.infinity, 50),
+                      ),
+                    ),
                   ],
                 ),
               );
