@@ -54,6 +54,19 @@ class Vendordatabase {
     print("Selesai insert, total data vendor di DB: $total");
   }
 
+  Future<List<Vendormodel>> getData({int limit = 0}) async {
+    Database db = await databaserService.getDatabase();
+    List<Map<String, dynamic>> dataVendor = await db.query(
+      'Vendor',
+      limit: limit > 0 ? limit : null,
+    );
+
+    if (dataVendor.isNotEmpty) {
+      return dataVendor.map((map) => Vendormodel.fromMap(map)).toList();
+    }
+    return [];
+  }
+
   Future<void> deletePackage(String vendorEmail, String packageName) async {
     final db = await databaserService.getDatabase();
     final vendor = await getVendorByEmail(vendorEmail);
@@ -123,19 +136,6 @@ class Vendordatabase {
       return Vendormodel.fromMap(maps.first);
     }
     return null;
-  }
-
-  Future<List<Vendormodel>> getData({int limit = 0}) async {
-    Database db = await databaserService.getDatabase();
-    List<Map<String, dynamic>> dataVendor = await db.query(
-      'Vendor',
-      limit: limit > 0 ? limit : null,
-    );
-
-    if (dataVendor.isNotEmpty) {
-      return dataVendor.map((map) => Vendormodel.fromMap(map)).toList();
-    }
-    return [];
   }
 
   Future<List<String>> getCategories() async {

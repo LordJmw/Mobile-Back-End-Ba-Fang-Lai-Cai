@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/auth/logincostumer.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/category.dart';
 import 'package:projek_uts_mbr/home/home.dart';
@@ -34,12 +35,31 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future<bool> checkLoginStatus() async {
+    SessionManager sessionManager = SessionManager();
+    return await sessionManager.isLoggedIn();
+  }
+
   @override
   Widget build(BuildContext context) {
-    //loginCustomer --> MainScreen
-    //refresh, ga balik ke login, mainscreen
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: FutureBuilder<bool>(
+        future: checkLoginStatus(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(color: Colors.pink),
+              ),
+            );
+          }
 
-    return MaterialApp(debugShowCheckedModeBanner: false, home: MainScreen());
+          final isLoggedIn = snapshot.data ?? false;
+          return isLoggedIn ? const MainScreen() : LoginCustomer();
+        },
+      ),
+    );
   }
 }
 
