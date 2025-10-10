@@ -507,8 +507,29 @@ class _UserProfileState extends State<UserProfile> {
           final currentCustomer = customerSnapshot.data;
 
           if (currentCustomer == null) {
-            return const Center(
-              child: Text("Tidak dapat memuat data customer"),
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.red, size: 60),
+                  const SizedBox(height: 16),
+                  const Text(
+                    "Tidak dapat memuat data customer",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: _logout,
+                    icon: const Icon(Icons.logout),
+                    label: const Text("Logout"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.pink,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(200, 45),
+                    ),
+                  ),
+                ],
+              ),
             );
           }
 

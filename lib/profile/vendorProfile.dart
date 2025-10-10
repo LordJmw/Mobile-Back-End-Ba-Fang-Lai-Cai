@@ -133,59 +133,86 @@ class _VendorprofileState extends State<Vendorprofile> {
 
           final currentVendor = snapshot.data;
 
+          // Jika vendor tidak ditemukan, tampilkan pesan + tombol logout
+          if (currentVendor == null) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.red, size: 60),
+                  const SizedBox(height: 16),
+                  const Text(
+                    "Tidak dapat memuat data vendor",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: _logout,
+                    icon: const Icon(Icons.logout),
+                    label: const Text("Logout"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.pink,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(200, 45),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          // Jika vendor ditemukan, tampilkan profil dan daftar paket
           return SingleChildScrollView(
             padding: const EdgeInsets.all(12),
             child: Column(
               children: [
-                if (currentVendor != null) ...[
-                  Center(
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: NetworkImage(
-                        currentVendor.image.isNotEmpty
-                            ? currentVendor.image
-                            : 'https://cdn-icons-png.flaticon.com/512/149/149071.png',
-                      ),
+                Center(
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: NetworkImage(
+                      currentVendor.image.isNotEmpty
+                          ? currentVendor.image
+                          : 'https://cdn-icons-png.flaticon.com/512/149/149071.png',
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    currentVendor.nama,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  currentVendor.nama,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
-                  Text(
-                    currentVendor.kategori,
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    currentVendor.deskripsi.isNotEmpty
-                        ? currentVendor.deskripsi
-                        : "Belum ada deskripsi",
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.star, color: Colors.amber[600]),
-                      const SizedBox(width: 5),
-                      Text(currentVendor.rating.toStringAsFixed(1)),
-                    ],
-                  ),
-                  const Divider(height: 30),
-                ],
+                ),
+                Text(
+                  currentVendor.kategori,
+                  style: const TextStyle(color: Colors.grey),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  currentVendor.deskripsi.isNotEmpty
+                      ? currentVendor.deskripsi
+                      : "Belum ada deskripsi",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 14),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.star, color: Colors.amber[600]),
+                    const SizedBox(width: 5),
+                    Text(currentVendor.rating.toStringAsFixed(1)),
+                  ],
+                ),
+                const Divider(height: 30),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Row(
                     children: [
                       Text(
-                        "Paket Anda (${currentVendor?.nama ?? 'Vendor'})",
+                        "Paket Anda (${currentVendor.nama})",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -195,25 +222,8 @@ class _VendorprofileState extends State<Vendorprofile> {
                     ],
                   ),
                 ),
-                if (currentVendor == null)
-                  Card(
-                    child: Container(
-                      padding: const EdgeInsets.all(24),
-                      width: double.infinity,
-                      child: const Column(
-                        children: [
-                          Icon(Icons.inbox, size: 40, color: Colors.grey),
-                          SizedBox(height: 10),
-                          Text(
-                            "Tidak dapat memuat data vendor.",
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                else
-                  _buildPackageList(currentVendor),
+
+                _buildPackageList(currentVendor),
               ],
             ),
           );
