@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
+import 'package:projek_uts_mbr/databases/purchaseHistoryDatabase.dart';
 import 'package:projek_uts_mbr/model/CustomerModel.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 
@@ -17,6 +18,7 @@ class _UserProfileState extends State<UserProfile> {
   late StreamController<CustomerModel?> _customerController;
   late StreamController<List<Map<String, dynamic>>> _purchaseHistoryController;
   final CustomerDatabase customerDb = CustomerDatabase();
+  final Purchasehistorydatabase purchaseDb = Purchasehistorydatabase();
   final SessionManager sessionManager = SessionManager();
 
   @override
@@ -76,7 +78,7 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<void> _loadPurchaseHistory(int customerId) async {
     try {
-      final history = await customerDb.getPurchaseHistoryByCustomerId(
+      final history = await purchaseDb.getPurchaseHistoryByCustomerId(
         customerId,
       );
       if (!_purchaseHistoryController.isClosed) {
@@ -387,7 +389,7 @@ class _UserProfileState extends State<UserProfile> {
                         'status': details['status'] ?? 'pending',
                       };
 
-                      await customerDb.updatePurchaseHistory(
+                      await purchaseDb.updatePurchaseHistory(
                         purchase['id'],
                         jsonEncode(updatedDetails),
                       );
@@ -451,7 +453,7 @@ class _UserProfileState extends State<UserProfile> {
 
     if (confirm) {
       try {
-        await customerDb.deletePurchaseHistory(purchaseId);
+        await purchaseDb.deletePurchaseHistory(purchaseId);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: Colors.green,

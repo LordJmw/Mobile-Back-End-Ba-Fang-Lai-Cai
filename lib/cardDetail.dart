@@ -50,7 +50,7 @@ class _CarddetailState extends State<Carddetail> {
       final List<dynamic> testimoniDecoded = jsonDecode(vendor.testimoni);
 
       setState(() {
-        infoVendor = vendor.toMap();
+        infoVendor = vendor.toJson();
         infoVendor['testimoni'] = testimoniDecoded;
         infoPaket = hargaDecoded;
         ulasan = testimoniDecoded.length;

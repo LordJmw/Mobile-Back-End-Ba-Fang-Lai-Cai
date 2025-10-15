@@ -29,7 +29,7 @@ class Vendormodel {
       '{"basic":{"harga":0,"jasa":"Harga belum tersedia"}}';
 
   //agar hasil kueri diubah ke tipe data yang sesuai
-  static Vendormodel fromMap(Map<String, dynamic> map) {
+  factory Vendormodel.fromJson(Map<String, dynamic> map) {
     return Vendormodel(
       nama: map['nama'] ?? '',
       deskripsi: map['deskripsi'] ?? '',
@@ -46,7 +46,7 @@ class Vendormodel {
   }
 
   //untuk insert ke sqlite
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'nama': nama,
       'deskripsi': deskripsi,

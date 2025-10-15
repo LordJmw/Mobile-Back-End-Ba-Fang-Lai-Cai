@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
+import 'package:projek_uts_mbr/databases/purchaseHistoryDatabase.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/main.dart';
 import 'package:projek_uts_mbr/services/dataServices.dart';
@@ -18,6 +19,7 @@ class OrderPage extends StatefulWidget {
 class _OrderPageState extends State<OrderPage> {
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
+  Purchasehistorydatabase _purchaseDb = Purchasehistorydatabase();
 
   DateTime? selectedDate;
   String? selectedPackage;
@@ -273,7 +275,7 @@ class _OrderPageState extends State<OrderPage> {
       'status': 'pending',
     };
 
-    await customerDb.addPurchaseHistory(
+    await _purchaseDb.addPurchaseHistory(
       customer.id!,
       jsonEncode(purchaseDetails),
     );

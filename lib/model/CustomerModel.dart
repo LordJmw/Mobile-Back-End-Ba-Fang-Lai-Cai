@@ -15,7 +15,7 @@ class CustomerModel {
     required this.alamat,
   });
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'id': id,
       'nama': nama,
@@ -26,7 +26,7 @@ class CustomerModel {
     };
   }
 
-  static CustomerModel fromMap(Map<String, dynamic> map) {
+  factory CustomerModel.fromJson(Map<String, dynamic> map) {
     return CustomerModel(
       id: map['id'],
       nama: map['nama'] ?? '',

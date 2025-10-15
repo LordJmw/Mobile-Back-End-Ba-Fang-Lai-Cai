@@ -62,7 +62,7 @@ class Vendordatabase {
     );
 
     if (dataVendor.isNotEmpty) {
-      return dataVendor.map((map) => Vendormodel.fromMap(map)).toList();
+      return dataVendor.map((map) => Vendormodel.fromJson(map)).toList();
     }
     return [];
   }
@@ -118,7 +118,7 @@ class Vendordatabase {
     );
 
     if (maps.isNotEmpty) {
-      return Vendormodel.fromMap(maps.first);
+      return Vendormodel.fromJson(maps.first);
     }
     return null;
   }
@@ -133,7 +133,7 @@ class Vendordatabase {
     );
 
     if (maps.isNotEmpty) {
-      return Vendormodel.fromMap(maps.first);
+      return Vendormodel.fromJson(maps.first);
     }
     return null;
   }
@@ -146,7 +146,7 @@ class Vendordatabase {
 
   Future<int> insertVendor(Vendormodel vendor) async {
     final db = await databaserService.getDatabase();
-    return await db.insert("Vendor", vendor.toMap());
+    return await db.insert("Vendor", vendor.toJson());
   }
 
   Future<Vendormodel?> LoginVendor(String email, String password) async {
@@ -158,7 +158,7 @@ class Vendordatabase {
     );
 
     if (maps.isNotEmpty) {
-      return Vendormodel.fromMap(maps.first);
+      return Vendormodel.fromJson(maps.first);
     }
     return null;
   }
