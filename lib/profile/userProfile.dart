@@ -53,6 +53,7 @@ class _UserProfileState extends State<UserProfile> {
       final String? customerEmail = await sessionManager.getEmail();
       if (customerEmail != null) {
         final customer = await customerDb.getCustomerByEmail(customerEmail);
+        print('customer loaded: $customer');
         if (!_customerController.isClosed) {
           _customerController.add(customer);
         }
@@ -96,6 +97,7 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _editProfile() async {
     try {
       final String? customerEmail = await sessionManager.getEmail();
+      print('pengecekkan email session manager : $customerEmail');
       if (customerEmail == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -216,7 +218,7 @@ class _UserProfileState extends State<UserProfile> {
                       updatedCustomer,
                     );
 
-                    if (result > 0) {
+                    if (result == 1) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           backgroundColor: Colors.green,

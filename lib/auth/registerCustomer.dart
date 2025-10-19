@@ -34,7 +34,6 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
 
     final db = CustomerDatabase();
     await db.insertCustomer(customer);
-    await db.printAllCustomers();
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
