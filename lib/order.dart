@@ -252,7 +252,7 @@ class _OrderPageState extends State<OrderPage> {
       return;
     }
 
-    final customerDb = CustomerDatabase();
+    final customerDb = Customerdatabase();
     final customer = await customerDb.getCustomerByEmail(email!);
 
     if (customer == null) {

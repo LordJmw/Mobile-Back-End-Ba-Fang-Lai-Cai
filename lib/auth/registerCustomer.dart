@@ -32,9 +32,8 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
       alamat: _alamatController.text,
     );
 
-    final db = CustomerDatabase();
-    await db.insertCustomer(customer);
-    await db.printAllCustomers();
+    final db = Customerdatabase();
+    await db.registerCustomer(customer);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(

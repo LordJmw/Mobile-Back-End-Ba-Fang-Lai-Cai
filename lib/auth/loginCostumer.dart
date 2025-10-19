@@ -21,8 +21,8 @@ class _LoginCustomerState extends State<LoginCustomer> {
   Future<void> logincustomers() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final db = CustomerDatabase();
-    final customer = await db.LoginCustomer(
+    final db = Customerdatabase();
+    final customer = await db.loginCustomer(
       emailController.text,
       passwordController.text,
     );
