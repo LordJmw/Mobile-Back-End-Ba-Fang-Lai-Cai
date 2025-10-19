@@ -5,6 +5,7 @@ import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/databases/purchaseHistoryDatabase.dart';
 import 'package:projek_uts_mbr/model/CustomerModel.dart';
+import 'package:projek_uts_mbr/model/purchaseHistoryModel.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 
 class UserProfile extends StatefulWidget {
@@ -16,7 +17,7 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
   late StreamController<CustomerModel?> _customerController;
-  late StreamController<List<Map<String, dynamic>>> _purchaseHistoryController;
+  late StreamController<List<PurchaseHistory>> _purchaseHistoryController;
   final CustomerDatabase customerDb = CustomerDatabase();
   final Purchasehistorydatabase purchaseDb = Purchasehistorydatabase();
   final SessionManager sessionManager = SessionManager();
@@ -25,7 +26,7 @@ class _UserProfileState extends State<UserProfile> {
   void initState() {
     super.initState();
     _customerController = StreamController<CustomerModel?>();
-    _purchaseHistoryController = StreamController<List<Map<String, dynamic>>>();
+    _purchaseHistoryController = StreamController<List<PurchaseHistory>>();
     _loadCustomerData();
   }
 
@@ -93,9 +94,6 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future<void> _editProfile() async {
-    // Kita perlu mendapatkan current customer data dengan cara yang berbeda
-    // Karena StreamController tidak punya .value, kita akan gunakan session manager
-
     try {
       final String? customerEmail = await sessionManager.getEmail();
       if (customerEmail == null) {
@@ -121,7 +119,6 @@ class _UserProfileState extends State<UserProfile> {
         return;
       }
 
-      // Buat controller dengan data lama
       TextEditingController namaController = TextEditingController(
         text: currentCustomer.nama,
       );
@@ -206,17 +203,15 @@ class _UserProfileState extends State<UserProfile> {
                   }
 
                   try {
-                    // Buat customer model dengan data baru
                     final updatedCustomer = CustomerModel(
                       id: currentCustomer.id,
                       nama: namaController.text,
                       email: emailController.text,
-                      password: currentCustomer.password, // Password tetap
+                      password: currentCustomer.password,
                       telepon: teleponController.text,
                       alamat: alamatController.text,
                     );
 
-                    // Update ke database
                     final result = await customerDb.updateCustomerProfile(
                       updatedCustomer,
                     );
@@ -230,7 +225,7 @@ class _UserProfileState extends State<UserProfile> {
                       );
 
                       Navigator.pop(context);
-                      await _refreshData(); // Refresh data
+                      await _refreshData();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -271,24 +266,16 @@ class _UserProfileState extends State<UserProfile> {
     await _loadCustomerData();
   }
 
-  Future<void> _editPurchase(Map<String, dynamic> purchase) async {
-    final details = jsonDecode(purchase['purchase_details']);
+  Future<void> _editPurchase(PurchaseHistory purchase) async {
+    final details = purchase.purchaseDetails;
 
     TextEditingController locationController = TextEditingController(
-      text: details['location'] ?? '',
+      text: details.location ?? '',
     );
     TextEditingController notesController = TextEditingController(
-      text: details['notes'] ?? '',
+      text: details.notes ?? '',
     );
-    DateTime? selectedDate;
-
-    if (details['date'] != null) {
-      try {
-        selectedDate = DateTime.parse(details['date']);
-      } catch (e) {
-        print("Error parsing date: $e");
-      }
-    }
+    DateTime? selectedDate = details.date;
 
     await showDialog(
       context: context,
@@ -379,20 +366,24 @@ class _UserProfileState extends State<UserProfile> {
                     }
 
                     try {
-                      final updatedDetails = {
-                        'vendor': details['vendor'],
-                        'package': details['package'],
-                        'price': details['price'],
-                        'date': selectedDate!.toIso8601String(),
-                        'location': locationController.text,
-                        'notes': notesController.text,
-                        'status': details['status'] ?? 'pending',
-                      };
-
-                      await purchaseDb.updatePurchaseHistory(
-                        purchase['id'],
-                        jsonEncode(updatedDetails),
+                      final updatedDetails = PurchaseDetails(
+                        vendor: details.vendor,
+                        packageName: details.packageName,
+                        price: details.price,
+                        date: selectedDate!,
+                        location: locationController.text,
+                        notes: notesController.text,
+                        status: details.status,
                       );
+
+                      final updatedPurchase = PurchaseHistory(
+                        id: purchase.id,
+                        customerId: purchase.customerId,
+                        purchaseDetails: updatedDetails,
+                        purchaseDate: DateTime.now(),
+                      );
+
+                      await purchaseDb.updatePurchaseHistory(updatedPurchase);
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -535,7 +526,7 @@ class _UserProfileState extends State<UserProfile> {
             );
           }
 
-          return StreamBuilder<List<Map<String, dynamic>>>(
+          return StreamBuilder<List<PurchaseHistory>>(
             stream: _purchaseHistoryController.stream,
             builder: (context, historySnapshot) {
               final purchaseHistory = historySnapshot.data ?? [];
@@ -674,10 +665,8 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Widget _buildPurchaseCard(Map<String, dynamic> purchase) {
+  Widget _buildPurchaseCard(PurchaseHistory purchase) {
     try {
-      final details = jsonDecode(purchase['purchase_details']);
-
       return Card(
         child: Container(
           width: double.infinity,
@@ -690,7 +679,7 @@ class _UserProfileState extends State<UserProfile> {
                   children: [
                     Expanded(
                       child: Text(
-                        details['vendor']?.toString() ??
+                        purchase.purchaseDetails.vendor?.toString() ??
                             'Vendor tidak diketahui',
                         style: const TextStyle(
                           color: Colors.pink,
@@ -706,8 +695,9 @@ class _UserProfileState extends State<UserProfile> {
                           _editPurchase(purchase);
                         } else if (value == 'delete') {
                           _deletePurchase(
-                            purchase['id'],
-                            details['vendor']?.toString() ?? 'Vendor',
+                            purchase.id!,
+                            purchase.purchaseDetails.vendor.toString() ??
+                                'Vendor',
                           );
                         }
                       },
@@ -741,19 +731,22 @@ class _UserProfileState extends State<UserProfile> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  "${details['package'] ?? 'Paket'} - Rp ${details['price'] ?? 0}",
+                  "${purchase.purchaseDetails.packageName ?? 'Paket'} - Rp ${purchase.purchaseDetails.price ?? 0}",
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
                 ),
-                Text("Tanggal acara: ${_formatDate(details['date'])}"),
-                Text("Lokasi: ${details['location'] ?? '-'}"),
-                if (details['notes'] != null && details['notes'].isNotEmpty)
-                  Text("Catatan: ${details['notes']}"),
+                Text(
+                  "Tanggal acara: ${purchase.purchaseDetails.date.day}/${purchase.purchaseDetails.date.month}/${purchase.purchaseDetails.date.year}",
+                ),
+                Text("Lokasi: ${purchase.purchaseDetails.location ?? '-'}"),
+                if (purchase.purchaseDetails.notes != null &&
+                    purchase.purchaseDetails.notes.isNotEmpty)
+                  Text("Catatan: ${purchase.purchaseDetails.notes}"),
                 const SizedBox(height: 8),
                 Text(
-                  "Dibeli pada: ${_formatDate(purchase['purchase_date'])}",
+                  "Dibeli pada: ${purchase.purchaseDate.day}/${purchase.purchaseDate.month}/${purchase.purchaseDate.year}",
                   style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],

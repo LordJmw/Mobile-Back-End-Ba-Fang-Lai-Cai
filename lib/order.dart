@@ -4,6 +4,7 @@ import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/databases/purchaseHistoryDatabase.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/main.dart';
+import 'package:projek_uts_mbr/model/purchaseHistoryModel.dart';
 import 'package:projek_uts_mbr/services/dataServices.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 
@@ -198,7 +199,6 @@ class _OrderPageState extends State<OrderPage> {
     String? userType = await sessionManager.getUserType();
     String? email = await sessionManager.getEmail();
 
-    // Cek jika yang login adalah vendor
     if (userType == "vendor") {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -239,7 +239,6 @@ class _OrderPageState extends State<OrderPage> {
       return;
     }
 
-    // Validasi tambahan: pastikan paket masih tersedia
     if (!packages.containsKey(selectedPackage)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -265,20 +264,23 @@ class _OrderPageState extends State<OrderPage> {
       return;
     }
 
-    final purchaseDetails = {
-      'vendor': widget.namaVendor,
-      'package': selectedPackage,
-      'price': selectedPrice,
-      'date': selectedDate!.toIso8601String(),
-      'location': _locationController.text,
-      'notes': _notesController.text,
-      'status': 'pending',
-    };
-
-    await _purchaseDb.addPurchaseHistory(
-      customer.id!,
-      jsonEncode(purchaseDetails),
+    final purchaseDetails = PurchaseDetails(
+      vendor: widget.namaVendor,
+      packageName: selectedPackage!,
+      price: selectedPrice!,
+      date: selectedDate!,
+      location: _locationController.text,
+      notes: _notesController.text,
+      status: 'pending',
     );
+
+    final purchaseHistory = PurchaseHistory(
+      customerId: customer.id!,
+      purchaseDetails: purchaseDetails,
+      purchaseDate: DateTime.now(),
+    );
+
+    await _purchaseDb.addPurchaseHistory(purchaseHistory);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -397,9 +399,7 @@ class _OrderPageState extends State<OrderPage> {
                                   ),
                                 )
                               : DropdownButtonFormField<String>(
-                                  value: packages.containsKey(selectedPackage)
-                                      ? selectedPackage
-                                      : null,
+                                  value: selectedPackage,
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8),
@@ -414,14 +414,12 @@ class _OrderPageState extends State<OrderPage> {
                                       ),
                                     );
                                   }).toList(),
-                                  onChanged: packages.isEmpty
-                                      ? null
-                                      : (value) {
-                                          setState(() {
-                                            selectedPackage = value;
-                                            selectedPrice = packages[value];
-                                          });
-                                        },
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedPackage = value;
+                                      selectedPrice = packages[value];
+                                    });
+                                  },
                                 ),
 
                           const SizedBox(height: 20),

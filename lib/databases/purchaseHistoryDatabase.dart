@@ -1,4 +1,5 @@
 import 'package:projek_uts_mbr/databases/database.dart';
+import 'package:projek_uts_mbr/model/purchaseHistoryModel.dart';
 import 'package:sqflite/sqflite.dart';
 
 class Purchasehistorydatabase {
@@ -8,43 +9,39 @@ class Purchasehistorydatabase {
     return await _dbService.getDatabase();
   }
 
-  Future<void> addPurchaseHistory(
-    int customerId,
-    String purchaseDetails,
-  ) async {
+  Future<void> addPurchaseHistory(PurchaseHistory purchaseHistory) async {
     final db = await getDatabase();
-    await db.insert('PurchaseHistory', {
-      'customer_id': customerId,
-      'purchase_details': purchaseDetails,
-      'purchase_date': DateTime.now().toIso8601String(),
-    });
+    await db.insert('PurchaseHistory', purchaseHistory.toMap());
   }
 
-  Future<List<Map<String, dynamic>>> getPurchaseHistoryByCustomerId(
+  Future<List<PurchaseHistory>> getPurchaseHistoryByCustomerId(
     int customerId,
   ) async {
-    final db = await getDatabase();
-    return await db.query(
-      'PurchaseHistory',
-      where: 'customer_id = ?',
-      whereArgs: [customerId],
-      orderBy: 'purchase_date DESC',
-    );
+    try {
+      final db = await getDatabase();
+      List<Map<String, dynamic>> dbRes = await db.query(
+        'PurchaseHistory',
+        where: 'customer_id = ?',
+        whereArgs: [customerId],
+        orderBy: 'purchase_date DESC',
+      );
+
+      return dbRes.map((package) => PurchaseHistory.fromMap(package)).toList();
+    } catch (e) {
+      print("error getting customer package: $e");
+      rethrow;
+    }
   }
 
   Future<int> updatePurchaseHistory(
-    int purchaseId,
-    String newPurchaseDetails,
+    PurchaseHistory updatedPurchaseHistory,
   ) async {
     final db = await getDatabase();
     return await db.update(
       'PurchaseHistory',
-      {
-        'purchase_details': newPurchaseDetails,
-        'purchase_date': DateTime.now().toIso8601String(),
-      },
+      updatedPurchaseHistory.toMap(),
       where: 'id = ?',
-      whereArgs: [purchaseId],
+      whereArgs: [updatedPurchaseHistory.id],
     );
   }
 
