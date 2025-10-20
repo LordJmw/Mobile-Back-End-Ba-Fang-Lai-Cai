@@ -22,6 +22,7 @@ class _LoginCustomerState extends State<LoginCustomer> {
     if (!_formKey.currentState!.validate()) return;
 
     final db = CustomerDatabase();
+
     final customer = await db.LoginCustomer(
       emailController.text,
       passwordController.text,

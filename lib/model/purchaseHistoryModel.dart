@@ -33,12 +33,12 @@ class PurchaseHistory {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'id': id,
       'customer_id': customerId,
       'purchase_details': json.encode(
-        purchaseDetails.toMap(),
+        purchaseDetails.toJson(),
       ), // Konversi ke JSON string
       'purchase_date': purchaseDate.toIso8601String(),
     };
@@ -78,7 +78,7 @@ class PurchaseDetails {
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'vendor': vendor,
       'package': packageName,
