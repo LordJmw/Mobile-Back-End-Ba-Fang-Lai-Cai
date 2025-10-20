@@ -89,12 +89,23 @@ class Purchasehistorydatabase {
     );
   }
 
-  Future<int> deletePurchaseHistory(int purchaseId) async {
-    final db = await getDatabase();
-    return await db.delete(
-      'PurchaseHistory',
-      where: 'id = ?',
-      whereArgs: [purchaseId],
-    );
+  Future<void> deletePurchaseHistory(int purchaseId) async {
+    try {
+      final url = Uri.parse("${base_url.purchaseHistoryUrl}/${purchaseId}");
+      final response = await http.delete(
+        url,
+        headers: {"Content-Type": "application/json"},
+      );
+      if (response.statusCode == 200) {
+        print("Purchase History dengan id $purchaseId berhasil dihapus!");
+      } else {
+        print(
+          "Gagal menghapus purchase history. Status code: ${response.statusCode}, body: ${response.body}",
+        );
+      }
+    } catch (e) {
+      print("error delete purchase history : $e");
+      rethrow;
+    }
   }
 }
