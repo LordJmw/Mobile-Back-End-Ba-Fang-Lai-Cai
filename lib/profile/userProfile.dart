@@ -218,7 +218,7 @@ class _UserProfileState extends State<UserProfile> {
                       updatedCustomer,
                     );
 
-                    if (result == 1) {
+                    if (result) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           backgroundColor: Colors.green,
