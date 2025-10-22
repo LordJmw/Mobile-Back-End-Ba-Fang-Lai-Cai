@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
@@ -44,7 +43,7 @@ class _VendorprofileState extends State<Vendorprofile> {
             TextButton(
               child: const Text("Hapus", style: TextStyle(color: Colors.red)),
               onPressed: () {
-                _deletePackage(vendor.email, packageName);
+                _deletePackage(vendor.penyedia.first.email, packageName);
                 Navigator.of(context).pop();
               },
             ),
@@ -57,7 +56,6 @@ class _VendorprofileState extends State<Vendorprofile> {
   Future<void> _deletePackage(String vendorEmail, String packageName) async {
     await vendorDb.deletePackage(vendorEmail, packageName);
     loadVendorData();
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Paket '$packageName' berhasil dihapus.")),
     );
@@ -66,19 +64,18 @@ class _VendorprofileState extends State<Vendorprofile> {
   void _navigateToEditForm(
     Vendormodel vendor,
     String packageName,
-    Map<String, dynamic> packageData,
+    TipePaket packageData,
   ) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => EditPackageForm(
-          vendorEmail: vendor.email,
+          vendorEmail: vendor.penyedia.first.email,
           packageName: packageName,
-          packageData: packageData,
+          packageData: {"harga": packageData.harga, "jasa": packageData.jasa},
         ),
       ),
     );
-
     loadVendorData();
   }
 
@@ -132,8 +129,6 @@ class _VendorprofileState extends State<Vendorprofile> {
           }
 
           final currentVendor = snapshot.data;
-
-          // Jika vendor tidak ditemukan, tampilkan pesan + tombol logout
           if (currentVendor == null) {
             return Center(
               child: Column(
@@ -141,10 +136,7 @@ class _VendorprofileState extends State<Vendorprofile> {
                 children: [
                   const Icon(Icons.error_outline, color: Colors.red, size: 60),
                   const SizedBox(height: 16),
-                  const Text(
-                    "Tidak dapat memuat data vendor",
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  const Text("Tidak dapat memuat data vendor"),
                   const SizedBox(height: 24),
                   ElevatedButton.icon(
                     onPressed: _logout,
@@ -161,7 +153,6 @@ class _VendorprofileState extends State<Vendorprofile> {
             );
           }
 
-          // Jika vendor ditemukan, tampilkan profil dan daftar paket
           return SingleChildScrollView(
             padding: const EdgeInsets.all(12),
             child: Column(
@@ -170,31 +161,26 @@ class _VendorprofileState extends State<Vendorprofile> {
                   child: CircleAvatar(
                     radius: 50,
                     backgroundImage: NetworkImage(
-                      currentVendor.image.isNotEmpty
-                          ? currentVendor.image
+                      currentVendor.penyedia.first.image.isNotEmpty
+                          ? currentVendor.penyedia.first.image
                           : 'https://cdn-icons-png.flaticon.com/512/149/149071.png',
                     ),
                   ),
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  currentVendor.nama,
+                  currentVendor.penyedia.first.nama,
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  currentVendor.kategori,
-                  style: const TextStyle(color: Colors.grey),
-                ),
                 const SizedBox(height: 10),
                 Text(
-                  currentVendor.deskripsi.isNotEmpty
-                      ? currentVendor.deskripsi
+                  currentVendor.penyedia.first.deskripsi.isNotEmpty
+                      ? currentVendor.penyedia.first.deskripsi
                       : "Belum ada deskripsi",
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 14),
                 ),
                 const SizedBox(height: 10),
                 Row(
@@ -202,17 +188,18 @@ class _VendorprofileState extends State<Vendorprofile> {
                   children: [
                     Icon(Icons.star, color: Colors.amber[600]),
                     const SizedBox(width: 5),
-                    Text(currentVendor.rating.toStringAsFixed(1)),
+                    Text(
+                      currentVendor.penyedia.first.rating.toStringAsFixed(1),
+                    ),
                   ],
                 ),
                 const Divider(height: 30),
-
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Row(
                     children: [
                       Text(
-                        "Paket Anda (${currentVendor.nama})",
+                        "Paket Anda (${currentVendor.penyedia.first.nama})",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -222,7 +209,6 @@ class _VendorprofileState extends State<Vendorprofile> {
                     ],
                   ),
                 ),
-
                 _buildPackageList(currentVendor),
               ],
             ),
@@ -233,127 +219,95 @@ class _VendorprofileState extends State<Vendorprofile> {
   }
 
   Widget _buildPackageList(Vendormodel vendor) {
-    Map<String, dynamic> hargaMap;
-    try {
-      if (vendor.harga.isNotEmpty) {
-        hargaMap = jsonDecode(vendor.harga);
-      } else {
-        hargaMap = {};
-      }
-    } catch (e) {
-      print("error decode harga untuk ${vendor.nama}:$e");
-      hargaMap = {};
-    }
+    final harga = vendor.penyedia.first.harga;
+    final packages = {
+      "Basic": harga.basic,
+      "Premium": harga.premium,
+      "Custom": harga.custom,
+    };
 
-    List<Widget> packageWidgets = [];
-    if (hargaMap.isEmpty) {
-      packageWidgets.add(
-        Card(
-          child: Container(
-            padding: const EdgeInsets.all(24),
-            width: double.infinity,
-            child: const Column(
-              children: [
-                Icon(Icons.inbox, size: 40, color: Colors.grey),
-                SizedBox(height: 10),
-                Text("Belum ada Paket.", textAlign: TextAlign.center),
-              ],
-            ),
-          ),
-        ),
-      );
-    } else {
-      packageWidgets.addAll(
-        hargaMap.entries.map((entry) {
-          final packageName = entry.key;
-          final packageData = entry.value as Map<String, dynamic>;
-          final harga = packageData['harga'] ?? 0;
-          final jasa = packageData['jasa'] ?? 'tidak ada deskripsi';
+    List<Widget> packageWidgets = packages.entries.map((entry) {
+      final packageName = entry.key;
+      final data = entry.value;
+      final hargaText = data.harga > 0 ? "Rp ${data.harga}" : "Belum diatur";
+      final jasaText = data.jasa.isNotEmpty ? data.jasa : "Tidak ada deskripsi";
 
-          return Card(
-            margin: const EdgeInsets.only(bottom: 12),
-            child: Container(
-              height: 160,
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              child: Stack(
+      return Card(
+        margin: const EdgeInsets.only(bottom: 12),
+        child: Container(
+          height: 160,
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            packageName.toUpperCase(),
-                            style: const TextStyle(
-                              color: Colors.pink,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            "Rp $harga",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        packageName.toUpperCase(),
+                        style: const TextStyle(
+                          color: Colors.pink,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        jasa,
-                        style: const TextStyle(fontSize: 14),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                        hargaText,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
                       ),
                     ],
                   ),
-                  Positioned(
-                    top: -10,
-                    right: -10,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(
-                            Icons.edit,
-                            color: Colors.blue,
-                            size: 20,
-                          ),
-                          onPressed: () {
-                            _navigateToEditForm(
-                              vendor,
-                              packageName,
-                              packageData,
-                            );
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                            size: 20,
-                          ),
-                          onPressed: () {
-                            _showDeleteConfirmationDialog(vendor, packageName);
-                          },
-                        ),
-                      ],
-                    ),
+                  const SizedBox(height: 10),
+                  Text(
+                    jasaText,
+                    style: const TextStyle(fontSize: 14),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
-            ),
-          );
-        }).toList(),
+              Positioned(
+                top: -10,
+                right: -10,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(
+                        Icons.edit,
+                        color: Colors.blue,
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        _navigateToEditForm(vendor, packageName, data);
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        _showDeleteConfirmationDialog(vendor, packageName);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       );
-    }
+    }).toList();
 
     return Column(
       children: [

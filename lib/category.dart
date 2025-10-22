@@ -35,28 +35,23 @@ formatPrice(int price) {
   return result;
 }
 
-int getBasicPrice(Vendormodel penyedia) {
+int getBasicPrice(Vendormodel vendor) {
   try {
-    final hargaMap = jsonDecode(penyedia.harga) as Map<String, dynamic>;
-    if (hargaMap.isEmpty) {
-      return 0;
-    }
+    final harga = vendor.penyedia.first.harga;
 
-    int minPrice = -1;
+    final prices = [
+      harga.basic?.harga ?? 0,
+      harga.premium?.harga ?? 0,
+      harga.custom?.harga ?? 0,
+    ].where((p) => p > 0).toList();
 
-    for (var packageData in hargaMap.values) {
-      if (packageData is Map<String, dynamic> && packageData['harga'] is int) {
-        final currentPrice = packageData['harga'] as int;
-        if (minPrice == -1 || currentPrice < minPrice) {
-          minPrice = currentPrice;
-        }
-      }
-    }
-    return minPrice == -1 ? 0 : minPrice;
+    if (prices.isEmpty) return 0;
+    prices.sort();
+    return prices.first;
   } catch (e) {
     print("Error parsing harga for lowest price: $e");
+    return 0;
   }
-  return 0;
 }
 
 class _CategoryPageState extends State<CategoryPage> {
@@ -172,7 +167,9 @@ class _CategoryPageState extends State<CategoryPage> {
 
       hargaBasic = getBasicPrice(vendor);
 
-      final rating = vendor.rating;
+      final rating = vendor.penyedia.isNotEmpty
+          ? vendor.penyedia.first.rating
+          : 0.0;
       final kategoriName = vendor.kategori;
 
       bool matchesPrice =
@@ -398,14 +395,15 @@ class _CategoryPageState extends State<CategoryPage> {
                         ? const CircularProgressIndicator()
                         : Column(
                             children: filterData().length > 0
-                                ? filterData().map((penyedia) {
+                                ? filterData().map((vendor) {
                                     return GestureDetector(
                                       onTap: () {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => Carddetail(
-                                              namaVendor: penyedia.nama,
+                                              namaVendor:
+                                                  vendor.penyedia.first.nama,
                                             ),
                                           ),
                                         );
@@ -424,7 +422,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Image.network(
-                                              penyedia.image,
+                                              vendor.penyedia.first.image,
                                               height: 180,
                                               width: double.infinity,
                                               fit: BoxFit.cover,
@@ -438,7 +436,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    penyedia.nama,
+                                                    vendor.penyedia.first.nama,
                                                     style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -455,7 +453,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                                       ),
                                                       const SizedBox(width: 4),
                                                       Text(
-                                                        "${penyedia.rating}",
+                                                        "${vendor.penyedia.first.rating}",
                                                         style: const TextStyle(
                                                           fontSize: 13,
                                                           color: Colors.grey,
@@ -465,7 +463,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                                   ),
                                                   const SizedBox(height: 6),
                                                   Text(
-                                                    "Rp ${formatPrice(getBasicPrice(penyedia))}",
+                                                    "Rp ${formatPrice(getBasicPrice(vendor))}",
                                                     style: const TextStyle(
                                                       fontSize: 15,
                                                       color: Colors.pink,

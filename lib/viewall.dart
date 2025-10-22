@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
-import 'package:projek_uts_mbr/services/dataServices.dart';
+import 'package:projek_uts_mbr/model/VendorModel.dart';
 
 class ViewAllPage extends StatefulWidget {
   const ViewAllPage({super.key});
@@ -24,45 +23,38 @@ class _ViewAllPageState extends State<ViewAllPage> {
     futureData = fetchData();
   }
 
-  // Future<List<dynamic>> fetchData() async {
-  //   Dataservices dataservices = Dataservices();
-  //   List<dynamic> data = await dataservices.loadData();
-  //   List<dynamic> providers = [];
-  //   for (var kategori in data) {
-  //     // untuk menyimpan juga kategori biar bisa dipakai untuk pencarian
-  //     for (var penyedia in kategori["penyedia"]) {
-  //       penyedia["kategori"] = kategori["kategori"];
-  //       providers.add(penyedia);
-  //     }
-  //   }
-  //   allProviders = providers;
-  //   filteredProviders = providers;
-  //   return providers;
-  // }
-
   Future<List<dynamic>> fetchData() async {
     Vendordatabase vendordatabase = Vendordatabase();
     final data = await vendordatabase.getData();
+    print(
+      "Total vendors in database: ${data.fold(0, (sum, vm) => sum + vm.penyedia.length)}",
+    );
 
     final providers = data
-        .map(
-          (vendor) => {
-            "nama": vendor.nama,
-            "deskripsi": vendor.deskripsi,
-            "rating": vendor.rating,
-            "harga": vendor.harga,
-            "testimoni": vendor.testimoni,
-            "email": vendor.email,
-            "telepon": vendor.telepon,
-            "image": vendor.image,
-            "kategori": vendor.kategori,
-          },
+        .expand(
+          (vendor) => vendor.penyedia.map(
+            (penyedia) => {
+              "nama": penyedia.nama,
+              "deskripsi": penyedia.deskripsi,
+              "rating": penyedia.rating,
+              "harga": penyedia.harga,
+              "testimoni": penyedia.testimoni
+                  .map(
+                    (t) => {"nama": t.nama, "isi": t.isi, "rating": t.rating},
+                  )
+                  .toList(),
+              "email": penyedia.email,
+              "telepon": penyedia.telepon,
+              "image": penyedia.image,
+              "kategori": vendor.kategori,
+            },
+          ),
         )
         .toList();
 
     allProviders = providers;
     filteredProviders = providers;
-    print("viewall ${filteredProviders}");
+    print("viewall $filteredProviders");
     return providers;
   }
 
@@ -86,20 +78,49 @@ class _ViewAllPageState extends State<ViewAllPage> {
 
   int getBasicPrice(Map<String, dynamic> penyedia) {
     try {
-      final hargaMap = jsonDecode(penyedia['harga']) as Map<String, dynamic>;
-      if (hargaMap.isEmpty) {
+      final hargaField = penyedia['harga'];
+      Map<String, dynamic> hargaMap = {};
+
+      if (hargaField == null) return 0;
+
+      // if Harga model instance
+      if (hargaField is Harga) {
+        hargaMap = {
+          'basic': {
+            'harga': hargaField.basic.harga,
+            'jasa': hargaField.basic.jasa,
+          },
+          'premium': {
+            'harga': hargaField.premium.harga,
+            'jasa': hargaField.premium.jasa,
+          },
+          'custom': {
+            'harga': hargaField.custom.harga,
+            'jasa': hargaField.custom.jasa,
+          },
+        };
+      } else if (hargaField is Map) {
+        hargaMap = Map<String, dynamic>.from(hargaField);
+      } else if (hargaField is String) {
+        final decoded = jsonDecode(hargaField);
+        if (decoded is Map<String, dynamic>) hargaMap = decoded;
+      } else {
         return 0;
       }
 
-      int minPrice = -1;
+      if (hargaMap.isEmpty) return 0;
 
+      int minPrice = -1;
       for (var packageData in hargaMap.values) {
         if (packageData is Map<String, dynamic> &&
             packageData['harga'] is int) {
           final currentPrice = packageData['harga'] as int;
-          if (minPrice == -1 || currentPrice < minPrice) {
+          if (minPrice == -1 || currentPrice < minPrice)
             minPrice = currentPrice;
-          }
+        } else if (packageData is Map && packageData['harga'] is num) {
+          final currentPrice = (packageData['harga'] as num).toInt();
+          if (minPrice == -1 || currentPrice < minPrice)
+            minPrice = currentPrice;
         }
       }
       return minPrice == -1 ? 0 : minPrice;
@@ -126,7 +147,6 @@ class _ViewAllPageState extends State<ViewAllPage> {
             return Center(child: Text("Error: ${snapshot.error}"));
           }
 
-          //Search box untuk mencari berdasarkan nama penyedia jasa atau kategori
           return Column(
             children: [
               Padding(
@@ -147,8 +167,6 @@ class _ViewAllPageState extends State<ViewAllPage> {
                   onChanged: _filterData,
                 ),
               ),
-
-              //Tampilan hasil pencarian dalam bentuk grid
               Expanded(
                 child: filteredProviders.isEmpty
                     ? const Center(child: Text("Tidak ada hasil"))
@@ -203,7 +221,6 @@ class _ViewAllPageState extends State<ViewAllPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Gambar
             ClipRRect(
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(12),
@@ -220,7 +237,6 @@ class _ViewAllPageState extends State<ViewAllPage> {
                 ),
               ),
             ),
-            // Isi
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -252,7 +268,6 @@ class _ViewAllPageState extends State<ViewAllPage> {
                         ),
                       ],
                     ),
-
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

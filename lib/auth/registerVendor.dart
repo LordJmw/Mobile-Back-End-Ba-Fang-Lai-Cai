@@ -49,31 +49,34 @@ class _RegisterVendorState extends State<RegisterVendor> {
   Future<void> _saveVendor() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final vendor = Vendormodel(
+    final penyedia = Penyedia(
       nama: _namatokoController.text,
       deskripsi: _deskripsiController.text,
       rating: 0.0,
-      harga: jsonEncode({
-        "basic": {
-          "harga": int.parse(_hargaBasicController.text),
-          "jasa": _jasaBasicController.text,
-        },
-        "premium": {
-          "harga": int.parse(_hargaPremiumController.text),
-          "jasa": _jasaPremiumController.text,
-        },
-        "custom": {
-          "harga": int.parse(_hargaCustomController.text),
-          "jasa": _jasaCustomController.text,
-        },
-      }),
-      testimoni: jsonEncode([]),
+      harga: Harga(
+        basic: TipePaket(
+          harga: int.parse(_hargaBasicController.text),
+          jasa: _jasaBasicController.text,
+        ),
+        premium: TipePaket(
+          harga: int.parse(_hargaPremiumController.text),
+          jasa: _jasaPremiumController.text,
+        ),
+        custom: TipePaket(
+          harga: int.parse(_hargaCustomController.text),
+          jasa: _jasaCustomController.text,
+        ),
+      ),
+      testimoni: [],
       email: _emailController.text,
+      password: _passwordController.text,
       telepon: _teleponController.text,
       image: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-      kategori: selectedCategory!,
-      alamat: _alamatController.text,
-      password: _passwordController.text,
+    );
+
+    final vendor = Vendormodel(
+      kategori: selectedCategory ?? "",
+      penyedia: [penyedia],
     );
 
     final db = Vendordatabase();
@@ -112,7 +115,6 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     ),
                   ),
                   const SizedBox(height: 20),
-
                   TextFormField(
                     controller: _namatokoController,
                     decoration: const InputDecoration(
@@ -123,7 +125,6 @@ class _RegisterVendorState extends State<RegisterVendor> {
                         value!.isEmpty ? "Nama toko wajib diisi" : null,
                   ),
                   const SizedBox(height: 15),
-
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -139,7 +140,6 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     },
                   ),
                   const SizedBox(height: 15),
-
                   TextFormField(
                     controller: _teleponController,
                     keyboardType: TextInputType.phone,
@@ -157,7 +157,6 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     },
                   ),
                   const SizedBox(height: 15),
-
                   DropdownButtonFormField<String>(
                     value: selectedCategory,
                     decoration: const InputDecoration(
@@ -174,7 +173,6 @@ class _RegisterVendorState extends State<RegisterVendor> {
                         value == null ? "Pilih kategori vendor" : null,
                   ),
                   const SizedBox(height: 15),
-
                   TextFormField(
                     controller: _alamatController,
                     decoration: const InputDecoration(
@@ -185,7 +183,6 @@ class _RegisterVendorState extends State<RegisterVendor> {
                         value!.isEmpty ? "Alamat wajib diisi" : null,
                   ),
                   const SizedBox(height: 15),
-
                   TextFormField(
                     controller: _deskripsiController,
                     maxLines: 3,
@@ -197,7 +194,6 @@ class _RegisterVendorState extends State<RegisterVendor> {
                         value!.isEmpty ? "Deskripsi wajib diisi" : null,
                   ),
                   const SizedBox(height: 20),
-
                   const Text(
                     "Paket Basic",
                     style: TextStyle(
@@ -220,9 +216,7 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     validator: (v) =>
                         v!.isEmpty ? "Jasa Basic wajib diisi" : null,
                   ),
-
                   const SizedBox(height: 20),
-
                   const Text(
                     "Paket Premium",
                     style: TextStyle(
@@ -248,9 +242,7 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     validator: (v) =>
                         v!.isEmpty ? "Jasa Premium wajib diisi" : null,
                   ),
-
                   const SizedBox(height: 20),
-
                   const Text(
                     "Paket Custom",
                     style: TextStyle(
@@ -275,7 +267,6 @@ class _RegisterVendorState extends State<RegisterVendor> {
                         v!.isEmpty ? "Jasa Custom wajib diisi" : null,
                   ),
                   const SizedBox(height: 20),
-
                   TextFormField(
                     controller: _passwordController,
                     obscureText: true,
@@ -294,7 +285,6 @@ class _RegisterVendorState extends State<RegisterVendor> {
                         : null,
                   ),
                   const SizedBox(height: 30),
-
                   ElevatedButton(
                     onPressed: _saveVendor,
                     style: ElevatedButton.styleFrom(

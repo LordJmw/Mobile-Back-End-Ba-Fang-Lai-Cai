@@ -52,24 +52,18 @@ class _OrderPageState extends State<OrderPage> {
         });
         return;
       }
+
       Map<String, int> parsedPackages = {};
 
-      try {
-        dynamic hargaData = jsonDecode(vendor.harga);
-
-        if (hargaData is Map) {
-          hargaData.forEach((key, value) {
-            if (value != null) {
-              if (value is Map && value['harga'] != null) {
-                parsedPackages[key.toString()] = value['harga'];
-              } else if (value is int) {
-                parsedPackages[key.toString()] = value;
-              }
-            }
-          });
-        }
-      } catch (e) {
-        print("Error parsing harga: $e");
+      final harga = vendor.penyedia.first.harga;
+      if (harga.basic.harga > 0) {
+        parsedPackages['Basic'] = harga.basic.harga;
+      }
+      if (harga.premium.harga > 0) {
+        parsedPackages['Premium'] = harga.premium.harga;
+      }
+      if (harga.custom.harga > 0) {
+        parsedPackages['Custom'] = harga.custom.harga;
       }
 
       setState(() {

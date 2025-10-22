@@ -34,28 +34,35 @@ class _VendorFormState extends State<VendorForm> {
 
   void _saveVendor() async {
     if (_formKey.currentState!.validate() && _selectedCategory != null) {
-      final newVendor = Vendormodel(
+      final penyediaBaru = Penyedia(
         nama: _namaController.text,
-        deskripsi: "Deskripsi baru", 
+        deskripsi: "Deskripsi baru",
         rating: 0.0,
-        harga: "{}", 
-        testimoni: "[]", 
+        harga: Harga(
+          basic: TipePaket(harga: 100000, jasa: "Basic Service"),
+          premium: TipePaket(harga: 200000, jasa: "Premium Service"),
+          custom: TipePaket(harga: 300000, jasa: "Custom Service"),
+        ),
+        testimoni: [],
         email: _emailController.text,
+        password: "password123",
         telepon: _teleponController.text,
         image: "https://via.placeholder.com/400x300",
+      );
+
+      final vendorModel = Vendormodel(
         kategori: _selectedCategory!,
-        alamat: "Alamat baru",
-        password: "password123",
+        penyedia: [penyediaBaru],
       );
 
       final db = Vendordatabase();
-      await db.insertVendor(newVendor);
+      await db.insertVendor(vendorModel);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Vendor berhasil ditambahkan!")),
       );
 
-      Navigator.pop(context); 
+      Navigator.pop(context);
     }
   }
 
@@ -93,18 +100,29 @@ class _VendorFormState extends State<VendorForm> {
                     _buildField(Icons.person, "Nama Lengkap", _namaController),
                     const SizedBox(height: 15),
 
-                    _buildField(Icons.email, "Email", _emailController,
-                        type: TextInputType.emailAddress),
+                    _buildField(
+                      Icons.email,
+                      "Email",
+                      _emailController,
+                      type: TextInputType.emailAddress,
+                    ),
                     const SizedBox(height: 15),
 
-                    _buildField(Icons.phone, "No HP", _teleponController,
-                        type: TextInputType.phone),
+                    _buildField(
+                      Icons.phone,
+                      "No HP",
+                      _teleponController,
+                      type: TextInputType.phone,
+                    ),
                     const SizedBox(height: 15),
 
                     DropdownButtonFormField<String>(
                       decoration: InputDecoration(
                         labelText: "Kategori Vendor",
-                        prefixIcon: Icon(Icons.category, color: Colors.pink[300]),
+                        prefixIcon: Icon(
+                          Icons.category,
+                          color: Colors.pink[300],
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),

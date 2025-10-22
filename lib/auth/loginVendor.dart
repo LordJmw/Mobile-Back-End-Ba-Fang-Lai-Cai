@@ -29,6 +29,7 @@ class _LoginVendorState extends State<LoginVendor> {
 
     if (vendor != null) {
       final sessionManager = SessionManager();
+      // LoginVendor returns a Penyedia object; use its email directly
       await sessionManager.createLoginSession(vendor.email, "vendor");
 
       ScaffoldMessenger.of(context).showSnackBar(

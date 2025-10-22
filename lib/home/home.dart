@@ -43,6 +43,17 @@ class _HomePageState extends State<HomePage> {
     vendordatabase.updatePasswords();
   }
 
+  Future<void> _debugResetDb() async {
+    Vendordatabase vendordatabase = Vendordatabase();
+    await vendordatabase.resetDatabase();
+    await vendordatabase.initDataAwal();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Database reset & initialized')),
+    );
+    setState(() {});
+  }
+
   Future<void> _checkLoginStatus() async {
     final isLoggedIn = await _sessionManager.isLoggedIn();
     final email = await _sessionManager.getEmail();
@@ -60,7 +71,15 @@ class _HomePageState extends State<HomePage> {
   Future<List<Vendormodel>> _loadVendors() async {
     Vendordatabase vendordatabase = Vendordatabase();
     List<Vendormodel> allVendors = await vendordatabase.getData();
-    allVendors.sort((a, b) => b.rating.compareTo(a.rating));
+
+    // ini nnti apus
+    for (var v in allVendors) {
+      print("Kategori: ${v.kategori}, jumlah penyedia: ${v.penyedia.length}");
+    }
+
+    allVendors.sort(
+      (a, b) => b.penyedia.first.rating.compareTo(a.penyedia.first.rating),
+    );
     return allVendors.take(8).toList();
   }
 
@@ -76,20 +95,16 @@ class _HomePageState extends State<HomePage> {
     return allVendors.take(8).toList();
   }
 
-  String _getFirstTestimonial(String testimoniJson) {
-    if (testimoniJson.isEmpty) {
+  String _getFirstTestimonial(List<Testimoni> testimoniList) {
+    if (testimoniList.isEmpty) {
       return "";
     }
     try {
-      final List<dynamic> testimoniList = jsonDecode(testimoniJson);
-      if (testimoniList.isNotEmpty) {
-        return testimoniList[0]['isi'] ?? '';
-      }
+      return testimoniList.first.isi;
     } catch (e) {
-      print("Error decoding testimoni in home.dart: $e");
+      print("Error getting testimoni in home.dart: $e");
       return '';
     }
-    return '';
   }
 
   @override
@@ -99,64 +114,6 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text("Ba Fang Lai Cai"),
         backgroundColor: Colors.pink,
-        // actions: _isLoggedIn
-        //     ? [
-        //         Center(
-        //           child: Padding(
-        //             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        //             child: Text(
-        //               _email ?? '',
-        //               style: TextStyle(color: Colors.white),
-        //             ),
-        //           ),
-        //         ),
-        //         IconButton(
-        //           icon: const Icon(Icons.logout),
-        //           onPressed: _logout,
-        //         ),
-        //       ]
-        // actions: [
-        //   ElevatedButton(
-        //     style: ElevatedButton.styleFrom(
-        //       backgroundColor: Colors.white,
-        //       foregroundColor: Colors.pink,
-        //       shape: RoundedRectangleBorder(
-        //         side: const BorderSide(color: Colors.pink),
-        //         borderRadius: BorderRadius.circular(10),
-        //       ),
-        //     ),
-        //     onPressed: () {
-        //       MyApp.of(context).setBottomNavVisibility(false);
-        //       Navigator.push(
-        //         context,
-        //         MaterialPageRoute(builder: (context) => LoginCustomer()),
-        //       ).then((_) {
-        //         MyApp.of(context).setBottomNavVisibility(true);
-        //         _checkLoginStatus();
-        //       });
-        //     },
-        //     child: const Text("Masuk"),
-        //   ),
-        //   const SizedBox(width: 10),
-        //   ElevatedButton(
-        //     style: ElevatedButton.styleFrom(
-        //       backgroundColor: Colors.pink,
-        //       foregroundColor: Colors.white,
-        //       shape: RoundedRectangleBorder(
-        //         borderRadius: BorderRadius.circular(10),
-        //       ),
-        //     ),
-        //     onPressed: () {
-        //       MyApp.of(context).setBottomNavVisibility(false);
-        //       Navigator.push(
-        //         context,
-        //         MaterialPageRoute(builder: (context) => RegisterPage()),
-        //       ).then((_) => MyApp.of(context).setBottomNavVisibility(true));
-        //     },
-        //     child: const Text("Daftar"),
-        //   ),
-        //   const SizedBox(width: 10),
-        // ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -188,9 +145,9 @@ class _HomePageState extends State<HomePage> {
                       final vendor = vendors[index];
                       return _buildVendorCard(
                         context,
-                        vendor.nama,
-                        "⭐ ${vendor.rating.toStringAsFixed(1)}",
-                        vendor.image,
+                        vendor.penyedia.first.nama,
+                        "⭐ ${vendor.penyedia.first.rating.toStringAsFixed(1)}",
+                        vendor.penyedia.first.image,
                       );
                     },
                   );
@@ -250,6 +207,41 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
+            // Debug buttons (only visible in debug builds)
+            if (!bool.fromEnvironment('dart.vm.product'))
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                child: Row(
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                      ),
+                      onPressed: _debugResetDb,
+                      child: const Text('Reset DB'),
+                    ),
+                    const SizedBox(width: 12),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                      ),
+                      onPressed: () async {
+                        Vendordatabase vendordatabase = Vendordatabase();
+                        await vendordatabase.initDataAwal();
+                        if (!mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Init data selesai')),
+                        );
+                        setState(() {});
+                      },
+                      child: const Text('Init Data'),
+                    ),
+                  ],
+                ),
+              ),
             const Divider(),
             const Padding(
               padding: EdgeInsets.all(16),
@@ -277,9 +269,9 @@ class _HomePageState extends State<HomePage> {
                         width: 260,
                         child: _buildPortfolioCard(
                           context,
-                          item.nama,
-                          item.deskripsi,
-                          item.image,
+                          item.penyedia.first.nama,
+                          item.penyedia.first.deskripsi,
+                          item.penyedia.first.image,
                         ),
                       );
                     }).toList(),
@@ -314,9 +306,9 @@ class _HomePageState extends State<HomePage> {
                         width: 300,
                         child: _buildFeedItem(
                           context,
-                          item.nama,
-                          _getFirstTestimonial(item.testimoni),
-                          item.image,
+                          item.penyedia.first.nama,
+                          _getFirstTestimonial(item.penyedia.first.testimoni),
+                          item.penyedia.first.image,
                         ),
                       );
                     }).toList(),
