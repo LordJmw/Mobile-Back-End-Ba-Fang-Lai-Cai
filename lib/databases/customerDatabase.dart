@@ -93,15 +93,32 @@ class CustomerDatabase {
     // return null;
   }
 
-  Future<int> updateCustomerProfile(CustomerModel customer) async {
-    final db = await getDatabase();
-    return await db.update(
-      'Customer',
-      customer.toJson(),
-      where: 'id = ?',
-      whereArgs: [customer.id],
+  Future<bool> updateCustomerProfile(CustomerModel customer) async {
+    final response = await http.put(
+      Uri.parse('${base_url.customer}/update/${customer.id}'),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(customer.toJson()),
     );
+    if (response.statusCode == 200) {
+      print("Customer updated successfully");
+      return true;
+    } else {
+      print(
+        "Failed to update customer. Server responded with: ${response.statusCode}",
+      );
+      print("Body: ${response.body}");
+      return false;
+    }
   }
+  // Future<int> updateCustomerProfile(CustomerModel customer) async {
+  //   final db = await getDatabase();
+  //   return await db.update(
+  //     'Customer',
+  //     customer.toJson(),
+  //     where: 'id = ?',
+  //     whereArgs: [customer.id],
+  //   );
+  // }
 
   Future<void> printAllCustomers() async {
     final db = await _dbService.getDatabase();
