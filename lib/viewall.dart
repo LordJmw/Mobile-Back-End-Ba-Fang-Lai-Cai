@@ -1,8 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
+import 'dart:convert';
 
 class ViewAllPage extends StatefulWidget {
   const ViewAllPage({super.key});
@@ -12,122 +12,65 @@ class ViewAllPage extends StatefulWidget {
 }
 
 class _ViewAllPageState extends State<ViewAllPage> {
-  late Future<List<dynamic>> futureData;
-  List<dynamic> allProviders = [];
-  List<dynamic> filteredProviders = [];
+  late Future<List<Vendormodel>> futureVendors;
+  List<Vendormodel> allVendors = [];
+  List<Vendormodel> filteredVendors = [];
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    futureData = fetchData();
+    futureVendors = fetchData();
   }
 
-  Future<List<dynamic>> fetchData() async {
+  Future<List<Vendormodel>> fetchData() async {
     Vendordatabase vendordatabase = Vendordatabase();
-    final data = await vendordatabase.getData();
-    print(
-      "Total vendors in database: ${data.fold(0, (sum, vm) => sum + vm.penyedia.length)}",
-    );
+    final data = await vendordatabase.getData(); 
 
-    final providers = data
-        .expand(
-          (vendor) => vendor.penyedia.map(
-            (penyedia) => {
-              "nama": penyedia.nama,
-              "deskripsi": penyedia.deskripsi,
-              "rating": penyedia.rating,
-              "harga": penyedia.harga,
-              "testimoni": penyedia.testimoni
-                  .map(
-                    (t) => {"nama": t.nama, "isi": t.isi, "rating": t.rating},
-                  )
-                  .toList(),
-              "email": penyedia.email,
-              "telepon": penyedia.telepon,
-              "image": penyedia.image,
-              "kategori": vendor.kategori,
-            },
-          ),
-        )
-        .toList();
-
-    allProviders = providers;
-    filteredProviders = providers;
-    print("viewall $filteredProviders");
-    return providers;
+    allVendors = data;
+    filteredVendors = data;
+    return data;
   }
 
   void _filterData(String query) {
     if (query.isEmpty) {
       setState(() {
-        filteredProviders = allProviders;
+        filteredVendors = allVendors;
       });
       return;
     }
 
     setState(() {
-      filteredProviders = allProviders.where((item) {
-        final name = (item["nama"] ?? "").toString().toLowerCase();
-        final kategori = (item["kategori"] ?? "").toString().toLowerCase();
+      filteredVendors = allVendors.where((vendor) {
+        final name = vendor.nama.toLowerCase();
+        final kategori = vendor.kategori.toLowerCase();
         return name.contains(query.toLowerCase()) ||
             kategori.contains(query.toLowerCase());
       }).toList();
     });
   }
 
-  int getBasicPrice(Map<String, dynamic> penyedia) {
+  int getBasicPrice(Vendormodel vendor) {
+    if (vendor.harga.isEmpty) return 0;
+
+    Map<String, dynamic> hargaMap;
     try {
-      final hargaField = penyedia['harga'];
-      Map<String, dynamic> hargaMap = {};
+      hargaMap = jsonDecode(vendor.harga); 
+    } catch (e) {
+      print("Error decoding harga JSON: $e");
+      return 0; 
+    }
 
-      if (hargaField == null) return 0;
-
-      // if Harga model instance
-      if (hargaField is Harga) {
-        hargaMap = {
-          'basic': {
-            'harga': hargaField.basic.harga,
-            'jasa': hargaField.basic.jasa,
-          },
-          'premium': {
-            'harga': hargaField.premium.harga,
-            'jasa': hargaField.premium.jasa,
-          },
-          'custom': {
-            'harga': hargaField.custom.harga,
-            'jasa': hargaField.custom.jasa,
-          },
-        };
-      } else if (hargaField is Map) {
-        hargaMap = Map<String, dynamic>.from(hargaField);
-      } else if (hargaField is String) {
-        final decoded = jsonDecode(hargaField);
-        if (decoded is Map<String, dynamic>) hargaMap = decoded;
-      } else {
-        return 0;
-      }
-
-      if (hargaMap.isEmpty) return 0;
-
-      int minPrice = -1;
-      for (var packageData in hargaMap.values) {
-        if (packageData is Map<String, dynamic> &&
-            packageData['harga'] is int) {
-          final currentPrice = packageData['harga'] as int;
-          if (minPrice == -1 || currentPrice < minPrice)
-            minPrice = currentPrice;
-        } else if (packageData is Map && packageData['harga'] is num) {
-          final currentPrice = (packageData['harga'] as num).toInt();
-          if (minPrice == -1 || currentPrice < minPrice)
-            minPrice = currentPrice;
+    int minPrice = -1;
+    for (var value in hargaMap.values) { 
+      if (value is Map<String, dynamic> && value['harga'] is int) {
+        final currentPrice = value['harga'] as int;
+        if (minPrice == -1 || currentPrice < minPrice) {
+          minPrice = currentPrice;
         }
       }
-      return minPrice == -1 ? 0 : minPrice;
-    } catch (e) {
-      print("Error parsing harga for lowest price in viewall: $e");
     }
-    return 0;
+    return minPrice == -1 ? 0 : minPrice;
   }
 
   @override
@@ -137,8 +80,8 @@ class _ViewAllPageState extends State<ViewAllPage> {
         title: const Text("Our Product"),
         foregroundColor: Colors.black,
       ),
-      body: FutureBuilder<List<dynamic>>(
-        future: futureData,
+      body: FutureBuilder<List<Vendormodel>>(
+        future: futureVendors,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -167,29 +110,29 @@ class _ViewAllPageState extends State<ViewAllPage> {
                   onChanged: _filterData,
                 ),
               ),
+
+              // Grid hasil pencarian
               Expanded(
-                child: filteredProviders.isEmpty
+                child: filteredVendors.isEmpty
                     ? const Center(child: Text("Tidak ada hasil"))
                     : GridView.builder(
                         padding: const EdgeInsets.all(12),
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 16,
-                              childAspectRatio: 0.7,
-                            ),
-                        itemCount: filteredProviders.length,
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 16,
+                          childAspectRatio: 0.7,
+                        ),
+                        itemCount: filteredVendors.length,
                         itemBuilder: (context, index) {
-                          final item = filteredProviders[index];
+                          final vendor = filteredVendors[index];
                           return buildCard(
-                            name: item["nama"],
-                            description: item["deskripsi"],
-                            rating: (item["rating"] as num).toDouble(),
-                            price: getBasicPrice(item),
-                            imageUrl:
-                                item["image"] ??
-                                "https://via.placeholder.com/400x300",
+                            name: vendor.nama,
+                            description: vendor.deskripsi,
+                            rating: vendor.rating,
+                            price: getBasicPrice(vendor),
+                            imageUrl: vendor.image,
                           );
                         },
                       ),
@@ -221,10 +164,9 @@ class _ViewAllPageState extends State<ViewAllPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Gambar
             ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(12),
-              ),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
               child: Image.network(
                 imageUrl,
                 height: 140,
@@ -237,6 +179,8 @@ class _ViewAllPageState extends State<ViewAllPage> {
                 ),
               ),
             ),
+
+            // Isi
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -268,16 +212,13 @@ class _ViewAllPageState extends State<ViewAllPage> {
                         ),
                       ],
                     ),
+
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            const Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                              size: 16,
-                            ),
+                            const Icon(Icons.star, color: Colors.amber, size: 16),
                             const SizedBox(width: 4),
                             Text(
                               rating.toString(),
@@ -287,7 +228,7 @@ class _ViewAllPageState extends State<ViewAllPage> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "Rp ${price.toString()}",
+                          "Rp $price",
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
