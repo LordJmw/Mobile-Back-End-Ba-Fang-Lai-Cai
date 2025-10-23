@@ -77,16 +77,31 @@ class Purchasehistorydatabase {
     }
   }
 
-  Future<int> updatePurchaseHistory(
+  Future<void> updatePurchaseHistory(
     PurchaseHistory updatedPurchaseHistory,
   ) async {
-    final db = await getDatabase();
-    return await db.update(
-      'PurchaseHistory',
-      updatedPurchaseHistory.toJson(),
-      where: 'id = ?',
-      whereArgs: [updatedPurchaseHistory.id],
-    );
+    try {
+      final url = Uri.parse(
+        "${base_url.purchaseHistoryUrl}/${updatedPurchaseHistory.id}",
+      );
+      final response = await http.put(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(updatedPurchaseHistory.toJson()),
+      );
+
+      if (response.statusCode == 200) {
+        print("Purchase history berhasil diupdate di server!");
+      } else {
+        print(
+          "Gagal update purchase history. Status: ${response.statusCode}, body: ${response.body}",
+        );
+        throw Exception("Gagal update data di server");
+      }
+    } catch (e) {
+      print("Error update purchase history: $e");
+      rethrow;
+    }
   }
 
   Future<void> deletePurchaseHistory(int purchaseId) async {

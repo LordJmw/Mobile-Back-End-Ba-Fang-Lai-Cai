@@ -156,6 +156,16 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 15),
             const Divider(),
+            // ElevatedButton.icon(
+            //   onPressed: _logout,
+            //   icon: const Icon(Icons.logout),
+            //   label: const Text("Logout"),
+            //   style: ElevatedButton.styleFrom(
+            //     backgroundColor: Colors.pink,
+            //     foregroundColor: Colors.white,
+            //     minimumSize: const Size(double.infinity, 50),
+            //   ),
+            // ),
             const Padding(
               padding: EdgeInsets.all(16),
               child: Text(
