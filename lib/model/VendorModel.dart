@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final vendormodel = vendormodelFromJson(jsonString);
-
 import 'dart:convert';
 
 List<Vendormodel> vendormodelFromJson(String str) => List<Vendormodel>.from(

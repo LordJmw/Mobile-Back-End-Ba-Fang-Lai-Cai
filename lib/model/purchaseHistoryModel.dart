@@ -1,4 +1,4 @@
-import 'dart:convert'; // Tambahkan ini
+import 'dart:convert';
 
 class PurchaseHistory {
   final int? id;
@@ -14,14 +14,11 @@ class PurchaseHistory {
   });
 
   factory PurchaseHistory.fromMap(Map<String, dynamic> map) {
-    // Handle purchase_details yang mungkin berupa String JSON atau Map
     Map<String, dynamic> purchaseDetailsMap;
 
     if (map['purchase_details'] is String) {
-      // Jika berupa String, parse dulu menjadi Map
       purchaseDetailsMap = json.decode(map['purchase_details']);
     } else {
-      // Jika sudah Map, langsung gunakan
       purchaseDetailsMap = Map<String, dynamic>.from(map['purchase_details']);
     }
 
@@ -37,9 +34,7 @@ class PurchaseHistory {
     return {
       'id': id,
       'customer_id': customerId,
-      'purchase_details': json.encode(
-        purchaseDetails.toJson(),
-      ), // Konversi ke JSON string
+      'purchase_details': json.encode(purchaseDetails.toJson()),
       'purchase_date': purchaseDate.toIso8601String(),
     };
   }
