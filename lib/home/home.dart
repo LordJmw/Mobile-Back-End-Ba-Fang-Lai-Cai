@@ -43,17 +43,6 @@ class _HomePageState extends State<HomePage> {
     vendordatabase.updatePasswords();
   }
 
-  Future<void> _debugResetDb() async {
-    Vendordatabase vendordatabase = Vendordatabase();
-    await vendordatabase.resetDatabase();
-    await vendordatabase.initDataAwal();
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Database reset & initialized')),
-    );
-    setState(() {});
-  }
-
   Future<void> _checkLoginStatus() async {
     final isLoggedIn = await _sessionManager.isLoggedIn();
     final email = await _sessionManager.getEmail();
@@ -223,33 +212,6 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 8,
-                ),
-                child: Row(
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                      ),
-                      onPressed: _debugResetDb,
-                      child: const Text('Reset DB'),
-                    ),
-                    const SizedBox(width: 12),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                      ),
-                      onPressed: () async {
-                        Vendordatabase vendordatabase = Vendordatabase();
-                        await vendordatabase.initDataAwal();
-                        if (!mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Init data selesai')),
-                        );
-                        setState(() {});
-                      },
-                      child: const Text('Init Data'),
-                    ),
-                  ],
                 ),
               ),
             const Divider(),

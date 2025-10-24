@@ -10,55 +10,6 @@ class Vendordatabase {
   Dataservices dataservices = Dataservices();
   DatabaserService databaserService = DatabaserService();
 
-  /// Reset database vendor-related tables: drop and recreate Vendor, Customer, PurchaseHistory
-  Future<void> resetDatabase() async {
-    final db = await databaserService.getDatabase();
-
-    await db.execute('DROP TABLE IF EXISTS PurchaseHistory');
-    await db.execute('DROP TABLE IF EXISTS Vendor');
-    await db.execute('DROP TABLE IF EXISTS Customer');
-
-    // recreate tables (duplicate of DatabaserService._createDb)
-    await db.execute('''
-      CREATE TABLE Vendor (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nama TEXT,
-        deskripsi TEXT,
-        rating REAL,
-        harga TEXT,
-        testimoni TEXT,
-        email TEXT,
-        telepon TEXT,
-        image TEXT,
-        kategori TEXT,
-        alamat TEXT,
-        password TEXT
-      )
-    ''');
-
-    await db.execute('''
-      CREATE TABLE Customer (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nama TEXT,
-        email TEXT,
-        password TEXT,
-        telepon TEXT,
-        alamat TEXT
-      )
-    ''');
-
-    await db.execute('''
-      CREATE TABLE PurchaseHistory (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        customer_id INTEGER,
-        purchase_details TEXT,
-        purchase_date TEXT,
-        FOREIGN KEY (customer_id) REFERENCES Customer (id)
-      )
-    ''');
-  }
-
-  /// Load initial data from Dataservices into Vendor table (uses model types)
   Future<void> initDataAwal() async {
     Database db = await databaserService.getDatabase();
 
@@ -103,42 +54,61 @@ class Vendordatabase {
     print("Selesai insert, total data vendor di DB: $total");
   }
 
-  /// Return list of Vendormodel grouped by kategori (keeps compatibility with UI)
   Future<List<Vendormodel>> getData({int limit = 0}) async {
-    Database db = await databaserService.getDatabase();
-    List<Map<String, dynamic>> rows = await db.query(
-      'Vendor',
-      limit: limit > 0 ? limit : null,
-    );
+    final db = await databaserService.getDatabase();
 
-    // map rows to Penyedia and group by kategori
+    final rows = await db.query('Vendor', limit: limit > 0 ? limit : null);
+
+    if (rows.isEmpty) return [];
+
     final List<Map<String, dynamic>> normalized = rows
         .map((r) => Map<String, dynamic>.from(r))
+        .map((row) {
+          try {
+            row['harga'] =
+                row['harga'] != null && row['harga'].toString().isNotEmpty
+                ? jsonDecode(row['harga'])
+                : {};
+          } catch (_) {
+            row['harga'] = {};
+          }
+
+          try {
+            row['testimoni'] =
+                row['testimoni'] != null &&
+                    row['testimoni'].toString().isNotEmpty
+                ? jsonDecode(row['testimoni'])
+                : [];
+          } catch (_) {
+            row['testimoni'] = [];
+          }
+
+          return row;
+        })
         .toList();
-    final Map<String, List<Penyedia>> grouped = {};
-    for (var row in normalized) {
-      try {
-        row['harga'] = jsonDecode(row['harga'] ?? '{}');
-      } catch (_) {
-        row['harga'] = row['harga'] ?? {};
-      }
-      try {
-        row['testimoni'] = jsonDecode(row['testimoni'] ?? '[]');
-      } catch (_) {
-        row['testimoni'] = [];
-      }
-      final penyedia = Penyedia.fromJson(row);
+
+    final Map<String, List<Penyedia>> groupedByKategori = {};
+
+    for (final row in normalized) {
       final kategori = (row['kategori'] ?? '').toString();
-      grouped.putIfAbsent(kategori, () => []).add(penyedia);
+      if (kategori.isEmpty) continue;
+
+      final penyedia = Penyedia.fromJson(row);
+      groupedByKategori.putIfAbsent(kategori, () => []).add(penyedia);
     }
 
-    final List<Vendormodel> result = grouped.entries
-        .map((e) => Vendormodel(kategori: e.key, penyedia: e.value))
-        .toList();
-    return result;
+    final List<Vendormodel> vendors = groupedByKategori.entries.map((entry) {
+      final kategori = entry.key;
+      final penyediaList = entry.value;
+
+      penyediaList.sort((a, b) => b.rating.compareTo(a.rating));
+
+      return Vendormodel(kategori: kategori, penyedia: penyediaList);
+    }).toList();
+
+    return vendors;
   }
 
-  /// Delete a package by setting its TipePaket values to defaults and updating DB
   Future<void> deletePackage(String vendorEmail, String packageName) async {
     final db = await databaserService.getDatabase();
     final vm = await getVendorByEmail(vendorEmail);
@@ -169,7 +139,6 @@ class Vendordatabase {
     }
   }
 
-  /// Update package (rename/move) - simplified: replace old package with empty and set new
   Future<void> updatePackage(
     String vendorEmail,
     String oldPackageName,
@@ -182,7 +151,7 @@ class Vendordatabase {
 
     final penyedia = vm.penyedia.first;
     final harga = penyedia.harga;
-    // clear old
+
     switch (oldPackageName.toLowerCase()) {
       case 'basic':
         harga.basic = TipePaket(harga: 0, jasa: '');
@@ -223,7 +192,6 @@ class Vendordatabase {
     );
   }
 
-  /// Get single vendor by email. Returns Vendormodel wrapping the single Penyedia to keep compatibility.
   Future<Vendormodel?> getVendorByEmail(String email) async {
     final db = await databaserService.getDatabase();
     final maps = await db.query(
@@ -284,7 +252,6 @@ class Vendordatabase {
     return res.map((row) => row["kategori"].toString()).toList();
   }
 
-  /// Insert a vendor. Accepts either a single Penyedia or a Vendormodel (will insert all penyedia in it)
   Future<int> insertVendor(dynamic vendor, {String kategori = ''}) async {
     final db = await databaserService.getDatabase();
     if (vendor is Vendormodel) {
@@ -328,7 +295,6 @@ class Vendordatabase {
     }
   }
 
-  /// LoginVendor returns Penyedia
   Future<Penyedia?> LoginVendor(String email, String password) async {
     final db = await databaserService.getDatabase();
     final maps = await db.query(
@@ -377,5 +343,29 @@ class Vendordatabase {
       }
     }
     print('Passwords updated successfully.');
+  }
+
+  Future<List<Penyedia>> searchVendors(String query) async {
+    final db = await databaserService.getDatabase();
+    final maps = await db.query(
+      'Vendor',
+      where: 'nama LIKE ? OR kategori LIKE ?',
+      whereArgs: ['%$query%', '%$query%'],
+    );
+
+    return maps.map((row) {
+      final r = Map<String, dynamic>.from(row);
+      try {
+        r['harga'] = jsonDecode(r['harga'] ?? '{}');
+      } catch (_) {
+        r['harga'] = {};
+      }
+      try {
+        r['testimoni'] = jsonDecode(r['testimoni'] ?? '[]');
+      } catch (_) {
+        r['testimoni'] = [];
+      }
+      return Penyedia.fromJson(r);
+    }).toList();
   }
 }

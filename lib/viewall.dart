@@ -12,9 +12,9 @@ class ViewAllPage extends StatefulWidget {
 }
 
 class _ViewAllPageState extends State<ViewAllPage> {
-  late Future<List<Vendormodel>> futureVendors;
-  List<Vendormodel> allVendors = [];
-  List<Vendormodel> filteredVendors = [];
+  late Future<List<Penyedia>> futureVendors;
+  List<Penyedia> allVendors = [];
+  List<Penyedia> filteredVendors = [];
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -23,16 +23,21 @@ class _ViewAllPageState extends State<ViewAllPage> {
     futureVendors = fetchData();
   }
 
-  Future<List<Vendormodel>> fetchData() async {
+  Future<List<Penyedia>> fetchData() async {
     Vendordatabase vendordatabase = Vendordatabase();
-    final data = await vendordatabase.getData(); 
-
-    allVendors = data;
-    filteredVendors = data;
-    return data;
+    final data = await vendordatabase.getData();
+    final List<Penyedia> penyediaList = [];
+    for (var vm in data) {
+      penyediaList.addAll(vm.penyedia);
+    }
+    allVendors = penyediaList;
+    filteredVendors = penyediaList;
+    return penyediaList;
   }
 
-  void _filterData(String query) {
+  void _filterData(String query) async {
+    Vendordatabase vendordatabase = Vendordatabase();
+
     if (query.isEmpty) {
       setState(() {
         filteredVendors = allVendors;
@@ -40,29 +45,18 @@ class _ViewAllPageState extends State<ViewAllPage> {
       return;
     }
 
+    final results = await vendordatabase.searchVendors(query);
+
     setState(() {
-      filteredVendors = allVendors.where((vendor) {
-        final name = vendor.nama.toLowerCase();
-        final kategori = vendor.kategori.toLowerCase();
-        return name.contains(query.toLowerCase()) ||
-            kategori.contains(query.toLowerCase());
-      }).toList();
+      filteredVendors = results;
     });
   }
 
-  int getBasicPrice(Vendormodel vendor) {
-    if (vendor.harga.isEmpty) return 0;
-
-    Map<String, dynamic> hargaMap;
-    try {
-      hargaMap = jsonDecode(vendor.harga); 
-    } catch (e) {
-      print("Error decoding harga JSON: $e");
-      return 0; 
-    }
-
+  int getBasicPrice(Penyedia vendor) {
+    if (vendor.harga == null) return 0;
+    final hargaMap = vendor.harga.toJson();
     int minPrice = -1;
-    for (var value in hargaMap.values) { 
+    for (var value in hargaMap.values) {
       if (value is Map<String, dynamic> && value['harga'] is int) {
         final currentPrice = value['harga'] as int;
         if (minPrice == -1 || currentPrice < minPrice) {
@@ -80,7 +74,7 @@ class _ViewAllPageState extends State<ViewAllPage> {
         title: const Text("Our Product"),
         foregroundColor: Colors.black,
       ),
-      body: FutureBuilder<List<Vendormodel>>(
+      body: FutureBuilder<List<Penyedia>>(
         future: futureVendors,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -110,8 +104,6 @@ class _ViewAllPageState extends State<ViewAllPage> {
                   onChanged: _filterData,
                 ),
               ),
-
-              // Grid hasil pencarian
               Expanded(
                 child: filteredVendors.isEmpty
                     ? const Center(child: Text("Tidak ada hasil"))
@@ -119,11 +111,11 @@ class _ViewAllPageState extends State<ViewAllPage> {
                         padding: const EdgeInsets.all(12),
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 16,
-                          childAspectRatio: 0.7,
-                        ),
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 16,
+                              childAspectRatio: 0.7,
+                            ),
                         itemCount: filteredVendors.length,
                         itemBuilder: (context, index) {
                           final vendor = filteredVendors[index];
@@ -164,9 +156,10 @@ class _ViewAllPageState extends State<ViewAllPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Gambar
             ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
+              ),
               child: Image.network(
                 imageUrl,
                 height: 140,
@@ -179,8 +172,6 @@ class _ViewAllPageState extends State<ViewAllPage> {
                 ),
               ),
             ),
-
-            // Isi
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -212,13 +203,16 @@ class _ViewAllPageState extends State<ViewAllPage> {
                         ),
                       ],
                     ),
-
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.star, color: Colors.amber, size: 16),
+                            const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                              size: 16,
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               rating.toString(),
