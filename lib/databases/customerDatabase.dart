@@ -14,7 +14,6 @@ class CustomerDatabase {
       final url = Uri.parse("${base_url.customer}/register");
       final response = await http.post(
         url,
-        body: jsonEncode(customer.toJson()),
         headers: {"Content-Type": "application/json"},
       );
       if (response.statusCode == 201) {
