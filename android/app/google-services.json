@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "199863740375",
+    "project_id": "kuliah-1862e",
+    "storage_bucket": "kuliah-1862e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:199863740375:android:8a97b595871e3d3bb04d92",
+        "android_client_info": {
+          "package_name": "com.example.movie"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpebfaddq5xfJGwL3NsWwAVoUemXemmqs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:199863740375:android:24180392ed71ea8ab04d92",
+        "android_client_info": {
+          "package_name": "com.example.projek_uts_mbr"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpebfaddq5xfJGwL3NsWwAVoUemXemmqs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
