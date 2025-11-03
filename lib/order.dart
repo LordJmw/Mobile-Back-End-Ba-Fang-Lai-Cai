@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/databases/purchaseHistoryDatabase.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
@@ -275,6 +276,15 @@ class _OrderPageState extends State<OrderPage> {
     );
 
     await _purchaseDb.addPurchaseHistory(purchaseHistory);
+
+    await Eventlogs().beliPaket(
+      widget.namaVendor,
+      selectedPackage!,
+      selectedPrice.toString(),
+      selectedDate!.toIso8601String(),
+      _locationController.text,
+      email,
+    );
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(

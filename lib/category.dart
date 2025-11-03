@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
@@ -251,11 +252,12 @@ class _CategoryPageState extends State<CategoryPage> {
                                     218,
                                   ),
                                   values: _rentangHarga,
-                                  onChanged: (RangeValues values) {
+                                  onChanged: (RangeValues values) async {
                                     setState(() {
                                       _rentangHarga = values;
                                     });
                                     saveFilterPreferences();
+                                    await Eventlogs().HargaFilter(values);
                                   },
                                   min: 0,
                                   max: 10000000,
@@ -291,7 +293,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                 Row(
                                   children: List.generate(5, (index) {
                                     return GestureDetector(
-                                      onTap: () {
+                                      onTap: () async {
                                         setState(() {
                                           _starIsclicked[index] =
                                               !_starIsclicked[index];
@@ -300,6 +302,9 @@ class _CategoryPageState extends State<CategoryPage> {
                                               : _jumlahBintang--;
                                         });
                                         saveFilterPreferences();
+                                        await Eventlogs().ratingFilter(
+                                          _jumlahBintang,
+                                        );
                                       },
                                       child: Icon(
                                         Icons.star,

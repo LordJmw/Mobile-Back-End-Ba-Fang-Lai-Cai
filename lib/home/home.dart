@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 import 'package:projek_uts_mbr/main.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
@@ -189,7 +190,8 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
+                  await Eventlogs().LihatHalKategori();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -306,7 +308,11 @@ class _HomePageState extends State<HomePage> {
             ),
             padding: const EdgeInsets.all(16),
           ),
-          onPressed: () {
+          onPressed: () async {
+            await Eventlogs().categoryIconButtonClicked(
+              label.replaceAll("\n", " "),
+              "HomePage",
+            );
             Navigator.push(
               context,
               MaterialPageRoute(

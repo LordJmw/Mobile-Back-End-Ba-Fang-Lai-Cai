@@ -6,64 +6,6 @@ import 'package:projek_uts_mbr/helper/base_url.dart';
 import 'package:projek_uts_mbr/model/CustomerModel.dart';
 import 'package:http/http.dart' as http;
 
-// class CustomerDatabase {
-//   final DatabaserService _dbService = DatabaserService();
-
-  //   Future<int> insertCustomer(CustomerModel customer) async {
-  //     try {
-  //       final url = Uri.parse("${base_url.customer}/register");
-  //       final response = await http.post(
-  //         url,
-  //         body: jsonEncode(customer.toJson()),
-  //         headers: {"Content-Type": "application/json"},
-  //       );
-  //       if (response.statusCode == 201) {
-  //         final data = jsonDecode(response.body);
-  //         print("register customer sukses");
-  //         return data['customerId'];
-  //       }
-  //       throw Exception('Server error while register customer');
-  //     } catch (e) {
-  //       print("error register customer : $e");
-  //       rethrow;
-  //     }
-  //     // final db = await _dbService.getDatabase();
-  //     // return await db.insert('Customer', customer.toJson());
-  //   }
-
-  //   Future<Database> getDatabase() async {
-  //     return await _dbService.getDatabase();
-  //   }
-
-  //   Future<CustomerModel?> LoginCustomer(String email, String password) async {
-  //     try {
-  //       final url = Uri.parse("${base_url.customer}/login");
-  //       final response = await http.post(
-  //         url,
-  //         body: jsonEncode({'email': email, 'password': password}),
-  //         headers: {"Content-Type": "application/json"},
-  //       );
-  //       if (response.statusCode == 200) {
-  //         print("login customer sukses");
-  //         final data = jsonDecode(response.body);
-  //         return CustomerModel.fromJson(data['user']);
-  //       } else if (response.statusCode == 401) {
-  //         print("Email atau password salah");
-  //         return null;
-  //       } else {
-  //         print("Gagal login: ${response.statusCode} ${response.body}");
-  //         throw Exception("Failed to login");
-  //       }
-  //     } catch (e) {
-  //       print("error login customer : $e");
-  //       rethrow;
-  //     }
-  //   }
-
-
-// }
-
-
 class CustomerDatabase {
   final DatabaserService _dbService = DatabaserService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -71,10 +13,11 @@ class CustomerDatabase {
   // Register
   Future<int> insertCustomer(CustomerModel customer) async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-        email: customer.email,
-        password: customer.password,
-      );
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(
+            email: customer.email,
+            password: customer.password,
+          );
       String uid = userCredential.user!.uid;
       print("Register customer sukses with UID: $uid");
 
@@ -83,7 +26,7 @@ class CustomerDatabase {
         url,
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
-          "id" : uid,
+          "id": uid,
           "nama": customer.nama,
           "email": customer.email,
           "password": customer.password,
@@ -91,25 +34,22 @@ class CustomerDatabase {
           "alamat": customer.alamat,
         }),
       );
-        
+
       if (response.statusCode == 201) {
         print("Register ke Node.js sukses");
         final data = jsonDecode(response.body);
-        return data['customerId']; // misalnya Node.js kirim ID tabel customer
+        return data['customerId'];
       } else {
         print("Gagal register ke Node.js: ${response.statusCode}");
         print("Body: ${response.body}");
         throw Exception("Register Node.js gagal");
       }
-     
-      
     } catch (e) {
       print("Error register customer: $e");
       rethrow;
     }
-  } 
+  }
 
-  // Login
   Future<CustomerModel?> LoginCustomer(String email, String password) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -123,10 +63,7 @@ class CustomerDatabase {
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "email": email,
-          "password": password,
-        }),
+        body: jsonEncode({"email": email, "password": password}),
       );
 
       if (response.statusCode == 200) {
@@ -146,7 +83,6 @@ class CustomerDatabase {
       rethrow;
     }
   }
-
 
   Future<CustomerModel?> getCustomerByEmail(String email) async {
     try {
@@ -168,17 +104,6 @@ class CustomerDatabase {
       print("error  getCustomer by email: $e");
       rethrow;
     }
-    // final db = await _dbService.getDatabase();
-    // final maps = await db.query(
-    //   'Customer',
-    //   where: 'email = ?',
-    //   whereArgs: [email],
-    // );
-
-    // if (maps.isNotEmpty) {
-    //   return CustomerModel.fromJson(maps.first);
-    // }
-    // return null;
   }
 
   Future<bool> updateCustomerProfile(CustomerModel customer) async {
@@ -189,6 +114,18 @@ class CustomerDatabase {
     );
     if (response.statusCode == 200) {
       print("Customer updated successfully");
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        try {
+          await user.updateDisplayName(customer.nama);
+          await user.reload();
+          print("Firebase Auth displayName updated");
+        } catch (firebaseError) {
+          print("Firebase update failed: $firebaseError");
+        }
+      } else {
+        print("no user logged in");
+      }
       return true;
     } else {
       print(
@@ -198,15 +135,6 @@ class CustomerDatabase {
       return false;
     }
   }
-  // Future<int> updateCustomerProfile(CustomerModel customer) async {
-  //   final db = await getDatabase();
-  //   return await db.update(
-  //     'Customer',
-  //     customer.toJson(),
-  //     where: 'id = ?',
-  //     whereArgs: [customer.id],
-  //   );
-  // }
 
   Future<void> printAllCustomers() async {
     final db = await _dbService.getDatabase();
@@ -215,6 +143,5 @@ class CustomerDatabase {
     for (var v in Customers) {
       print(v);
     }
-  }  
-
+  }
 }
