@@ -136,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                       return _buildVendorCard(
                         context,
                         vendor.penyedia.first.nama,
-                        "⭐ ${vendor.penyedia.first.rating.toStringAsFixed(1)}",
+                        "⭐ ${vendor.penyedia.first.rating}",
                         vendor.penyedia.first.image,
                       );
                     },
@@ -342,7 +342,9 @@ class _HomePageState extends State<HomePage> {
     String imgPath,
   ) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+        print("im here bro");
+        await Eventlogs().bestInWeek(context, name, rating, imgPath);
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Carddetail(namaVendor: name)),

@@ -77,4 +77,25 @@ class Eventlogs {
       },
     );
   }
+
+  Future<void> bestInWeek(
+    BuildContext context,
+    String name,
+    String rating,
+    String imgPath,
+  ) async {
+    try {
+      await analytics.logEvent(
+        name: 'user_click_card_best_week',
+        parameters: {
+          'button': 'tombol_card',
+          'vendor_name': name,
+          'vendor_rating': rating,
+          'vendor_image': imgPath,
+        },
+      );
+    } catch (e) {
+      print('analytics error bestInWeek: $e');
+    }
+  }
 }

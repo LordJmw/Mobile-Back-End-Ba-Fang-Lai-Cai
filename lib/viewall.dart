@@ -114,7 +114,7 @@ class _ViewAllPageState extends State<ViewAllPage> {
                               crossAxisCount: 2,
                               crossAxisSpacing: 12,
                               mainAxisSpacing: 16,
-                              childAspectRatio: 0.7,
+                              childAspectRatio: 0.6,
                             ),
                         itemCount: filteredVendors.length,
                         itemBuilder: (context, index) {
@@ -162,11 +162,11 @@ class _ViewAllPageState extends State<ViewAllPage> {
               ),
               child: Image.network(
                 imageUrl,
-                height: 140,
+                height: 120,
                 width: double.infinity,
                 fit: BoxFit.cover,
                 errorBuilder: (_, __, ___) => Container(
-                  height: 140,
+                  height: 120,
                   color: Colors.grey[300],
                   child: const Icon(Icons.broken_image, size: 40),
                 ),
