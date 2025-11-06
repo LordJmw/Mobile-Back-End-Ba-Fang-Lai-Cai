@@ -98,4 +98,32 @@ class Eventlogs {
       print('analytics error bestInWeek: $e');
     }
   }
+
+  Future<void> logLoginActivity(String email, String userType) async {
+    print("Logging login activity for $email");
+    await analytics.logEvent(
+      name: 'login_activity',
+      parameters: {
+        'email': email,
+        'user_type': userType,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+   Future<void> logRegisterActivity(String email, String userType, String alamat, String telepon) async {
+    print("Logging register activity for $email");
+    await analytics.logEvent(
+      name: 'register_activity',
+      parameters: {
+        'email': email,
+        'user_type': userType,
+        'alamat' : alamat,
+        'telepon' : telepon,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+    print('selesai');
+  }
+
 }

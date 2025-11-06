@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/loginVendor.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/main.dart';
@@ -31,6 +32,9 @@ class _LoginCustomerState extends State<LoginCustomer> {
     if (customer != null) {
       final sessionManager = SessionManager();
       await sessionManager.createLoginSession(customer.email, "customer");
+      
+      final eventlogs = Eventlogs();
+      await eventlogs.logLoginActivity(customer.email, "customer");
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
