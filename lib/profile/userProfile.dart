@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/databases/purchaseHistoryDatabase.dart';
@@ -387,6 +388,13 @@ class _UserProfileState extends State<UserProfile> {
 
                       await purchaseDb.updatePurchaseHistory(updatedPurchase);
 
+                      await Eventlogs().editPaket(
+                        updatedPurchase.id,
+                        updatedPurchase.customerId,
+                        updatedPurchase.purchaseDetails,
+                        updatedPurchase.purchaseDate,
+                      );
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           backgroundColor: Colors.green,
@@ -447,6 +455,7 @@ class _UserProfileState extends State<UserProfile> {
     if (confirm) {
       try {
         await purchaseDb.deletePurchaseHistory(purchaseId);
+        await Eventlogs().deletePaket(purchaseId, vendorName);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: Colors.green,

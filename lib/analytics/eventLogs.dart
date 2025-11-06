@@ -1,5 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/model/purchaseHistoryModel.dart';
 
 class Eventlogs {
   final analytics = FirebaseAnalytics.instance;
@@ -84,6 +85,7 @@ class Eventlogs {
     String rating,
     String imgPath,
   ) async {
+    print("best in week vendor : ${name}");
     try {
       await analytics.logEvent(
         name: 'user_click_card_best_week',
@@ -97,5 +99,56 @@ class Eventlogs {
     } catch (e) {
       print('analytics error bestInWeek: $e');
     }
+  }
+
+  Future<void> portNReview(
+    BuildContext context,
+    String name,
+    String desc,
+    String imgPath,
+  ) async {
+    try {
+      await analytics.logEvent(
+        name: 'user_click_card_portofolio_review',
+        parameters: {
+          'button': 'tombol_portofolio_review',
+          'vendor_name': name,
+          'vendor_desc': desc,
+          'vendor_image': imgPath,
+        },
+      );
+    } catch (e) {
+      print('analytics error portofolios&Review: $e');
+    }
+  }
+
+  Future<void> editPaket(
+    int? purchaseId,
+    int customerId,
+    PurchaseDetails purchaseDetails,
+    DateTime purchaseDate,
+  ) async {
+    print("eventlog edit dipanggil");
+    await analytics.logEvent(
+      name: 'edit_paket_sukses',
+      parameters: {
+        'button': 'tombol_edit',
+        'purchaseId': purchaseId.toString(),
+        'customerId': customerId,
+        'purchaseDetails': purchaseDetails.toString(),
+        'purchaseDate': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  Future<void> deletePaket(int? purchaseId, String vendorName) async {
+    await analytics.logEvent(
+      name: 'hapus_paket_sukses',
+      parameters: {
+        'button': 'tombol_delete',
+        'purchaseId': ?purchaseId,
+        'namaVendor': vendorName,
+      },
+    );
   }
 }

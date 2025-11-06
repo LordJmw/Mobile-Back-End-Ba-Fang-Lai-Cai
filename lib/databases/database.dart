@@ -2,7 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class DatabaserService {
-  String DB_NAME = "vendorhub";
+  String DB_NAME = "eventhub.db";
   Database? database;
 
   Future<Database> getDatabase() async {

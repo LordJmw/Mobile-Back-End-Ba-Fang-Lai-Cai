@@ -396,7 +396,8 @@ class _HomePageState extends State<HomePage> {
     String imgPath,
   ) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+        await Eventlogs().portNReview(context, name, desc, imgPath);
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Carddetail(namaVendor: name)),
