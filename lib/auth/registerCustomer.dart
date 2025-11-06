@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/model/CustomerModel.dart';
@@ -34,6 +35,8 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
 
     final db = CustomerDatabase();
     await db.insertCustomer(customer);
+    final eventlogs = Eventlogs();
+    await eventlogs.logRegisterActivity(customer.email, "customer", customer.alamat, customer.telepon);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
