@@ -180,6 +180,19 @@ class _CarddetailState extends State<Carddetail> {
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () {
+                              if (harga.basic.harga == 0 &&
+                                  harga.premium.harga == 0 &&
+                                  harga.custom.harga == 0) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    backgroundColor: Colors.red,
+                                    content: Text(
+                                      "Paket sudah dihapus oleh vendor.",
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -371,6 +384,15 @@ class _CarddetailState extends State<Carddetail> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
+                  if (harga == 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: Colors.red,
+                        content: Text("Paket ini sudah dihapus oleh vendor."),
+                      ),
+                    );
+                    return;
+                  }
                   Navigator.push(
                     context,
                     MaterialPageRoute(

@@ -44,6 +44,14 @@ class CustomerDatabase {
         print("Body: ${response.body}");
         throw Exception("Register Node.js gagal");
       }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        print("Email sudah digunakan");
+        throw Exception("EMAIL_USED"); // tandai error khusus
+      } else {
+        print("FirebaseAuth error: ${e.code} - ${e.message}");
+        throw Exception("FIREBASE_ERROR");
+      }
     } catch (e) {
       print("Error register customer: $e");
       rethrow;

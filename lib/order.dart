@@ -295,9 +295,10 @@ class _OrderPageState extends State<OrderPage> {
       ),
     );
 
-    Navigator.push(
+    Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => MainScreen()),
+      (route) => false,
     );
   }
 

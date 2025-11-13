@@ -23,32 +23,55 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
   final TextEditingController _alamatController = TextEditingController();
 
   Future<void> _saveCustomer() async {
-    if (!_formKey.currentState!.validate()) return;
+    try {
+      if (!_formKey.currentState!.validate()) return;
 
-    final customer = CustomerModel(
-      nama: _namaController.text,
-      email: _emailController.text,
-      password: _passwordController.text,
-      telepon: _teleponController.text,
-      alamat: _alamatController.text,
-    );
+      final customer = CustomerModel(
+        nama: _namaController.text,
+        email: _emailController.text,
+        password: _passwordController.text,
+        telepon: _teleponController.text,
+        alamat: _alamatController.text,
+      );
 
-    final db = CustomerDatabase();
-    await db.insertCustomer(customer);
-    final eventlogs = Eventlogs();
-    await eventlogs.logRegisterActivity(customer.email, "customer", customer.alamat, customer.telepon);
+      final db = CustomerDatabase();
+      await db.insertCustomer(customer);
+      final eventlogs = Eventlogs();
+      await eventlogs.logRegisterActivity(
+        customer.email,
+        "customer",
+        customer.alamat,
+        customer.telepon,
+      );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        backgroundColor: Colors.green,
-        content: Text("Akun berhasil didaftarkan!"),
-      ),
-    );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.green,
+          content: Text("Akun berhasil didaftarkan!"),
+        ),
+      );
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => LoginCustomer()),
-    );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => LoginCustomer()),
+      );
+    } catch (e) {
+      if (e.toString().contains("EMAIL_USED")) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.red,
+            content: Text("Email ini sudah terdaftar"),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text("Terjadi kesalahan: ${e.toString()}"),
+          ),
+        );
+      }
+    }
   }
 
   @override
