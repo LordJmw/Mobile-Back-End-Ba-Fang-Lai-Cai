@@ -220,6 +220,7 @@ class _UserProfileState extends State<UserProfile> {
                     );
 
                     if (result) {
+                      await Eventlogs().logProfileEdited(customerEmail, "user");
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           backgroundColor: Colors.green,

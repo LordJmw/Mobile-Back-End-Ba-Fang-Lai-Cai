@@ -183,4 +183,41 @@ class Eventlogs {
     );
     print('selesai');
   }
+
+  Future<void> logViewAllCardClick(
+    String vendorName,
+    String vendorRating,
+  ) async {
+    print("LOG: User clicked card on ViewAll - $vendorName");
+    try {
+      await analytics.logEvent(
+        name: 'user_click_card_view_all',
+        parameters: {
+          'button': 'tombol_card_view_all',
+          'vendor_name': vendorName,
+          'vendor_rating': vendorRating,
+          'screen_name': 'ViewAllPage',
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+    } catch (e) {
+      print('analytics error logViewAllCardClick: $e');
+    }
+  }
+
+  Future<void> logProfileEdited(String email, String userType) async {
+    print("LOG: User edited profile - $email");
+    try {
+      await analytics.logEvent(
+        name: 'profile_edited',
+        parameters: {
+          'user_email': email,
+          'user_type': userType,
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+    } catch (e) {
+      print('analytics error logProfileEdited: $e');
+    }
+  }
 }

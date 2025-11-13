@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
@@ -145,6 +146,8 @@ class _ViewAllPageState extends State<ViewAllPage> {
   }) {
     return GestureDetector(
       onTap: () {
+        Eventlogs().logViewAllCardClick(name, rating.toString());
+
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Carddetail(namaVendor: name)),

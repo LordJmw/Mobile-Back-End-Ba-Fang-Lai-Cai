@@ -78,6 +78,17 @@ class CustomerDatabase {
         print("Body: ${response.body}");
         throw Exception("Login Node.js gagal");
       }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('Tidak ada user dengan email tersebut.');
+      } else if (e.code == 'wrong-password') {
+        print('Password salah.');
+      } else if (e.code == 'invalid-email') {
+        print('Format email tidak valid.');
+      } else {
+        print('${e.code} Firebase Auth error: ${e.message}');
+      }
+      return null;
     } catch (e) {
       print("Error login customer: $e");
       rethrow;
