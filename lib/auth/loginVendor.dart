@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/main.dart';
@@ -30,7 +31,7 @@ class _LoginVendorState extends State<LoginVendor> {
     if (vendor != null) {
       final sessionManager = SessionManager();
       await sessionManager.createLoginSession(vendor.email, "vendor");
-
+      await Eventlogs().logVendorLoginActivity(_emailController.text, "vendor");
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           backgroundColor: Colors.green,

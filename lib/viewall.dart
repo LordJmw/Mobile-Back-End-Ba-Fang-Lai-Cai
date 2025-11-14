@@ -37,6 +37,7 @@ class _ViewAllPageState extends State<ViewAllPage> {
   }
 
   void _filterData(String query) async {
+    await Eventlogs().logSearchBarUsed(query);
     Vendordatabase vendordatabase = Vendordatabase();
 
     if (query.isEmpty) {
@@ -55,17 +56,23 @@ class _ViewAllPageState extends State<ViewAllPage> {
 
   int getBasicPrice(Penyedia vendor) {
     if (vendor.harga == null) return 0;
+
     final hargaMap = vendor.harga.toJson();
-    int minPrice = -1;
+    List<int> hargaList = [];
+
     for (var value in hargaMap.values) {
       if (value is Map<String, dynamic> && value['harga'] is int) {
         final currentPrice = value['harga'] as int;
-        if (minPrice == -1 || currentPrice < minPrice) {
-          minPrice = currentPrice;
+        if (currentPrice > 0) {
+          hargaList.add(currentPrice);
         }
       }
     }
-    return minPrice == -1 ? 0 : minPrice;
+
+    if (hargaList.isEmpty) return 0;
+
+    hargaList.sort();
+    return hargaList.first;
   }
 
   @override
@@ -146,8 +153,6 @@ class _ViewAllPageState extends State<ViewAllPage> {
   }) {
     return GestureDetector(
       onTap: () {
-        Eventlogs().logViewAllCardClick(name, rating.toString());
-
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Carddetail(namaVendor: name)),
@@ -156,6 +161,7 @@ class _ViewAllPageState extends State<ViewAllPage> {
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 4,
+        clipBehavior: Clip.antiAlias,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -165,11 +171,11 @@ class _ViewAllPageState extends State<ViewAllPage> {
               ),
               child: Image.network(
                 imageUrl,
-                height: 120,
+                height: 100,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  height: 120,
+                errorBuilder: (_, _, _) => Container(
+                  height: 100,
                   color: Colors.grey[300],
                   child: const Icon(Icons.broken_image, size: 40),
                 ),
@@ -191,17 +197,17 @@ class _ViewAllPageState extends State<ViewAllPage> {
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
                           ),
-                          maxLines: 2,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 2),
                         Text(
                           description,
                           style: const TextStyle(
-                            fontSize: 11,
+                            fontSize: 12,
                             color: Colors.black87,
                           ),
-                          maxLines: 2,
+                          maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
@@ -214,22 +220,22 @@ class _ViewAllPageState extends State<ViewAllPage> {
                             const Icon(
                               Icons.star,
                               color: Colors.amber,
-                              size: 16,
+                              size: 14,
                             ),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: 3),
                             Text(
-                              rating.toString(),
-                              style: const TextStyle(fontSize: 12),
+                              rating.toStringAsFixed(1),
+                              style: const TextStyle(fontSize: 11),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 3),
                         Text(
                           "Rp $price",
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: Colors.pink[200],
+                            color: Colors.pink[400],
                           ),
                         ),
                       ],

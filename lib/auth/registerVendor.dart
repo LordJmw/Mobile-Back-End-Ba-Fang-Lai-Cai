@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/logincostumer.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
@@ -83,7 +84,17 @@ class _RegisterVendorState extends State<RegisterVendor> {
     await db.insertVendor(vendor);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Vendor berhasil didaftarkan!")),
+      const SnackBar(
+        content: Text("Vendor berhasil didaftarkan!"),
+        backgroundColor: Colors.green,
+      ),
+    );
+
+    await Eventlogs().logVendorRegisterActivity(
+      penyedia.email,
+      "vendor",
+      selectedCategory!,
+      penyedia.nama,
     );
 
     Navigator.pushReplacement(
@@ -207,14 +218,21 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: const InputDecoration(labelText: "Harga Basic"),
-                    validator: (v) =>
-                        v!.isEmpty ? "Harga Basic wajib diisi" : null,
+                    validator: (v) {
+                      if (v == null || v.isEmpty)
+                        return "Harga Basic wajib diisi";
+                      final value = int.tryParse(v);
+                      if (value == null) return "Harga tidak valid";
+                      if (value > 10000000)
+                        return "Harga tidak boleh lebih dari 10 juta";
+                      return null;
+                    },
                   ),
                   TextFormField(
                     controller: _jasaBasicController,
                     decoration: const InputDecoration(labelText: "Jasa Basic"),
                     validator: (v) =>
-                        v!.isEmpty ? "Jasa Basic wajib diisi" : null,
+                        v!.isEmpty ? "Jasa Premium wajib diisi" : null,
                   ),
                   const SizedBox(height: 20),
                   const Text(
@@ -231,8 +249,15 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     decoration: const InputDecoration(
                       labelText: "Harga Premium",
                     ),
-                    validator: (v) =>
-                        v!.isEmpty ? "Harga Premium wajib diisi" : null,
+                    validator: (v) {
+                      if (v == null || v.isEmpty)
+                        return "Harga Basic wajib diisi";
+                      final value = int.tryParse(v);
+                      if (value == null) return "Harga tidak valid";
+                      if (value > 10000000)
+                        return "Harga tidak boleh lebih dari 10 juta";
+                      return null;
+                    },
                   ),
                   TextFormField(
                     controller: _jasaPremiumController,
@@ -257,8 +282,15 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     decoration: const InputDecoration(
                       labelText: "Harga Custom",
                     ),
-                    validator: (v) =>
-                        v!.isEmpty ? "Harga Custom wajib diisi" : null,
+                    validator: (v) {
+                      if (v == null || v.isEmpty)
+                        return "Harga Basic wajib diisi";
+                      final value = int.tryParse(v);
+                      if (value == null) return "Harga tidak valid";
+                      if (value > 10000000)
+                        return "Harga tidak boleh lebih dari 10 juta";
+                      return null;
+                    },
                   ),
                   TextFormField(
                     controller: _jasaCustomController,

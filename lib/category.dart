@@ -36,23 +36,26 @@ formatPrice(int price) {
   return result;
 }
 
-int getBasicPrice(Vendormodel vendor) {
-  try {
-    final harga = vendor.penyedia.first.harga;
+int getBasicPrice(Penyedia vendor) {
+  if (vendor.harga == null) return 0;
 
-    final prices = [
-      harga.basic?.harga ?? 0,
-      harga.premium?.harga ?? 0,
-      harga.custom?.harga ?? 0,
-    ].where((p) => p > 0).toList();
+  final hargaMap = vendor.harga.toJson();
+  List<int> hargaList = [];
 
-    if (prices.isEmpty) return 0;
-    prices.sort();
-    return prices.first;
-  } catch (e) {
-    print("Error parsing harga for lowest price: $e");
-    return 0;
+  for (var value in hargaMap.values) {
+    if (value is Map<String, dynamic> && value['harga'] is int) {
+      final currentPrice = value['harga'] as int;
+
+      if (currentPrice > 0) {
+        hargaList.add(currentPrice);
+      }
+    }
   }
+
+  if (hargaList.isEmpty) return 0;
+
+  hargaList.sort();
+  return hargaList.first;
 }
 
 class _CategoryPageState extends State<CategoryPage> {
@@ -158,13 +161,14 @@ class _CategoryPageState extends State<CategoryPage> {
         .where((entry) => _layananDipilih[entry.key])
         .map((entry) => entry.value)
         .toList();
-
+    print("Selected services: $selectedService");
     tapppedCategory = selectedService;
 
     List<Penyedia> result = [];
 
     for (var vendorModel in data) {
       for (var penyedia in vendorModel.penyedia) {
+        print('${penyedia.nama}, ${vendorModel.kategori} ');
         final kategoriName = vendorModel.kategori;
         final hargaBasic = penyedia.harga.basic.harga;
         final rating = penyedia.rating;
@@ -181,6 +185,8 @@ class _CategoryPageState extends State<CategoryPage> {
         }
       }
     }
+
+    print(result.length);
 
     final noFilters =
         _jumlahBintang == 0 &&
@@ -465,7 +471,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                                   ),
                                                   const SizedBox(height: 6),
                                                   Text(
-                                                    "Rp ${formatPrice(penyedia.harga.basic.harga)}",
+                                                    "Rp ${formatPrice(getBasicPrice(penyedia))}",
                                                     style: const TextStyle(
                                                       fontSize: 15,
                                                       color: Colors.pink,

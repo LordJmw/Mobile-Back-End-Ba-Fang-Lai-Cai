@@ -220,4 +220,52 @@ class Eventlogs {
       print('analytics error logProfileEdited: $e');
     }
   }
+
+  Future<void> logSearchBarUsed(String query) async {
+    print("LOG: User search bar: $query");
+    try {
+      await analytics.logEvent(
+        name: 'search_bar_viewAll',
+        parameters: {
+          'search_query': query,
+          'screen_name': 'ViewAllPage',
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+    } catch (e) {
+      print('analytics error logSearchBarUsed: $e');
+    }
+  }
+
+  Future<void> logVendorLoginActivity(String email, String userType) async {
+    print("Logging login activity for $email");
+    await analytics.logEvent(
+      name: 'vendor_login_activity',
+      parameters: {
+        'email': email,
+        'user_type': userType,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+  }
+
+  Future<void> logVendorRegisterActivity(
+    String email,
+    String userType,
+    String kategori,
+    String namaVendor,
+  ) async {
+    print("Logging register activity for $email");
+    await analytics.logEvent(
+      name: 'vendor_register_activity',
+      parameters: {
+        'email': email,
+        'user_type': userType,
+        'nama_vendor': namaVendor,
+        'kategori': kategori,
+        'timestamp': DateTime.now().toIso8601String(),
+      },
+    );
+    print('selesai');
+  }
 }
