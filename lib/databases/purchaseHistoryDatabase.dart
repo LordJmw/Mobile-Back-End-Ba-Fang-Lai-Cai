@@ -55,7 +55,7 @@ class Purchasehistorydatabase {
   // }
 
   Future<List<PurchaseHistory>> getPurchaseHistoryByCustomerId(
-    int customerId,
+    String customerId,
   ) async {
     try {
       final url = Uri.parse('${base_url.purchaseHistoryUrl}/${customerId}');

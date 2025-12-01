@@ -29,10 +29,12 @@ class _LoginCustomerState extends State<LoginCustomer> {
       passwordController.text,
     );
 
+    print("customer di login ${customer}");
+
     if (customer != null) {
       final sessionManager = SessionManager();
       await sessionManager.createLoginSession(customer.email, "customer");
-      
+
       final eventlogs = Eventlogs();
       await eventlogs.logLoginActivity(customer.email, "customer");
 

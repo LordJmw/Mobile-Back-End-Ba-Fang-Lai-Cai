@@ -2,7 +2,7 @@ import 'dart:convert';
 
 class PurchaseHistory {
   final int? id;
-  final int customerId;
+  final String customerId;
   final PurchaseDetails purchaseDetails;
   final DateTime purchaseDate;
 
@@ -24,7 +24,7 @@ class PurchaseHistory {
 
     return PurchaseHistory(
       id: map['id'] as int?,
-      customerId: map['customer_id'] as int,
+      customerId: map['customer_id'],
       purchaseDetails: PurchaseDetails.fromJson(purchaseDetailsMap),
       purchaseDate: DateTime.parse(map['purchase_date'] as String),
     );

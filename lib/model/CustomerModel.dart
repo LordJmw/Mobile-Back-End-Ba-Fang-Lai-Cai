@@ -1,10 +1,11 @@
 class CustomerModel {
-  final int? id;
+  final String? id;
   final String nama;
   final String email;
   final String password;
   final String telepon;
   final String alamat;
+  final String? fotoProfil;
 
   CustomerModel({
     this.id,
@@ -13,6 +14,7 @@ class CustomerModel {
     required this.password,
     required this.telepon,
     required this.alamat,
+    required this.fotoProfil,
   });
 
   Map<String, dynamic> toJson() {
@@ -34,6 +36,7 @@ class CustomerModel {
       password: map['password'] ?? '',
       telepon: map['telepon'] ?? '',
       alamat: map['alamat'] ?? '',
+      fotoProfil: map['fotoProfil'],
     );
   }
 }

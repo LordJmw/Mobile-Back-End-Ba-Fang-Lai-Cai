@@ -79,7 +79,7 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
-  Future<void> _loadPurchaseHistory(int customerId) async {
+  Future<void> _loadPurchaseHistory(String customerId) async {
     try {
       final history = await purchaseDb.getPurchaseHistoryByCustomerId(
         customerId,
@@ -213,6 +213,7 @@ class _UserProfileState extends State<UserProfile> {
                       password: currentCustomer.password,
                       telepon: teleponController.text,
                       alamat: alamatController.text,
+                      fotoProfil: null,
                     );
 
                     final result = await customerDb.updateCustomerProfile(

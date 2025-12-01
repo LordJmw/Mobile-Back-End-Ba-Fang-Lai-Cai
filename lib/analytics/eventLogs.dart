@@ -124,7 +124,7 @@ class Eventlogs {
 
   Future<void> editPaket(
     int? purchaseId,
-    int customerId,
+    String customerId,
     PurchaseDetails purchaseDetails,
     DateTime purchaseDate,
   ) async {

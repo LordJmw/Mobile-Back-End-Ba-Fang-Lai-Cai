@@ -32,6 +32,7 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
         password: _passwordController.text,
         telepon: _teleponController.text,
         alamat: _alamatController.text,
+        fotoProfil: null,
       );
 
       final db = CustomerDatabase();
