@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
@@ -18,6 +22,7 @@ class _VendorprofileState extends State<Vendorprofile> {
   late StreamController<Vendormodel?> _vendorController;
   final Vendordatabase vendorDb = Vendordatabase();
   final SessionManager sessionManager = SessionManager();
+  File? _image;
 
   @override
   void initState() {
@@ -116,6 +121,96 @@ class _VendorprofileState extends State<Vendorprofile> {
     );
   }
 
+  Future<void> _requestPermissions() async {
+    await [Permission.camera, Permission.storage].request();
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    await _requestPermissions();
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+      _updateProfilePicture();
+    }
+  }
+
+  void _showPicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Gallery'),
+                onTap: () {
+                  _pickImage(ImageSource.gallery);
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Camera'),
+                onTap: () {
+                  _pickImage(ImageSource.camera);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _updateProfilePicture() async {
+    final String? vendorEmail = await sessionManager.getEmail();
+    if (vendorEmail == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Vendor not logged in.")));
+      return;
+    }
+
+    if (_image == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("No image selected.")));
+      return;
+    }
+
+    try {
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('vendor_profile_pictures')
+          .child('$vendorEmail.jpg');
+      await storageRef.putFile(_image!);
+      final imageUrl = await storageRef.getDownloadURL();
+
+      await vendorDb.updateVendorImage(vendorEmail, imageUrl);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Profile picture updated successfully."),
+          backgroundColor: Colors.green,
+        ),
+      );
+      loadVendorData(); // Refresh data
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Failed to update profile picture: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -158,12 +253,30 @@ class _VendorprofileState extends State<Vendorprofile> {
             child: Column(
               children: [
                 Center(
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: NetworkImage(
-                      currentVendor.penyedia.first.image.isNotEmpty
-                          ? currentVendor.penyedia.first.image
-                          : 'https://cdn-icons-png.flaticon.com/512/149/149071.png',
+                  child: GestureDetector(
+                    onTap: () => _showPicker(context),
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: _image != null
+                          ? FileImage(_image!)
+                          : NetworkImage(
+                                  currentVendor.penyedia.first.image.isNotEmpty
+                                      ? currentVendor.penyedia.first.image
+                                      : 'https://cdn-icons-png.flaticon.com/512/149/149071.png',
+                                )
+                                as ImageProvider,
+                      child: const Align(
+                        alignment: Alignment.bottomRight,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 15,
+                          child: Icon(
+                            Icons.camera_alt,
+                            size: 15,
+                            color: Colors.pink,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),

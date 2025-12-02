@@ -368,4 +368,14 @@ class Vendordatabase {
       return Penyedia.fromJson(r);
     }).toList();
   }
+
+  Future<void> updateVendorImage(String email, String imageUrl) async {
+    final db = await databaserService.getDatabase();
+    await db.update(
+      'Vendor',
+      {'image': imageUrl},
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+  }
 }

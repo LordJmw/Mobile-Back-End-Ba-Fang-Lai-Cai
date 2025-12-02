@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
@@ -22,6 +26,7 @@ class _UserProfileState extends State<UserProfile> {
   final CustomerDatabase customerDb = CustomerDatabase();
   final Purchasehistorydatabase purchaseDb = Purchasehistorydatabase();
   final SessionManager sessionManager = SessionManager();
+  File? _image;
 
   @override
   void initState() {
@@ -93,6 +98,52 @@ class _UserProfileState extends State<UserProfile> {
         _purchaseHistoryController.addError(e);
       }
     }
+  }
+
+  Future<void> _requestPermissions() async {
+    await [Permission.camera, Permission.storage].request();
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    await _requestPermissions();
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
+  void _showPicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Gallery'),
+                onTap: () {
+                  _pickImage(ImageSource.gallery);
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Camera'),
+                onTap: () {
+                  _pickImage(ImageSource.camera);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _editProfile() async {
@@ -206,6 +257,16 @@ class _UserProfileState extends State<UserProfile> {
                   }
 
                   try {
+                    String? imageUrl = currentCustomer.fotoProfil;
+                    if (_image != null) {
+                      final storageRef = FirebaseStorage.instance
+                          .ref()
+                          .child('profile_pictures')
+                          .child('${currentCustomer.id}.jpg');
+                      await storageRef.putFile(_image!);
+                      imageUrl = await storageRef.getDownloadURL();
+                    }
+
                     final updatedCustomer = CustomerModel(
                       id: currentCustomer.id,
                       nama: namaController.text,
@@ -213,7 +274,7 @@ class _UserProfileState extends State<UserProfile> {
                       password: currentCustomer.password,
                       telepon: teleponController.text,
                       alamat: alamatController.text,
-                      fotoProfil: null,
+                      fotoProfil: imageUrl,
                     );
 
                     final result = await customerDb.updateCustomerProfile(
@@ -582,11 +643,32 @@ class _UserProfileState extends State<UserProfile> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Image.network(
-                                    'https://cdn-icons-png.flaticon.com/512/149/149071.png',
-                                    fit: BoxFit.cover,
-                                    width: 100,
-                                    height: 100,
+                                  GestureDetector(
+                                    onTap: () {
+                                      _showPicker(context);
+                                    },
+                                    child: CircleAvatar(
+                                      radius: 50,
+                                      backgroundImage: _image != null
+                                          ? FileImage(_image!)
+                                          : NetworkImage(
+                                                  currentCustomer.fotoProfil ??
+                                                      'https://cdn-icons-png.flaticon.com/512/149/149071.png',
+                                                )
+                                                as ImageProvider,
+                                      child: const Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          radius: 15,
+                                          child: Icon(
+                                            Icons.camera_alt,
+                                            size: 15,
+                                            color: Colors.pink,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
