@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:projek_uts_mbr/auth/logincostumer.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/category.dart';
 import 'package:projek_uts_mbr/home/home.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations.dart';
+
 import 'package:projek_uts_mbr/profile/userProfile.dart';
 import 'package:projek_uts_mbr/profile/vendorProfile.dart';
 import 'package:projek_uts_mbr/auth/register.dart';
@@ -12,7 +15,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:firebase_core/firebase_core.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +50,17 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      locale: Locale('id'),
+      localizationsDelegates: [
+        AppLocalizations.delegate, // Add this line
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale('en'), // English
+        Locale('id'),
+      ],
       home: FutureBuilder<bool>(
         future: checkLoginStatus(),
         builder: (context, snapshot) {

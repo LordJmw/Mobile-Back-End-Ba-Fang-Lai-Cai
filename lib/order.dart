@@ -179,7 +179,11 @@ class _OrderPageState extends State<OrderPage> {
     }
   }
 
+  bool isBuying = false;
+
   beliPaket() async {
+    print("Tombol beliPaket ditekan"); // Debug
+
     if (isLoading) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -190,116 +194,119 @@ class _OrderPageState extends State<OrderPage> {
       return;
     }
 
-    SessionManager sessionManager = SessionManager();
-    String? userType = await sessionManager.getUserType();
-    String? email = await sessionManager.getEmail();
-
-    if (userType == "vendor") {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.pink,
-          content: Text("Login sebagai customer untuk dapat membeli paket"),
-        ),
-      );
+    if (isBuying) {
+      print("Sedang dalam proses pembelian"); // Debug
       return;
     }
 
-    if (selectedDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.red,
-          content: Text("Pilih tanggal acara terlebih dahulu"),
-        ),
+    setState(() => isBuying = true);
+    print("isBuying di-set ke true"); // Debug
+
+    try {
+      SessionManager sessionManager = SessionManager();
+      String? userType = await sessionManager.getUserType();
+      String? email = await sessionManager.getEmail();
+
+      print("User type: $userType, Email: $email"); // Debug
+
+      if (userType == "vendor") {
+        _showError("Login sebagai customer untuk dapat membeli paket");
+        setState(() => isBuying = false);
+        return;
+      }
+
+      if (!_validateFormInputs()) {
+        setState(() => isBuying = false);
+        return;
+      }
+
+      print("Validasi berhasil"); // Debug
+
+      final purchaseDetails = PurchaseDetails(
+        vendor: widget.namaVendor,
+        packageName: selectedPackage!,
+        price: selectedPrice!,
+        date: selectedDate!,
+        location: _locationController.text,
+        notes: _notesController.text,
+        status: 'pending',
       );
-      return;
+
+      print("Purchase details dibuat: ${purchaseDetails.toJson()}"); // Debug
+
+      final purchaseHistory = PurchaseHistory(
+        purchaseDetails: purchaseDetails,
+        purchaseDate: DateTime.now(),
+      );
+
+      print("Menambahkan ke database..."); // Debug
+      await _purchaseDb.addPurchaseHistory(purchaseHistory);
+      print("Berhasil ditambahkan ke database"); // Debug
+
+      await Eventlogs().beliPaket(
+        widget.namaVendor,
+        selectedPackage!,
+        selectedPrice.toString(),
+        selectedDate!.toIso8601String(),
+        _locationController.text,
+        email!,
+      );
+
+      _showSuccess(
+        "Pembelian berhasil! Paket telah ditambahkan ke profil Anda.",
+      );
+
+      // Tunggu sebentar sebelum navigate agar user bisa melihat snackbar
+      await Future.delayed(const Duration(seconds: 2));
+
+      setState(() => isBuying = false);
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen()),
+        (route) => false,
+      );
+    } catch (e) {
+      print("ERROR dalam beliPaket: $e"); // Debug penting
+      _showError("Terjadi kesalahan: $e");
+      setState(() => isBuying = false);
+    }
+  }
+
+  bool _validateFormInputs() {
+    if (selectedDate == null) {
+      _showError("Pilih tanggal acara terlebih dahulu");
+      return false;
     }
 
     if (_locationController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.red,
-          content: Text("Masukkan lokasi acara"),
-        ),
-      );
-      return;
+      _showError("Masukkan lokasi acara");
+      return false;
     }
 
     if (selectedPackage == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.red,
-          content: Text("Pilih paket terlebih dahulu"),
-        ),
-      );
-      return;
+      _showError("Pilih paket terlebih dahulu");
+      return false;
     }
 
     if (!packages.containsKey(selectedPackage)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.red,
-          content: Text(
-            "Paket yang dipilih tidak tersedia. Silakan pilih paket lain.",
-          ),
-        ),
-      );
-      return;
+      _showError("Paket tidak tersedia. Silakan pilih paket lain.");
+      return false;
     }
 
-    final customerDb = CustomerDatabase();
-    final customer = await customerDb.getCustomerByEmail(email!);
+    return true;
+  }
 
-    if (customer == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.red,
-          content: Text("Customer tidak ditemukan"),
-        ),
-      );
-      return;
-    }
-
-    final purchaseDetails = PurchaseDetails(
-      vendor: widget.namaVendor,
-      packageName: selectedPackage!,
-      price: selectedPrice!,
-      date: selectedDate!,
-      location: _locationController.text,
-      notes: _notesController.text,
-      status: 'pending',
-    );
-
-    final purchaseHistory = PurchaseHistory(
-      customerId: customer.id!,
-      purchaseDetails: purchaseDetails,
-      purchaseDate: DateTime.now(),
-    );
-
-    await _purchaseDb.addPurchaseHistory(purchaseHistory);
-
-    await Eventlogs().beliPaket(
-      widget.namaVendor,
-      selectedPackage!,
-      selectedPrice.toString(),
-      selectedDate!.toIso8601String(),
-      _locationController.text,
-      email,
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        backgroundColor: Colors.green,
-        content: Text(
-          "Pembelian berhasil! Paket telah ditambahkan ke profil Anda.",
-        ),
-      ),
-    );
-
-    Navigator.pushAndRemoveUntil(
+  void _showError(String msg) {
+    ScaffoldMessenger.of(
       context,
-      MaterialPageRoute(builder: (context) => MainScreen()),
-      (route) => false,
-    );
+    ).showSnackBar(SnackBar(backgroundColor: Colors.red, content: Text(msg)));
+  }
+
+  void _showSuccess(String msg) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(backgroundColor: Colors.green, content: Text(msg)));
   }
 
   @override

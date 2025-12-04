@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
+import 'package:projek_uts_mbr/helper/localization_helper.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations.dart';
+
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 import 'package:projek_uts_mbr/main.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
@@ -20,29 +23,69 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final SessionManager _sessionManager = SessionManager();
+  final LocalizationHelper _localizationHelper = LocalizationHelper();
   bool _isLoggedIn = false;
   String? _email;
-
-  final List<Map<String, dynamic>> _categories = [
-    {"icon": Icons.camera_alt_outlined, "label": "Fotografi &\nVideografi"},
-    {"icon": Icons.event, "label": "Event Organizer\n& Planner"},
-    {"icon": Icons.brush, "label": "Makeup &\nFashion"},
-    {"icon": Icons.music_note, "label": "Entertainment &\nPerformers"},
-    {"icon": Icons.chair, "label": "Dekorasi &\nVenue"},
-    {"icon": Icons.restaurant, "label": "Catering &\nF&B"},
-    {"icon": Icons.tv, "label": "Teknologi &\nProduksi Acara"},
-    {"icon": Icons.local_shipping, "label": "Transportasi &\nLogistik"},
-    {"icon": Icons.handshake, "label": "Layanan Pendukung\nLainnya"},
-  ];
+  bool _isLoadingCategories = true;
+  List<Map<String, dynamic>> _categories = [];
 
   @override
   void initState() {
     super.initState();
+
     _checkLoginStatus();
     Vendordatabase vendordatabase = Vendordatabase();
     vendordatabase.initDataAwal();
     vendordatabase.updatePasswords();
   }
+
+  // Future<void> _loadCategories() async {
+  //   try {
+  //     final categories = await _localizationHelper.getCategories();
+  //     setState(() {
+  //       _categories = categories;
+  //       _isLoadingCategories = false;
+  //     });
+  //   } catch (e) {
+  //     print('Error loading categories: $e');
+  //     // Fallback ke hardcoded jika error
+  //     setState(() {
+  //       _categories = _getDefaultCategories();
+  //       _isLoadingCategories = false;
+  //     });
+  //   }
+  // }
+
+  List<Map<String, dynamic>> getLocalizedCategories(AppLocalizations l10n) {
+    return [
+      {"icon": Icons.camera_alt_outlined, "label": l10n.categoryPhotography},
+      {"icon": Icons.event, "label": l10n.categoryEventOrganizer},
+      {"icon": Icons.brush, "label": l10n.categoryMakeupFashion},
+      {"icon": Icons.music_note, "label": l10n.categoryEntertainment},
+      {"icon": Icons.chair, "label": l10n.categoryDecorVenue},
+      {"icon": Icons.restaurant, "label": l10n.categoryCateringFB},
+      {"icon": Icons.tv, "label": l10n.categoryTechEventProduction},
+      {
+        "icon": Icons.local_shipping,
+        "label": l10n.categoryTransportationLogistics,
+      },
+      {"icon": Icons.handshake, "label": l10n.categorySupportServices},
+    ];
+  }
+
+  // List<Map<String, dynamic>> _getDefaultCategories() {
+  //   return [
+  //     {"icon": Icons.camera_alt_outlined, "label": "Fotografi &\nVideografi"},
+  //     {"icon": Icons.event, "label": "Event Organizer\n& Planner"},
+  //     {"icon": Icons.brush, "label": "Makeup &\nFashion"},
+  //     {"icon": Icons.music_note, "label": "Entertainment &\nPerformers"},
+  //     {"icon": Icons.chair, "label": "Dekorasi &\nVenue"},
+  //     {"icon": Icons.restaurant, "label": "Catering &\nF&B"},
+  //     {"icon": Icons.tv, "label": "Teknologi &\nProduksi Acara"},
+  //     {"icon": Icons.local_shipping, "label": "Transportasi &\nLogistik"},
+  //     {"icon": Icons.handshake, "label": "Layanan Pendukung\nLainnya"},
+  //   ];
+  // }
 
   Future<void> _checkLoginStatus() async {
     final isLoggedIn = await _sessionManager.isLoggedIn();
@@ -99,20 +142,19 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations l10n = AppLocalizations.of(context)!;
+    final categories = getLocalizedCategories(l10n);
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: const Text("Ba Fang Lai Cai"),
-        backgroundColor: Colors.pink,
-      ),
+      appBar: AppBar(title: Text(l10n.appTitle), backgroundColor: Colors.pink),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(16),
               child: Text(
-                "Rating Terbaik Minggu ini!",
+                l10n.bestRatedThisWeek,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
@@ -168,10 +210,10 @@ class _HomePageState extends State<HomePage> {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                itemCount: _categories.length,
+                itemCount: categories.length,
                 separatorBuilder: (_, __) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
-                  final category = _categories[index];
+                  final category = categories[index];
                   return _buildCategory(category["icon"], category["label"]);
                 },
               ),
@@ -202,13 +244,13 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 },
-                child: const Text(
-                  "Lihat Halaman Kategori",
+                child: Text(
+                  l10n.viewCategoryPage,
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
-            // Debug buttons (only visible in debug builds)
+
             if (!bool.fromEnvironment('dart.vm.product'))
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -217,10 +259,10 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             const Divider(),
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(16),
               child: Text(
-                "Portofolio & Review",
+                l10n.portfolioAndReview,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
@@ -254,10 +296,10 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const Divider(),
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(16),
               child: Text(
-                "Inspirasi & Feed",
+                l10n.inspirationAndFeed,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),

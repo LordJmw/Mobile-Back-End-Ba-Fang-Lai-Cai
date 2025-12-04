@@ -2,13 +2,13 @@ import 'dart:convert';
 
 class PurchaseHistory {
   final int? id;
-  final String customerId;
+  final String? customerId;
   final PurchaseDetails purchaseDetails;
   final DateTime purchaseDate;
 
   PurchaseHistory({
     this.id,
-    required this.customerId,
+    this.customerId,
     required this.purchaseDetails,
     required this.purchaseDate,
   });

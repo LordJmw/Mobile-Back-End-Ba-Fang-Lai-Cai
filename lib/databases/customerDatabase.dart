@@ -230,4 +230,22 @@ class CustomerDatabase {
       print(v);
     }
   }
+
+  Future<String> getCurrentUserId() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception("NO_USER_LOGGED_IN");
+    }
+    return user.uid;
+  }
+
+  Future<CustomerModel?> getCurrentCustomer() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) return null;
+
+    final doc = await firestorDb.collection("customers").doc(uid).get();
+    if (!doc.exists) return null;
+
+    return CustomerModel.fromJson(doc.data()!);
+  }
 }

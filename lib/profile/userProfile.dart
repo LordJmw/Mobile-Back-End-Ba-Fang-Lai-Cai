@@ -12,6 +12,7 @@ import 'package:projek_uts_mbr/databases/purchaseHistoryDatabase.dart';
 import 'package:projek_uts_mbr/model/CustomerModel.dart';
 import 'package:projek_uts_mbr/model/purchaseHistoryModel.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
+import 'package:projek_uts_mbr/settings_screens/settings_page.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -56,9 +57,11 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<void> _loadCustomerData() async {
     try {
-      final String? customerEmail = await sessionManager.getEmail();
-      if (customerEmail != null) {
-        final customer = await customerDb.getCustomerByEmail(customerEmail);
+      // final String? customerEmail = await sessionManager.getEmail();
+
+      final customer = await CustomerDatabase().getCurrentCustomer();
+      if (customer != null) {
+        // final customer = await customerDb.getCustomerByEmail(customerEmail);
         print('customer loaded: $customer');
         if (!_customerController.isClosed) {
           _customerController.add(customer);
@@ -66,7 +69,7 @@ class _UserProfileState extends State<UserProfile> {
 
         // Load purchase history jika customer ditemukan
         if (customer != null) {
-          await _loadPurchaseHistory(customer.id!);
+          await _loadPurchaseHistory();
         }
       } else {
         if (!_customerController.isClosed) {
@@ -84,18 +87,28 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
-  Future<void> _loadPurchaseHistory(String customerId) async {
+  Future<void> _loadPurchaseHistory() async {
     try {
-      final history = await purchaseDb.getPurchaseHistoryByCustomerId(
-        customerId,
-      );
+      // Cek apakah user sudah login
+      final user = await CustomerDatabase().getCurrentCustomer();
+      if (user == null) {
+        print("User belum login, tidak bisa load purchase history");
+        if (!_purchaseHistoryController.isClosed) {
+          _purchaseHistoryController.add([]);
+        }
+        return;
+      }
+
+      final history = await purchaseDb.getPurchaseHistory();
+      print("Loaded ${history.length} purchase history items");
+
       if (!_purchaseHistoryController.isClosed) {
         _purchaseHistoryController.add(history);
       }
     } catch (e) {
       print("Error loading purchase history: $e");
       if (!_purchaseHistoryController.isClosed) {
-        _purchaseHistoryController.addError(e);
+        _purchaseHistoryController.add([]); // Kembalikan list kosong jika error
       }
     }
   }
@@ -456,7 +469,7 @@ class _UserProfileState extends State<UserProfile> {
 
                       await Eventlogs().editPaket(
                         updatedPurchase.id,
-                        updatedPurchase.customerId,
+                        updatedPurchase.customerId!,
                         updatedPurchase.purchaseDetails,
                         updatedPurchase.purchaseDate,
                       );
@@ -543,6 +556,15 @@ class _UserProfileState extends State<UserProfile> {
       appBar: AppBar(
         title: const Text("Profil Pengguna"),
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+              );
+            },
+            icon: Icon(Icons.settings),
+          ),
           IconButton(icon: const Icon(Icons.refresh), onPressed: _refreshData),
         ],
       ),
@@ -724,16 +746,16 @@ class _UserProfileState extends State<UserProfile> {
 
                     const SizedBox(height: 25),
 
-                    ElevatedButton.icon(
-                      onPressed: _logout,
-                      icon: const Icon(Icons.logout),
-                      label: const Text("Logout"),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.pink,
-                        foregroundColor: Colors.white,
-                        minimumSize: const Size(double.infinity, 50),
-                      ),
-                    ),
+                    // ElevatedButton.icon(
+                    //   onPressed: _logout,
+                    //   icon: const Icon(Icons.logout),
+                    //   label: const Text("Logout"),
+                    //   style: ElevatedButton.styleFrom(
+                    //     backgroundColor: Colors.pink,
+                    //     foregroundColor: Colors.white,
+                    //     minimumSize: const Size(double.infinity, 50),
+                    //   ),
+                    // ),
                   ],
                 ),
               );

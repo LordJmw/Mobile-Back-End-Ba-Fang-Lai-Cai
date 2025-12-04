@@ -1,123 +1,103 @@
 import 'dart:convert';
-
-import 'package:projek_uts_mbr/databases/database.dart';
+import 'package:http/http.dart' as http;
+import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/helper/base_url.dart';
 import 'package:projek_uts_mbr/model/purchaseHistoryModel.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:http/http.dart' as http;
 
 class Purchasehistorydatabase {
-  DatabaserService _dbService = DatabaserService();
-
-  Future<Database> getDatabase() async {
-    return await _dbService.getDatabase();
-  }
-
+  /// ADD
   Future<void> addPurchaseHistory(PurchaseHistory purchaseHistory) async {
     try {
+      final uid = await CustomerDatabase().getCurrentUserId();
+      print("uid di pruchaseDb : ${uid}");
       final url = Uri.parse("${base_url.purchaseHistoryUrl}/add");
+
+      final body = purchaseHistory.toJson();
+
+      body["customer_id"] = uid;
+      print("body di purchaseDb : ${body}");
+
       final response = await http.post(
         url,
-        body: jsonEncode(purchaseHistory.toJson()),
         headers: {"Content-Type": "application/json"},
+        body: jsonEncode(body),
       );
-      if (response.statusCode == 200) {
-        print("paket berhasil ditambah!");
+
+      if (response.statusCode != 201) {
+        print("SERVER REPLY: ${response.body}");
+        throw Exception("FAILED_ADD");
       }
+
+      print("Purchase history berhasil ditambah!");
     } catch (e) {
       print("error insert purchase history : $e");
       rethrow;
     }
   }
 
-  // Future<void> addPurchaseHistory(PurchaseHistory purchaseHistory) async {
-  //   final db = await getDatabase();
-  //   await db.insert('PurchaseHistory', purchaseHistory.toMap());
-  // }
-
-  // Future<List<PurchaseHistory>> getPurchaseHistoryByCustomerId(
-  //   int customerId,
-  // ) async {
-  //   try {
-  //     final db = await getDatabase();
-  //     List<Map<String, dynamic>> dbRes = await db.query(
-  //       'PurchaseHistory',
-  //       where: 'customer_id = ?',
-  //       whereArgs: [customerId],
-  //       orderBy: 'purchase_date DESC',
-  //     );
-
-  //     return dbRes.map((package) => PurchaseHistory.fromMap(package)).toList();
-  //   } catch (e) {
-  //     print("error getting customer package: $e");
-  //     rethrow;
-  //   }
-  // }
-
-  Future<List<PurchaseHistory>> getPurchaseHistoryByCustomerId(
-    String customerId,
-  ) async {
+  /// GET by current user
+  Future<List<PurchaseHistory>> getPurchaseHistory() async {
     try {
-      final url = Uri.parse('${base_url.purchaseHistoryUrl}/${customerId}');
+      final uid = await CustomerDatabase().getCurrentUserId();
 
+      final url = Uri.parse("${base_url.purchaseHistoryUrl}/$uid");
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        List<dynamic> jsonResponse = jsonDecode(response.body)['results'];
-
-        return jsonResponse.map((package) {
-          return PurchaseHistory.fromMap(package);
-        }).toList();
-      } else {
-        throw Exception('server error');
+        final results = jsonDecode(response.body)["results"];
+        return results
+            .map<PurchaseHistory>((item) => PurchaseHistory.fromMap(item))
+            .toList();
       }
+
+      throw Exception("SERVER_ERROR");
     } catch (e) {
-      print("error getting customer package: $e");
+      print("error getting purchase history: $e");
       rethrow;
     }
   }
 
-  Future<void> updatePurchaseHistory(
-    PurchaseHistory updatedPurchaseHistory,
-  ) async {
+  /// UPDATE
+  Future<void> updatePurchaseHistory(PurchaseHistory updated) async {
     try {
-      final url = Uri.parse(
-        "${base_url.purchaseHistoryUrl}/${updatedPurchaseHistory.id}",
-      );
+      final uid = await CustomerDatabase().getCurrentUserId();
+
+      final url = Uri.parse("${base_url.purchaseHistoryUrl}/${updated.id}");
+
+      final body = updated.toJson();
+      body["customer_id"] = uid;
+
       final response = await http.put(
         url,
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode(updatedPurchaseHistory.toJson()),
+        body: jsonEncode(body),
       );
 
-      if (response.statusCode == 200) {
-        print("Purchase history berhasil diupdate di server!");
-      } else {
-        print(
-          "Gagal update purchase history. Status: ${response.statusCode}, body: ${response.body}",
-        );
-        throw Exception("Gagal update data di server");
+      if (response.statusCode != 200) {
+        print("UPDATE FAILED: ${response.statusCode} - ${response.body}");
+        throw Exception("FAILED_UPDATE");
       }
+
+      print("Purchase history updated!");
     } catch (e) {
       print("Error update purchase history: $e");
       rethrow;
     }
   }
 
+  /// DELETE
   Future<void> deletePurchaseHistory(int purchaseId) async {
     try {
-      final url = Uri.parse("${base_url.purchaseHistoryUrl}/${purchaseId}");
-      final response = await http.delete(
-        url,
-        headers: {"Content-Type": "application/json"},
-      );
-      if (response.statusCode == 200) {
-        print("Purchase History dengan id $purchaseId berhasil dihapus!");
-      } else {
-        print(
-          "Gagal menghapus purchase history. Status code: ${response.statusCode}, body: ${response.body}",
-        );
+      final url = Uri.parse("${base_url.purchaseHistoryUrl}/$purchaseId");
+
+      final response = await http.delete(url);
+
+      if (response.statusCode != 200) {
+        print("DELETE FAILED: ${response.statusCode} - ${response.body}");
+        throw Exception("FAILED_DELETE");
       }
+
+      print("Purchase history deleted!");
     } catch (e) {
       print("error delete purchase history : $e");
       rethrow;
