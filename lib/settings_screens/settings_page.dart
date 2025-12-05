@@ -1,6 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations.dart';
+import 'package:projek_uts_mbr/provider/language_provider.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
+import 'package:provider/provider.dart';
 import 'language_modal.dart';
 import 'about_app_modal.dart';
 
@@ -28,11 +33,14 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    _selectedLanguage = languageProvider.getLanguageName();
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text(
-          'Pengaturan',
+        title: Text(
+          l10n.settings,
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 20,
@@ -51,15 +59,19 @@ class _SettingsPageState extends State<SettingsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Header Profile Section
-              _buildProfileSection(),
+              _buildProfileSection(context),
               const SizedBox(height: 24),
 
               // App Settings Section
-              _buildSettingsSection(),
+              _buildSettingsSection(
+                languageProvider,
+                _selectedLanguage,
+                context,
+              ),
 
               // About Section
               const SizedBox(height: 32),
-              _buildAboutSection(),
+              _buildAboutSection(context),
 
               // Logout Button
               const SizedBox(height: 40),
@@ -71,7 +83,8 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildProfileSection() {
+  Widget _buildProfileSection(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
         color: const Color.fromARGB(255, 250, 90, 143),
@@ -103,8 +116,8 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Pengaturan Aplikasi',
+                Text(
+                  l10n.appSettings,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -113,7 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Sesuaikan pengalaman aplikasi Anda',
+                  l10n.customizeYourExperience,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),
                     fontSize: 14,
@@ -127,7 +140,12 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildSettingsSection() {
+  Widget _buildSettingsSection(
+    LanguageProvider languageProvider,
+    String selectedLanguage,
+    BuildContext context,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -149,8 +167,8 @@ class _SettingsPageState extends State<SettingsPage> {
               children: [
                 Icon(Icons.tune_rounded, color: Colors.blue[700], size: 20),
                 const SizedBox(width: 8),
-                const Text(
-                  'PENGATURAN UTAMA',
+                Text(
+                  l10n.mainSettings,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
@@ -167,7 +185,7 @@ class _SettingsPageState extends State<SettingsPage> {
           _buildSettingItem(
             icon: Icons.language_rounded,
             iconColor: Colors.blue,
-            title: 'Bahasa',
+            title: l10n.language,
             subtitle: _selectedLanguage,
             onTap: () async {
               final result = await showModalBottomSheet<String?>(
@@ -175,15 +193,20 @@ class _SettingsPageState extends State<SettingsPage> {
                 backgroundColor: Colors.transparent,
                 isScrollControlled: true,
                 builder: (context) =>
-                    LanguageModal(currentLanguage: _selectedLanguage),
+                    LanguageModal(currentLanguage: selectedLanguage),
               );
               if (result != null) {
+                // Update locale melalui provider
+                final newLocale = languageProvider.getLocaleFromName(result);
+                await languageProvider.setLocale(newLocale);
+
                 setState(() {
                   _selectedLanguage = result;
                 });
+
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Bahasa diubah ke $result'),
+                    content: Text(l10n.languageChangedTo(result)),
                     backgroundColor: Colors.green,
                     behavior: SnackBarBehavior.floating,
                     shape: RoundedRectangleBorder(
@@ -198,7 +221,7 @@ class _SettingsPageState extends State<SettingsPage> {
           const Divider(indent: 20, endIndent: 20, height: 0),
 
           // Notifications Setting
-          _buildNotificationSetting(),
+          _buildNotificationSetting(context),
 
           const Divider(indent: 20, endIndent: 20, height: 0),
 
@@ -206,8 +229,8 @@ class _SettingsPageState extends State<SettingsPage> {
           _buildSettingItem(
             icon: Icons.dark_mode_rounded,
             iconColor: Colors.purple,
-            title: 'Tema',
-            subtitle: 'Otomatis',
+            title: l10n.theme,
+            subtitle: l10n.automatic,
             onTap: () {
               // Untuk tema bisa ditambahkan nanti
             },
@@ -217,7 +240,8 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildNotificationSetting() {
+  Widget _buildNotificationSetting(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return ListTile(
       contentPadding: const EdgeInsets.only(left: 16, right: 20),
       leading: Container(
@@ -233,8 +257,8 @@ class _SettingsPageState extends State<SettingsPage> {
           size: 22,
         ),
       ),
-      title: const Text(
-        'Notifikasi',
+      title: Text(
+        l10n.notifications,
         style: TextStyle(
           fontWeight: FontWeight.w500,
           fontSize: 16,
@@ -242,7 +266,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
       subtitle: Text(
-        _notificationsEnabled ? 'Diaktifkan' : 'Dinonaktifkan',
+        _notificationsEnabled ? l10n.enabled : l10n.disabled,
         style: TextStyle(color: Colors.grey[600], fontSize: 13),
       ),
       trailing: Switch(
@@ -309,7 +333,8 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildAboutSection() {
+  Widget _buildAboutSection(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -335,8 +360,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   size: 20,
                 ),
                 const SizedBox(width: 8),
-                const Text(
-                  'TENTANG APLIKASI',
+                Text(
+                  l10n.aboutApp,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
@@ -353,8 +378,8 @@ class _SettingsPageState extends State<SettingsPage> {
           _buildAboutItem(
             icon: Icons.info_rounded,
             iconColor: Colors.blue,
-            title: 'Tentang Aplikasi',
-            subtitle: 'Informasi tentang EventHub',
+            title: l10n.aboutApp,
+            subtitle: l10n.appInformation("Ba Fang Lai Cai"),
             onTap: () {
               showModalBottomSheet(
                 context: context,
@@ -385,8 +410,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   size: 22,
                 ),
               ),
-              title: const Text(
-                'Versi Aplikasi',
+              title: Text(
+                l10n.appVersion,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 16,
@@ -406,8 +431,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   color: Colors.green[50],
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Text(
-                  'Terbaru',
+                child: Text(
+                  l10n.latest,
                   style: TextStyle(
                     color: Colors.green,
                     fontSize: 12,
@@ -424,8 +449,8 @@ class _SettingsPageState extends State<SettingsPage> {
           _buildAboutItem(
             icon: Icons.shield_rounded,
             iconColor: Colors.purple,
-            title: 'Ketentuan & Privasi',
-            subtitle: 'Baca kebijakan kami',
+            title: l10n.termsPrivacy,
+            subtitle: l10n.readOurPolicies,
             onTap: () {
               // Navigasi ke halaman terms
             },

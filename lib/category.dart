@@ -4,6 +4,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/services/dataServices.dart';
 import 'package:projek_uts_mbr/viewall.dart';
@@ -74,22 +75,38 @@ class _CategoryPageState extends State<CategoryPage> {
     false,
     false,
   ];
-  List<String> _layanan = [
-    "Fotografi & Videografi",
-    "Event Organizer & Planner",
-    "Makeup & Fashion",
-    "Entertainment & Performers",
-    "Dekorasi & Venue",
-    "Catering & F&B",
-    "Teknologi & Produksi Acara",
-    "Transportasi & Logistik",
-    "Layanan Pendukung Lainnya",
-  ];
+
+  List<String> getLocalizedCategories(AppLocalizations l10n) {
+    return [
+      l10n.categoryPhotography.replaceAll("\n", " "),
+      l10n.categoryEventOrganizer.replaceAll("\n", " "),
+      l10n.categoryMakeupFashion.replaceAll("\n", " "),
+      l10n.categoryEntertainment.replaceAll("\n", " "),
+      l10n.categoryDecorVenue.replaceAll("\n", " "),
+      l10n.categoryCateringFB.replaceAll("\n", " "),
+      l10n.categoryTechEventProduction.replaceAll("\n", " "),
+      l10n.categoryTransportationLogistics.replaceAll("\n", " "),
+      l10n.categorySupportServices.replaceAll("\n", " "),
+    ];
+  }
+
+  List<String> _layanan = [];
 
   List<String> tapppedCategory = [];
 
   List<dynamic> data = [];
   bool loading = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final l10n = AppLocalizations.of(context)!;
+
+    setState(() {
+      _layanan = getLocalizedCategories(l10n);
+    });
+  }
 
   @override
   void initState() {
@@ -203,11 +220,12 @@ class _CategoryPageState extends State<CategoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final size = MediaQuery.of(context).size;
     final width = size.width;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Text("Category Page")),
+      appBar: AppBar(title: Text(l10n.categoryPage)),
       body: Padding(
         padding: EdgeInsets.all(10),
         child: SingleChildScrollView(
@@ -230,7 +248,7 @@ class _CategoryPageState extends State<CategoryPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Filter",
+                              l10n.filter,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: width > 500 ? 24 : 18,
@@ -238,7 +256,7 @@ class _CategoryPageState extends State<CategoryPage> {
                             ),
                             SizedBox(height: 15),
                             Text(
-                              "Rentang Harga",
+                              l10n.priceRange,
                               style: TextStyle(fontSize: width > 500 ? 15 : 13),
                             ),
                             Column(
@@ -290,7 +308,7 @@ class _CategoryPageState extends State<CategoryPage> {
                             ),
                             SizedBox(height: 15),
                             Text(
-                              "Rating",
+                              l10n.ratingFilter,
                               style: TextStyle(fontSize: width > 500 ? 15 : 13),
                             ),
                             Row(
@@ -326,9 +344,9 @@ class _CategoryPageState extends State<CategoryPage> {
                                 Text(
                                   _jumlahBintang > 0
                                       ? _jumlahBintang == 5
-                                            ? "5 bintang"
-                                            : "$_jumlahBintang bintang ke atas"
-                                      : "Semua",
+                                            ? l10n.fiveStars
+                                            : "${l10n.starsAndAbove(_jumlahBintang)}"
+                                      : l10n.allRatings,
                                   style: TextStyle(
                                     color: Color.fromARGB(255, 139, 139, 139),
                                   ),
@@ -338,7 +356,7 @@ class _CategoryPageState extends State<CategoryPage> {
                             SizedBox(height: 10),
                             ExpansionTile(
                               title: Text(
-                                "Jenis Layanan",
+                                l10n.serviceType,
                                 style: TextStyle(
                                   fontSize: width > 500 ? 15 : 13,
                                   fontWeight: FontWeight.w500,
@@ -502,7 +520,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                             0.6,
                                         child: Center(
                                           child: Text(
-                                            "Tidak ada Produk sesuai filter saat ini!",
+                                            l10n.noProductsMatchFilter,
                                           ),
                                         ),
                                       ),
@@ -524,8 +542,8 @@ class _CategoryPageState extends State<CategoryPage> {
                           Color.fromARGB(255, 223, 83, 129),
                         ),
                       ),
-                      child: const Text(
-                        "Lihat Semua",
+                      child: Text(
+                        l10n.viewAll,
                         style: TextStyle(color: Colors.white),
                       ),
                     ),

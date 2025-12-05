@@ -4,6 +4,7 @@ import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/model/CustomerModel.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class RegisterCustomer extends StatefulWidget {
   const RegisterCustomer({super.key});
@@ -21,6 +22,22 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
   final TextEditingController _confirmController = TextEditingController();
   final TextEditingController _teleponController = TextEditingController();
   final TextEditingController _alamatController = TextEditingController();
+
+  Future<bool> _requestContactPermission() async {
+    PermissionStatus status = await Permission.contacts.status;
+
+    if (status.isGranted) {
+      return true;
+    }
+
+    status = await Permission.contacts.request();
+
+    if (status.isGranted) {
+      return true;
+    }
+
+    return false;
+  }
 
   Future<void> _saveCustomer() async {
     try {
@@ -51,6 +68,21 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
           content: Text("Akun berhasil didaftarkan!"),
         ),
       );
+
+      // izin cek
+      bool granted = await _requestContactPermission();
+
+      while (!granted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.red,
+            content: Text("Izin kontak diperlukan untuk melanjutkan"),
+          ),
+        );
+
+        await Future.delayed(const Duration(seconds: 1));
+        granted = await _requestContactPermission();
+      }
 
       Navigator.pushReplacement(
         context,

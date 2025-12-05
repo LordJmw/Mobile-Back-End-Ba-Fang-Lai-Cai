@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'dart:convert';
 
@@ -77,9 +78,10 @@ class _ViewAllPageState extends State<ViewAllPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Our Product"),
+        title: Text(l10n.ourProduct),
         foregroundColor: Colors.black,
       ),
       body: FutureBuilder<List<Penyedia>>(
@@ -99,7 +101,7 @@ class _ViewAllPageState extends State<ViewAllPage> {
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    hintText: "Cari penyedia jasa atau kategori...",
+                    hintText: l10n.searchVendorOrCategory,
                     prefixIcon: const Icon(Icons.search),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -114,7 +116,7 @@ class _ViewAllPageState extends State<ViewAllPage> {
               ),
               Expanded(
                 child: filteredVendors.isEmpty
-                    ? const Center(child: Text("Tidak ada hasil"))
+                    ? Center(child: Text(l10n.noResults))
                     : GridView.builder(
                         padding: const EdgeInsets.all(12),
                         gridDelegate:

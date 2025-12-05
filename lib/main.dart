@@ -1,45 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:projek_uts_mbr/auth/logincostumer.dart';
-import 'package:projek_uts_mbr/cardDetail.dart';
-import 'package:projek_uts_mbr/category.dart';
 import 'package:projek_uts_mbr/home/home.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
-
 import 'package:projek_uts_mbr/profile/userProfile.dart';
 import 'package:projek_uts_mbr/profile/vendorProfile.dart';
-import 'package:projek_uts_mbr/auth/register.dart';
+import 'package:projek_uts_mbr/provider/language_provider.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 import 'package:projek_uts_mbr/viewall.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+
+  // Load bahasa dari SharedPreferences sebelum app berjalan
+  final languageProvider = LanguageProvider();
+  await languageProvider.loadLocale();
+
+  runApp(
+    ChangeNotifierProvider.value(
+      value: languageProvider, // ✔ pakai provider yang sudah diload
+      child: const MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
-
-  static _MyAppState of(BuildContext context) =>
-      context.findAncestorStateOfType<_MyAppState>()!;
+  Widget build(BuildContext context) {
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          locale: languageProvider.locale, // ✔ pakai locale dari provider
+          supportedLocales: const [Locale('en'), Locale('id')],
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          home: const MyHomePage(),
+        );
+      },
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
-  bool _showBottomNavBar = true;
-
-  void setBottomNavVisibility(bool visible) {
-    setState(() {
-      _showBottomNavBar = visible;
-    });
-  }
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
 
   Future<bool> checkLoginStatus() async {
     SessionManager sessionManager = SessionManager();
@@ -48,34 +61,18 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      locale: Locale('id'),
-      localizationsDelegates: [
-        AppLocalizations.delegate, // Add this line
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: [
-        Locale('en'), // English
-        Locale('id'),
-      ],
-      home: FutureBuilder<bool>(
-        future: checkLoginStatus(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(color: Colors.pink),
-              ),
-            );
-          }
+    return FutureBuilder<bool>(
+      future: checkLoginStatus(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator(color: Colors.pink)),
+          );
+        }
 
-          final isLoggedIn = snapshot.data ?? false;
-          return isLoggedIn ? const MainScreen() : LoginCustomer();
-        },
-      ),
+        final isLoggedIn = snapshot.data ?? false;
+        return isLoggedIn ? const MainScreen() : LoginCustomer();
+      },
     );
   }
 }
@@ -110,12 +107,6 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -134,7 +125,7 @@ class _MainScreenState extends State<MainScreen> {
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+        onTap: (i) => setState(() => _selectedIndex = i),
         selectedItemColor: Colors.pink,
         unselectedItemColor: Colors.grey,
         items: const [

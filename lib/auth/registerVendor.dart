@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
+import 'package:projek_uts_mbr/auth/loginVendor.dart';
 import 'package:projek_uts_mbr/auth/logincostumer.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'dart:convert';
+import 'package:permission_handler/permission_handler.dart';
 
 class RegisterVendor extends StatefulWidget {
   const RegisterVendor({super.key});
@@ -37,6 +39,85 @@ class _RegisterVendorState extends State<RegisterVendor> {
   void initState() {
     super.initState();
     _loadCategories();
+  }
+
+  Future<void> _askContactPermission() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+
+    var status = await Permission.contacts.status;
+
+    if (status.isGranted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => LoginCustomer()),
+      );
+      return;
+    }
+
+    status = await Permission.contacts.request();
+
+    if (status.isGranted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => LoginCustomer()),
+      );
+    } else if (status.isDenied) {
+      _showRetryDialog();
+    } else if (status.isPermanentlyDenied) {
+      _showOpenSettingDialog();
+    }
+  }
+
+  void _showRetryDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Izin Kontak Diperlukan"),
+        content: const Text(
+          "Aplikasi membutuhkan izin kontak agar bisa melanjutkan. Izinkan sekarang?",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+
+              var status = await Permission.contacts.request();
+
+              if (status.isGranted) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => LoginCustomer()),
+                );
+              } else {
+                _showOpenSettingDialog();
+              }
+            },
+            child: const Text("Coba Lagi"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showOpenSettingDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Izin Ditolak Permanen"),
+        content: const Text(
+          "Kamu menolak izin kontak berkali-kali. Aktifkan secara manual di Pengaturan.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              openAppSettings();
+              Navigator.pop(context);
+            },
+            child: const Text("Buka Pengaturan"),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _loadCategories() async {
@@ -96,6 +177,8 @@ class _RegisterVendorState extends State<RegisterVendor> {
       selectedCategory!,
       penyedia.nama,
     );
+
+    await _askContactPermission();
 
     Navigator.pushReplacement(
       context,

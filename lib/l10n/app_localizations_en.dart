@@ -48,13 +48,296 @@ class AppLocalizationsEn extends AppLocalizations {
   String get categoryCateringFB => 'Catering &\nF&B';
 
   @override
-  String get categoryTechEventProduction => 'Event Technology &\nProduction';
+  String get categoryTechEventProduction => 'Technology &\nEvent Production';
 
   @override
   String get categoryTransportationLogistics => 'Transportation &\nLogistics';
 
   @override
-  String get categorySupportServices => 'Other Support\nServices';
+  String get categorySupportServices => 'Other Supporting\nServices';
+
+  @override
+  String get ourProduct => 'Our Products';
+
+  @override
+  String get searchVendorOrCategory => 'Search vendor or category...';
+
+  @override
+  String get noResults => 'No results';
+
+  @override
+  String get userProfile => 'User Profile';
+
+  @override
+  String get myProfile => 'My Profile';
+
+  @override
+  String get yourPurchaseHistory => 'Your Purchase History';
+
+  @override
+  String get noPurchasesYet => 'No purchases yet.';
+
+  @override
+  String get pleaseBuyPackage => 'Please purchase a package from a vendor.';
+
+  @override
+  String get failedToLoadCustomer => 'Failed to load customer data';
+
+  @override
+  String get customerNotFound => 'Customer not found';
+
+  @override
+  String get profileUpdatedSuccessfully => 'Profile updated successfully';
+
+  @override
+  String get failedToUpdateProfile => 'Failed to update profile';
+
+  @override
+  String get orderUpdatedSuccessfully => 'Order updated successfully';
+
+  @override
+  String get orderDeletedSuccessfully => 'Order deleted successfully';
+
+  @override
+  String get fullName => 'Full Name';
+
+  @override
+  String get phoneNumber => 'Phone Number';
+
+  @override
+  String get address => 'Address';
+
+  @override
+  String get eventDate => 'Event Date';
+
+  @override
+  String get eventLocation => 'Event Location';
+
+  @override
+  String get specialNotes => 'Special Notes';
+
+  @override
+  String get enterEventLocation => 'Enter event location';
+
+  @override
+  String get addNotes => 'Add notes';
+
+  @override
+  String get requiredFields => 'Name, email, and phone are required';
+
+  @override
+  String get locationAndDateRequired => 'Location and date are required';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get gallery => 'Gallery';
+
+  @override
+  String get camera => 'Camera';
+
+  @override
+  String get editOrder => 'Edit Order';
+
+  @override
+  String get deleteOrder => 'Delete Order';
+
+  @override
+  String get confirmDelete => 'Are you sure you want to delete the order from?';
+
+  @override
+  String get purchaseDate => 'Purchased on';
+
+  @override
+  String get eventDateLabel => 'Event Date';
+
+  @override
+  String get locationLabel => 'Location';
+
+  @override
+  String get notesLabel => 'Notes';
+
+  @override
+  String get tryAgain => 'Try Again';
+
+  @override
+  String get unknownVendor => 'Unknown Vendor';
+
+  @override
+  String get package => 'Package';
+
+  @override
+  String get categoryPage => 'Category Page';
+
+  @override
+  String get filter => 'Filter';
+
+  @override
+  String get priceRange => 'Price Range';
+
+  @override
+  String get ratingFilter => 'Rating';
+
+  @override
+  String get fiveStars => '5 stars';
+
+  @override
+  String starsAndAbove(Object count) {
+    return '$count stars and above';
+  }
+
+  @override
+  String get allRatings => 'All';
+
+  @override
+  String get serviceType => 'Service Type';
+
+  @override
+  String get noProductsMatchFilter => 'No products match the current filter!';
+
+  @override
+  String get paymentPage => 'Payment Page';
+
+  @override
+  String get orderForm => 'Order Form';
+
+  @override
+  String get selectedPackage => 'Selected Package';
+
+  @override
+  String get noPackagesAvailable => 'No packages available';
+
+  @override
+  String get selectPackage => 'Select Package';
+
+  @override
+  String get addSpecialNotes => 'Add notes or special requests';
+
+  @override
+  String get priceSummary => 'Price Summary';
+
+  @override
+  String get totalPrice => 'Total Price';
+
+  @override
+  String get payNow => 'Pay Now';
+
+  @override
+  String get loadingData => 'Loading data...';
+
+  @override
+  String get loginAsCustomer => 'Log in as customer to purchase a package';
+
+  @override
+  String get selectEventDateFirst => 'Select event date first';
+
+  @override
+  String get selectPackageFirst => 'Select a package first';
+
+  @override
+  String get packageNotAvailable =>
+      'Package not available. Please choose another.';
+
+  @override
+  String get purchaseSuccessful =>
+      'Purchase successful! The package has been added to your profile.';
+
+  @override
+  String copyright(Object appName) {
+    return '© 2024 $appName. All rights reserved.';
+  }
+
+  @override
+  String get appSettings => 'App Settings';
+
+  @override
+  String get customizeYourExperience => 'Customize your app experience';
+
+  @override
+  String get mainSettings => 'MAIN SETTINGS';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get enabled => 'Enabled';
+
+  @override
+  String get disabled => 'Disabled';
+
+  @override
+  String get theme => 'Theme';
+
+  @override
+  String get automatic => 'Automatic';
+
+  @override
+  String languageChangedTo(Object language) {
+    return 'Language changed to $language';
+  }
+
+  @override
+  String get aboutApp => 'ABOUT THE APP';
+
+  @override
+  String get aboutApplication => 'About Application';
+
+  @override
+  String appInformation(Object appName) {
+    return 'Information about $appName';
+  }
+
+  @override
+  String get appVersion => 'App Version';
+
+  @override
+  String get latest => 'Latest';
+
+  @override
+  String get termsPrivacy => 'Terms & Privacy';
+
+  @override
+  String get readOurPolicies => 'Read our policies';
+
+  @override
+  String get chooseLanguage => 'Choose Language';
+
+  @override
+  String get indonesianLanguage => 'Indonesian';
+
+  @override
+  String get englishLanguage => 'English (United States)';
+
+  @override
+  String get indonesia => 'Indonesian';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get aboutAppDescription1 =>
+      'EventHub is an all-in-one platform for hiring professional services for your various event needs.';
+
+  @override
+  String get aboutAppDescription2 =>
+      'This app connects customers with trusted vendors in one easy-to-use place.';
+
+  @override
+  String get forVendors => 'For Vendors';
+
+  @override
+  String get vendorDescription =>
+      'Vendors can add and manage their service packages directly through the app, making it easier to reach more potential customers.';
+
+  @override
+  String get termsOfService => 'Terms of Service';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
 
   @override
   String get search => 'Search';

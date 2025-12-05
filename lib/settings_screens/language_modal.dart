@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 
 class LanguageModal extends StatefulWidget {
   final String currentLanguage;
@@ -21,6 +22,7 @@ class _LanguageModalState extends State<LanguageModal> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
       decoration: BoxDecoration(
@@ -61,8 +63,8 @@ class _LanguageModalState extends State<LanguageModal> {
                   color: Colors.grey[600],
                 ),
                 const SizedBox(width: 8),
-                const Text(
-                  'Pilih Bahasa',
+                Text(
+                  l10n.chooseLanguage,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -81,17 +83,17 @@ class _LanguageModalState extends State<LanguageModal> {
               padding: const EdgeInsets.all(20),
               children: [
                 _buildLanguageCard(
-                  language: 'Indonesia',
+                  language: l10n.indonesia,
                   code: 'ID',
-                  description: 'Bahasa Indonesia',
+                  description: l10n.indonesianLanguage,
                   isSelected: _selectedLanguage == 'Indonesia',
                   onTap: () => _selectLanguage('Indonesia'),
                 ),
                 const SizedBox(height: 16),
                 _buildLanguageCard(
-                  language: 'English',
+                  language: l10n.english,
                   code: 'EN',
-                  description: 'English (United States)',
+                  description: l10n.englishLanguage,
                   isSelected: _selectedLanguage == 'English',
                   onTap: () => _selectLanguage('English'),
                 ),
@@ -120,8 +122,8 @@ class _LanguageModalState extends State<LanguageModal> {
                   ),
                   elevation: 0,
                 ),
-                child: const Text(
-                  'Simpan Perubahan',
+                child: Text(
+                  l10n.save,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,

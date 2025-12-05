@@ -179,7 +179,7 @@ abstract class AppLocalizations {
   /// No description provided for @categoryTechEventProduction.
   ///
   /// In en, this message translates to:
-  /// **'Event Technology &\nProduction'**
+  /// **'Technology &\nEvent Production'**
   String get categoryTechEventProduction;
 
   /// No description provided for @categoryTransportationLogistics.
@@ -191,8 +191,548 @@ abstract class AppLocalizations {
   /// No description provided for @categorySupportServices.
   ///
   /// In en, this message translates to:
-  /// **'Other Support\nServices'**
+  /// **'Other Supporting\nServices'**
   String get categorySupportServices;
+
+  /// No description provided for @ourProduct.
+  ///
+  /// In en, this message translates to:
+  /// **'Our Products'**
+  String get ourProduct;
+
+  /// No description provided for @searchVendorOrCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Search vendor or category...'**
+  String get searchVendorOrCategory;
+
+  /// No description provided for @noResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results'**
+  String get noResults;
+
+  /// No description provided for @userProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'User Profile'**
+  String get userProfile;
+
+  /// No description provided for @myProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'My Profile'**
+  String get myProfile;
+
+  /// No description provided for @yourPurchaseHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Purchase History'**
+  String get yourPurchaseHistory;
+
+  /// No description provided for @noPurchasesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No purchases yet.'**
+  String get noPurchasesYet;
+
+  /// No description provided for @pleaseBuyPackage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please purchase a package from a vendor.'**
+  String get pleaseBuyPackage;
+
+  /// No description provided for @failedToLoadCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load customer data'**
+  String get failedToLoadCustomer;
+
+  /// No description provided for @customerNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer not found'**
+  String get customerNotFound;
+
+  /// No description provided for @profileUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get profileUpdatedSuccessfully;
+
+  /// No description provided for @failedToUpdateProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update profile'**
+  String get failedToUpdateProfile;
+
+  /// No description provided for @orderUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Order updated successfully'**
+  String get orderUpdatedSuccessfully;
+
+  /// No description provided for @orderDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Order deleted successfully'**
+  String get orderDeletedSuccessfully;
+
+  /// No description provided for @fullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get fullName;
+
+  /// No description provided for @phoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get phoneNumber;
+
+  /// No description provided for @address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get address;
+
+  /// No description provided for @eventDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Date'**
+  String get eventDate;
+
+  /// No description provided for @eventLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Location'**
+  String get eventLocation;
+
+  /// No description provided for @specialNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Special Notes'**
+  String get specialNotes;
+
+  /// No description provided for @enterEventLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter event location'**
+  String get enterEventLocation;
+
+  /// No description provided for @addNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Add notes'**
+  String get addNotes;
+
+  /// No description provided for @requiredFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Name, email, and phone are required'**
+  String get requiredFields;
+
+  /// No description provided for @locationAndDateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Location and date are required'**
+  String get locationAndDateRequired;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @gallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get gallery;
+
+  /// No description provided for @camera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get camera;
+
+  /// No description provided for @editOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Order'**
+  String get editOrder;
+
+  /// No description provided for @deleteOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Order'**
+  String get deleteOrder;
+
+  /// No description provided for @confirmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete the order from?'**
+  String get confirmDelete;
+
+  /// No description provided for @purchaseDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchased on'**
+  String get purchaseDate;
+
+  /// No description provided for @eventDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Date'**
+  String get eventDateLabel;
+
+  /// No description provided for @locationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get locationLabel;
+
+  /// No description provided for @notesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notesLabel;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get tryAgain;
+
+  /// No description provided for @unknownVendor.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Vendor'**
+  String get unknownVendor;
+
+  /// No description provided for @package.
+  ///
+  /// In en, this message translates to:
+  /// **'Package'**
+  String get package;
+
+  /// No description provided for @categoryPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Page'**
+  String get categoryPage;
+
+  /// No description provided for @filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter'**
+  String get filter;
+
+  /// No description provided for @priceRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Price Range'**
+  String get priceRange;
+
+  /// No description provided for @ratingFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating'**
+  String get ratingFilter;
+
+  /// No description provided for @fiveStars.
+  ///
+  /// In en, this message translates to:
+  /// **'5 stars'**
+  String get fiveStars;
+
+  /// No description provided for @starsAndAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} stars and above'**
+  String starsAndAbove(Object count);
+
+  /// No description provided for @allRatings.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get allRatings;
+
+  /// No description provided for @serviceType.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Type'**
+  String get serviceType;
+
+  /// No description provided for @noProductsMatchFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'No products match the current filter!'**
+  String get noProductsMatchFilter;
+
+  /// No description provided for @paymentPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Page'**
+  String get paymentPage;
+
+  /// No description provided for @orderForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Form'**
+  String get orderForm;
+
+  /// No description provided for @selectedPackage.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected Package'**
+  String get selectedPackage;
+
+  /// No description provided for @noPackagesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No packages available'**
+  String get noPackagesAvailable;
+
+  /// No description provided for @selectPackage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Package'**
+  String get selectPackage;
+
+  /// No description provided for @addSpecialNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Add notes or special requests'**
+  String get addSpecialNotes;
+
+  /// No description provided for @priceSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Price Summary'**
+  String get priceSummary;
+
+  /// No description provided for @totalPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Price'**
+  String get totalPrice;
+
+  /// No description provided for @payNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay Now'**
+  String get payNow;
+
+  /// No description provided for @loadingData.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading data...'**
+  String get loadingData;
+
+  /// No description provided for @loginAsCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in as customer to purchase a package'**
+  String get loginAsCustomer;
+
+  /// No description provided for @selectEventDateFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Select event date first'**
+  String get selectEventDateFirst;
+
+  /// No description provided for @selectPackageFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a package first'**
+  String get selectPackageFirst;
+
+  /// No description provided for @packageNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Package not available. Please choose another.'**
+  String get packageNotAvailable;
+
+  /// No description provided for @purchaseSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase successful! The package has been added to your profile.'**
+  String get purchaseSuccessful;
+
+  /// No description provided for @copyright.
+  ///
+  /// In en, this message translates to:
+  /// **'© 2024 {appName}. All rights reserved.'**
+  String copyright(Object appName);
+
+  /// No description provided for @appSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'App Settings'**
+  String get appSettings;
+
+  /// No description provided for @customizeYourExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize your app experience'**
+  String get customizeYourExperience;
+
+  /// No description provided for @mainSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'MAIN SETTINGS'**
+  String get mainSettings;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get enabled;
+
+  /// No description provided for @disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get disabled;
+
+  /// No description provided for @theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme;
+
+  /// No description provided for @automatic.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get automatic;
+
+  /// No description provided for @languageChangedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Language changed to {language}'**
+  String languageChangedTo(Object language);
+
+  /// No description provided for @aboutApp.
+  ///
+  /// In en, this message translates to:
+  /// **'ABOUT THE APP'**
+  String get aboutApp;
+
+  /// No description provided for @aboutApplication.
+  ///
+  /// In en, this message translates to:
+  /// **'About Application'**
+  String get aboutApplication;
+
+  /// No description provided for @appInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Information about {appName}'**
+  String appInformation(Object appName);
+
+  /// No description provided for @appVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'App Version'**
+  String get appVersion;
+
+  /// No description provided for @latest.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest'**
+  String get latest;
+
+  /// No description provided for @termsPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & Privacy'**
+  String get termsPrivacy;
+
+  /// No description provided for @readOurPolicies.
+  ///
+  /// In en, this message translates to:
+  /// **'Read our policies'**
+  String get readOurPolicies;
+
+  /// No description provided for @chooseLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Language'**
+  String get chooseLanguage;
+
+  /// No description provided for @indonesianLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Indonesian'**
+  String get indonesianLanguage;
+
+  /// No description provided for @englishLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'English (United States)'**
+  String get englishLanguage;
+
+  /// No description provided for @indonesia.
+  ///
+  /// In en, this message translates to:
+  /// **'Indonesian'**
+  String get indonesia;
+
+  /// No description provided for @english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// No description provided for @aboutAppDescription1.
+  ///
+  /// In en, this message translates to:
+  /// **'EventHub is an all-in-one platform for hiring professional services for your various event needs.'**
+  String get aboutAppDescription1;
+
+  /// No description provided for @aboutAppDescription2.
+  ///
+  /// In en, this message translates to:
+  /// **'This app connects customers with trusted vendors in one easy-to-use place.'**
+  String get aboutAppDescription2;
+
+  /// No description provided for @forVendors.
+  ///
+  /// In en, this message translates to:
+  /// **'For Vendors'**
+  String get forVendors;
+
+  /// No description provided for @vendorDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Vendors can add and manage their service packages directly through the app, making it easier to reach more potential customers.'**
+  String get vendorDescription;
+
+  /// No description provided for @termsOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get termsOfService;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
 
   /// No description provided for @search.
   ///

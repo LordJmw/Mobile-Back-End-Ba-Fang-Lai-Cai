@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,6 +10,7 @@ import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/databases/purchaseHistoryDatabase.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/model/CustomerModel.dart';
 import 'package:projek_uts_mbr/model/purchaseHistoryModel.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
@@ -138,7 +140,7 @@ class _UserProfileState extends State<UserProfile> {
             children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: const Text('Gallery'),
+                title: Text(AppLocalizations.of(context)!.gallery),
                 onTap: () {
                   _pickImage(ImageSource.gallery);
                   Navigator.of(context).pop();
@@ -146,7 +148,7 @@ class _UserProfileState extends State<UserProfile> {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_camera),
-                title: const Text('Camera'),
+                title: Text(AppLocalizations.of(context)!.camera),
                 onTap: () {
                   _pickImage(ImageSource.camera);
                   Navigator.of(context).pop();
@@ -159,15 +161,15 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Future<void> _editProfile() async {
+  Future<void> _editProfile(BuildContext context) async {
     try {
       final String? customerEmail = await sessionManager.getEmail();
       print('pengecekkan email session manager : $customerEmail');
       if (customerEmail == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             backgroundColor: Colors.red,
-            content: Text("Tidak dapat memuat data customer"),
+            content: Text(AppLocalizations.of(context)!.failedToLoadCustomer),
           ),
         );
         return;
@@ -178,9 +180,9 @@ class _UserProfileState extends State<UserProfile> {
       );
       if (currentCustomer == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             backgroundColor: Colors.red,
-            content: Text("Customer tidak ditemukan"),
+            content: Text(AppLocalizations.of(context)!.customerNotFound),
           ),
         );
         return;
@@ -203,15 +205,15 @@ class _UserProfileState extends State<UserProfile> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text("Edit Profil"),
+            title: Text(AppLocalizations.of(context)!.editProfile),
             content: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
                     controller: namaController,
-                    decoration: const InputDecoration(
-                      labelText: "Nama Lengkap",
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.fullName,
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.person),
                     ),
@@ -229,8 +231,8 @@ class _UserProfileState extends State<UserProfile> {
                   const SizedBox(height: 12),
                   TextField(
                     controller: teleponController,
-                    decoration: const InputDecoration(
-                      labelText: "Nomor Telepon",
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.phoneNumber,
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.phone),
                     ),
@@ -240,8 +242,8 @@ class _UserProfileState extends State<UserProfile> {
                   TextField(
                     controller: alamatController,
                     maxLines: 3,
-                    decoration: const InputDecoration(
-                      labelText: "Alamat",
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.address,
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.location_on),
                     ),
@@ -252,7 +254,7 @@ class _UserProfileState extends State<UserProfile> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text("Batal"),
+                child: Text(AppLocalizations.of(context)!.cancel),
               ),
               ElevatedButton(
                 onPressed: () async {
@@ -261,9 +263,11 @@ class _UserProfileState extends State<UserProfile> {
                       emailController.text.isEmpty ||
                       teleponController.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
+                      SnackBar(
                         backgroundColor: Colors.red,
-                        content: Text("Nama, email, dan telepon harus diisi"),
+                        content: Text(
+                          AppLocalizations.of(context)!.requiredFields,
+                        ),
                       ),
                     );
                     return;
@@ -300,9 +304,13 @@ class _UserProfileState extends State<UserProfile> {
                         "customer",
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           backgroundColor: Colors.green,
-                          content: Text("Profil berhasil diupdate"),
+                          content: Text(
+                            AppLocalizations.of(
+                              context,
+                            )!.profileUpdatedSuccessfully,
+                          ),
                         ),
                       );
 
@@ -310,9 +318,11 @@ class _UserProfileState extends State<UserProfile> {
                       await _refreshData();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           backgroundColor: Colors.red,
-                          content: Text("Gagal mengupdate profil"),
+                          content: Text(
+                            AppLocalizations.of(context)!.failedToUpdateProfile,
+                          ),
                         ),
                       );
                     }
@@ -327,8 +337,8 @@ class _UserProfileState extends State<UserProfile> {
                   }
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.pink),
-                child: const Text(
-                  "Simpan",
+                child: Text(
+                  AppLocalizations.of(context)!.save,
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -365,13 +375,13 @@ class _UserProfileState extends State<UserProfile> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              title: const Text("Edit Pesanan"),
+              title: Text(AppLocalizations.of(context)!.editOrder),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      "Tanggal Acara",
+                    Text(
+                      AppLocalizations.of(context)!.eventDate,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 5),
@@ -396,34 +406,36 @@ class _UserProfileState extends State<UserProfile> {
                         ),
                         child: Text(
                           selectedDate == null
-                              ? "Pilih tanggal"
+                              ? AppLocalizations.of(context)!.selectDate
                               : "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
                         ),
                       ),
                     ),
                     const SizedBox(height: 15),
-                    const Text(
-                      "Lokasi",
+                    Text(
+                      AppLocalizations.of(context)!.location,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     TextField(
                       controller: locationController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: "Masukkan lokasi acara",
+                        hintText: AppLocalizations.of(
+                          context,
+                        )!.enterEventLocation,
                       ),
                     ),
                     const SizedBox(height: 15),
-                    const Text(
-                      "Catatan Khusus",
+                    Text(
+                      AppLocalizations.of(context)!.specialNotes,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     TextField(
                       controller: notesController,
                       maxLines: 3,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: "Tambahkan catatan",
+                        hintText: AppLocalizations.of(context)!.addNotes,
                       ),
                     ),
                   ],
@@ -432,16 +444,20 @@ class _UserProfileState extends State<UserProfile> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text("Batal"),
+                  child: Text(AppLocalizations.of(context)!.cancel),
                 ),
                 ElevatedButton(
                   onPressed: () async {
                     if (selectedDate == null ||
                         locationController.text.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           backgroundColor: Colors.red,
-                          content: Text("Lokasi dan tanggal harus diisi"),
+                          content: Text(
+                            AppLocalizations.of(
+                              context,
+                            )!.locationAndDateRequired,
+                          ),
                         ),
                       );
                       return;
@@ -475,9 +491,13 @@ class _UserProfileState extends State<UserProfile> {
                       );
 
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           backgroundColor: Colors.green,
-                          content: Text("Pesanan berhasil diupdate"),
+                          content: Text(
+                            AppLocalizations.of(
+                              context,
+                            )!.orderUpdatedSuccessfully,
+                          ),
                         ),
                       );
 
@@ -493,8 +513,8 @@ class _UserProfileState extends State<UserProfile> {
                     }
                   },
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.pink),
-                  child: const Text(
-                    "Simpan",
+                  child: Text(
+                    AppLocalizations.of(context)!.save,
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -506,23 +526,29 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Future<void> _deletePurchase(int purchaseId, String vendorName) async {
+  Future<void> _deletePurchase(
+    BuildContext context,
+    int purchaseId,
+    String vendorName,
+  ) async {
     bool confirm =
         await showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text("Hapus Pesanan"),
-            content: Text("Yakin ingin menghapus pesanan dari $vendorName?"),
+            title: Text(AppLocalizations.of(context)!.deleteOrder),
+            content: Text(
+              "${AppLocalizations.of(context)!.confirmDelete} $vendorName?",
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text("Batal"),
+                child: Text(AppLocalizations.of(context)!.cancel),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context, true),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                child: const Text(
-                  "Hapus",
+                child: Text(
+                  AppLocalizations.of(context)!.delete,
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -536,9 +562,11 @@ class _UserProfileState extends State<UserProfile> {
         await purchaseDb.deletePurchaseHistory(purchaseId);
         await Eventlogs().deletePaket(purchaseId, vendorName);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             backgroundColor: Colors.green,
-            content: Text("Pesanan berhasil dihapus"),
+            content: Text(
+              AppLocalizations.of(context)!.orderDeletedSuccessfully,
+            ),
           ),
         );
         await _refreshData(); // Refresh data setelah delete
@@ -552,9 +580,10 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Profil Pengguna"),
+        title: Text(l10n.userProfile),
         actions: [
           IconButton(
             onPressed: () {
@@ -644,8 +673,8 @@ class _UserProfileState extends State<UserProfile> {
                             children: [
                               Row(
                                 children: [
-                                  const Text(
-                                    "Profil Saya",
+                                  Text(
+                                    l10n.myProfile,
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
@@ -656,7 +685,7 @@ class _UserProfileState extends State<UserProfile> {
                                   IconButton(
                                     icon: const Icon(Icons.edit, size: 20),
                                     onPressed: () {
-                                      _editProfile();
+                                      _editProfile(context);
                                     },
                                     color: Colors.pink,
                                   ),
@@ -705,8 +734,12 @@ class _UserProfileState extends State<UserProfile> {
                               ),
                               const SizedBox(height: 8),
                               Text("Email: ${currentCustomer.email}"),
-                              Text("Telepon: ${currentCustomer.telepon}"),
-                              Text("Alamat: ${currentCustomer.alamat}"),
+                              Text(
+                                "${AppLocalizations.of(context)!.phone}: ${currentCustomer.telepon}",
+                              ),
+                              Text(
+                                "${AppLocalizations.of(context)!.address}: ${currentCustomer.alamat}",
+                              ),
                             ],
                           ),
                         ),
@@ -718,9 +751,9 @@ class _UserProfileState extends State<UserProfile> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       child: Row(
-                        children: const [
+                        children: [
                           Text(
-                            "Riwayat Pembelian Anda",
+                            l10n.yourPurchaseHistory,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
@@ -740,7 +773,10 @@ class _UserProfileState extends State<UserProfile> {
                     else
                       Column(
                         children: purchaseHistory
-                            .map((purchase) => _buildPurchaseCard(purchase))
+                            .map(
+                              (purchase) =>
+                                  _buildPurchaseCard(purchase, context),
+                            )
                             .toList(),
                       ),
 
@@ -769,14 +805,14 @@ class _UserProfileState extends State<UserProfile> {
   Widget _buildEmptyState() {
     return Card(
       child: Container(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(24),
         width: double.infinity,
         child: Column(
-          children: const [
+          children: [
             Icon(Icons.shopping_bag_outlined, size: 40, color: Colors.grey),
             SizedBox(height: 10),
             Text(
-              "Belum ada pembelian.\nSilakan beli paket dari vendor.",
+              "${AppLocalizations.of(context)!.noPurchasesYet}\n${AppLocalizations.of(context)!.pleaseBuyPackage}",
               textAlign: TextAlign.center,
             ),
           ],
@@ -785,7 +821,7 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Widget _buildPurchaseCard(PurchaseHistory purchase) {
+  Widget _buildPurchaseCard(PurchaseHistory purchase, BuildContext context) {
     try {
       return Card(
         child: Container(
@@ -815,6 +851,7 @@ class _UserProfileState extends State<UserProfile> {
                           _editPurchase(purchase);
                         } else if (value == 'delete') {
                           _deletePurchase(
+                            context,
                             purchase.id!,
                             purchase.purchaseDetails.vendor.toString() ??
                                 'Vendor',
@@ -858,15 +895,19 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                 ),
                 Text(
-                  "Tanggal acara: ${purchase.purchaseDetails.date.day}/${purchase.purchaseDetails.date.month}/${purchase.purchaseDetails.date.year}",
+                  "${AppLocalizations.of(context)!.eventDateLabel}: ${purchase.purchaseDetails.date.day}/${purchase.purchaseDetails.date.month}/${purchase.purchaseDetails.date.year}",
                 ),
-                Text("Lokasi: ${purchase.purchaseDetails.location ?? '-'}"),
+                Text(
+                  "${AppLocalizations.of(context)!.location}: ${purchase.purchaseDetails.location ?? '-'}",
+                ),
                 if (purchase.purchaseDetails.notes != null &&
                     purchase.purchaseDetails.notes.isNotEmpty)
-                  Text("Catatan: ${purchase.purchaseDetails.notes}"),
+                  Text(
+                    "${AppLocalizations.of(context)!.location}: ${purchase.purchaseDetails.notes}",
+                  ),
                 const SizedBox(height: 8),
                 Text(
-                  "Dibeli pada: ${purchase.purchaseDate.day}/${purchase.purchaseDate.month}/${purchase.purchaseDate.year}",
+                  "${AppLocalizations.of(context)!.purchaseDate}: ${purchase.purchaseDate.day}/${purchase.purchaseDate.month}/${purchase.purchaseDate.year}",
                   style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],

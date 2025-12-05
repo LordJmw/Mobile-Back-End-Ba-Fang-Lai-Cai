@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 
 class AboutAppModal extends StatelessWidget {
   const AboutAppModal({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.background,
@@ -46,7 +48,7 @@ class AboutAppModal extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'EventHub',
+                      l10n.appTitle,
                       style: TextStyle(fontWeight: FontWeight.w700),
                     ),
                     Text('v1.0.0', style: TextStyle(color: Colors.grey[600])),
@@ -56,24 +58,20 @@ class AboutAppModal extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 24),
-          Text(
-            'Tentang Aplikasi',
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
+          Text(l10n.aboutApp, style: TextStyle(fontWeight: FontWeight.w600)),
           const SizedBox(height: 12),
           Text(
-            'EventHub adalah platform all-in-one untuk menyewa jasa profesional untuk berbagai kebutuhan event Anda. '
-            'Aplikasi ini menghubungkan Customer dengan Vendor terpercaya dalam satu tempat yang mudah digunakan.',
+            "${l10n.aboutAppDescription1}\n${l10n.aboutAppDescription2}",
+
             style: TextStyle(color: Colors.grey[700], height: 1.5),
           ),
           const SizedBox(height: 20),
 
           const SizedBox(height: 20),
-          Text('Untuk Vendor', style: TextStyle(fontWeight: FontWeight.w600)),
+          Text(l10n.forVendors, style: TextStyle(fontWeight: FontWeight.w600)),
           const SizedBox(height: 12),
           Text(
-            'Vendor dapat menambah dan mengelola paket layanan mereka langsung melalui aplikasi, '
-            'memudahkan dalam menjangkau lebih banyak customer potensial.',
+            l10n.vendorDescription,
             style: TextStyle(color: Colors.grey[700], height: 1.5),
           ),
           const SizedBox(height: 32),
@@ -84,13 +82,13 @@ class AboutAppModal extends StatelessWidget {
                 onPressed: () {
                   // Navigasi ke halaman terms
                 },
-                child: const Text('Ketentuan Layanan'),
+                child: Text(l10n.termsPrivacy),
               ),
               TextButton(
                 onPressed: () {
                   // Navigasi ke halaman privacy
                 },
-                child: const Text('Kebijakan Privasi'),
+                child: Text(l10n.privacyPolicy),
               ),
             ],
           ),

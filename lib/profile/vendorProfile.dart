@@ -10,6 +10,7 @@ import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
+import 'package:projek_uts_mbr/settings_screens/settings_page.dart';
 import 'package:projek_uts_mbr/vendorform.dart';
 import 'package:projek_uts_mbr/profile/editPackageForm.dart';
 
@@ -216,7 +217,20 @@ class _VendorprofileState extends State<Vendorprofile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Profil Vendor")),
+      appBar: AppBar(
+        title: Text("Profil Vendor"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+              );
+            },
+            icon: Icon(Icons.settings),
+          ),
+        ],
+      ),
       body: StreamBuilder<Vendormodel?>(
         stream: _vendorController.stream,
         builder: (context, snapshot) {

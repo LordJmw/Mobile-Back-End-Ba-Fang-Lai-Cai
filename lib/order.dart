@@ -4,6 +4,8 @@ import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/databases/purchaseHistoryDatabase.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations_en.dart';
 import 'package:projek_uts_mbr/main.dart';
 import 'package:projek_uts_mbr/model/purchaseHistoryModel.dart';
 import 'package:projek_uts_mbr/services/dataServices.dart';
@@ -181,14 +183,14 @@ class _OrderPageState extends State<OrderPage> {
 
   bool isBuying = false;
 
-  beliPaket() async {
+  beliPaket(BuildContext context) async {
     print("Tombol beliPaket ditekan"); // Debug
 
     if (isLoading) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           backgroundColor: Colors.orange,
-          content: Text("Sedang memuat data..."),
+          content: Text(AppLocalizations.of(context)!.loadingData),
         ),
       );
       return;
@@ -215,7 +217,7 @@ class _OrderPageState extends State<OrderPage> {
         return;
       }
 
-      if (!_validateFormInputs()) {
+      if (!_validateFormInputs(context)) {
         setState(() => isBuying = false);
         return;
       }
@@ -252,9 +254,7 @@ class _OrderPageState extends State<OrderPage> {
         email!,
       );
 
-      _showSuccess(
-        "Pembelian berhasil! Paket telah ditambahkan ke profil Anda.",
-      );
+      _showSuccess(AppLocalizations.of(context)!.purchaseSuccessful);
 
       // Tunggu sebentar sebelum navigate agar user bisa melihat snackbar
       await Future.delayed(const Duration(seconds: 2));
@@ -273,24 +273,24 @@ class _OrderPageState extends State<OrderPage> {
     }
   }
 
-  bool _validateFormInputs() {
+  bool _validateFormInputs(BuildContext context) {
     if (selectedDate == null) {
-      _showError("Pilih tanggal acara terlebih dahulu");
+      _showError(AppLocalizations.of(context)!.selectEventDateFirst);
       return false;
     }
 
     if (_locationController.text.isEmpty) {
-      _showError("Masukkan lokasi acara");
+      _showError(AppLocalizations.of(context)!.enterEventLocation);
       return false;
     }
 
     if (selectedPackage == null) {
-      _showError("Pilih paket terlebih dahulu");
+      _showError(AppLocalizations.of(context)!.selectPackageFirst);
       return false;
     }
 
     if (!packages.containsKey(selectedPackage)) {
-      _showError("Paket tidak tersedia. Silakan pilih paket lain.");
+      _showError(AppLocalizations.of(context)!.packageNotAvailable);
       return false;
     }
 
@@ -311,12 +311,10 @@ class _OrderPageState extends State<OrderPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 243, 243, 245),
-      appBar: AppBar(
-        title: const Text("Halaman Pembayaran"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(l10n.paymentPage), centerTitle: true),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -327,9 +325,9 @@ class _OrderPageState extends State<OrderPage> {
                   // HEADER
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Text(
-                        "EventHub",
+                        l10n.appTitle,
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -351,8 +349,8 @@ class _OrderPageState extends State<OrderPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            "Form Pemesanan",
+                          Text(
+                            l10n.orderForm,
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -361,7 +359,7 @@ class _OrderPageState extends State<OrderPage> {
                           const SizedBox(height: 20),
 
                           // TANGGAL
-                          const Text("Tanggal Acara"),
+                          Text(l10n.eventDate),
                           const SizedBox(height: 5),
                           InkWell(
                             onTap: _pickDate,
@@ -374,7 +372,7 @@ class _OrderPageState extends State<OrderPage> {
                               ),
                               child: Text(
                                 selectedDate == null
-                                    ? "Pilih tanggal"
+                                    ? l10n.eventDateLabel
                                     : "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
                               ),
                             ),
@@ -382,7 +380,7 @@ class _OrderPageState extends State<OrderPage> {
                           const SizedBox(height: 20),
 
                           // LOKASI
-                          const Text("Lokasi"),
+                          Text(l10n.location),
                           const SizedBox(height: 5),
                           TextField(
                             controller: _locationController,
@@ -390,13 +388,13 @@ class _OrderPageState extends State<OrderPage> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              hintText: "Masukkan lokasi acara",
+                              hintText: l10n.enterEventLocation,
                             ),
                           ),
                           const SizedBox(height: 20),
 
                           // PAKET
-                          const Text("Paket yang Dipilih"),
+                          Text(l10n.selectedPackage),
                           const SizedBox(height: 5),
                           packages.isEmpty
                               ? Container(
@@ -405,8 +403,8 @@ class _OrderPageState extends State<OrderPage> {
                                     border: Border.all(color: Colors.grey),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                  child: const Text(
-                                    "Tidak ada paket tersedia",
+                                  child: Text(
+                                    l10n.noPackagesAvailable,
                                     style: TextStyle(color: Colors.grey),
                                   ),
                                 )
@@ -436,7 +434,7 @@ class _OrderPageState extends State<OrderPage> {
 
                           const SizedBox(height: 20),
 
-                          const Text("Catatan Khusus"),
+                          Text(l10n.specialNotes),
                           const SizedBox(height: 5),
                           TextField(
                             controller: _notesController,
@@ -445,14 +443,13 @@ class _OrderPageState extends State<OrderPage> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              hintText:
-                                  "Tambahkan catatan atau permintaan khusus",
+                              hintText: l10n.addSpecialNotes,
                             ),
                           ),
                           const SizedBox(height: 20),
 
-                          const Text(
-                            'Ringkasan Harga',
+                          Text(
+                            l10n.priceSummary,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -460,7 +457,7 @@ class _OrderPageState extends State<OrderPage> {
                           ),
                           Row(
                             children: [
-                              const Text('Total harga: '),
+                              Text('${l10n.totalPrice}: '),
                               const Spacer(),
                               Text(
                                 selectedPrice == null
@@ -475,7 +472,9 @@ class _OrderPageState extends State<OrderPage> {
                           const SizedBox(height: 20),
 
                           ElevatedButton(
-                            onPressed: beliPaket,
+                            onPressed: () {
+                              beliPaket(context);
+                            },
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size(double.infinity, 50),
                               backgroundColor: Colors.pink,
@@ -485,7 +484,7 @@ class _OrderPageState extends State<OrderPage> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            child: const Text('Bayar Sekarang'),
+                            child: Text(AppLocalizations.of(context)!.payNow),
                           ),
                         ],
                       ),
