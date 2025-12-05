@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/order.dart';
 
@@ -30,7 +31,8 @@ class _CarddetailState extends State<Carddetail> {
     return result;
   }
 
-  Future<void> loadData(String namaVendor) async {
+  Future<void> loadData(String namaVendor, BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     try {
       setState(() {
         loading = true;
@@ -41,7 +43,7 @@ class _CarddetailState extends State<Carddetail> {
       final v = await vendorDb.getVendorByName(namaVendor);
 
       if (v == null) {
-        throw Exception('Vendor tidak ditemukan di database');
+        throw Exception(l10n.vendorNotFoundInDatabase);
       }
 
       setState(() {
@@ -51,19 +53,25 @@ class _CarddetailState extends State<Carddetail> {
     } catch (e) {
       setState(() {
         loading = false;
-        errorMessage = 'Gagal memuat data vendor: $e';
+        errorMessage = '${l10n.failedToLoadVendor}: $e';
       });
     }
   }
 
+  bool _initialized = false;
+
   @override
-  void initState() {
-    super.initState();
-    loadData(widget.namaVendor);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized) {
+      loadData(widget.namaVendor, context);
+      _initialized = true;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
@@ -77,7 +85,7 @@ class _CarddetailState extends State<Carddetail> {
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 241, 240, 240),
-      appBar: AppBar(title: const Text("Detail Vendor"), centerTitle: true),
+      appBar: AppBar(title: Text(l10n.vendorDetails), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -156,7 +164,7 @@ class _CarddetailState extends State<Carddetail> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Tentang ${vendor!.penyedia.first.nama.split(" ").first}",
+                          "${l10n.about} ${vendor!.penyedia.first.nama.split(" ").first}",
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -166,7 +174,7 @@ class _CarddetailState extends State<Carddetail> {
                         Text(
                           vendor!.penyedia.first.deskripsi.isNotEmpty
                               ? vendor!.penyedia.first.deskripsi
-                              : "Belum ada deskripsi untuk vendor ini.",
+                              : l10n.noDescriptionForVendor,
                           style: const TextStyle(fontSize: 14),
                         ),
                       ],
@@ -184,11 +192,9 @@ class _CarddetailState extends State<Carddetail> {
                                   harga.premium.harga == 0 &&
                                   harga.custom.harga == 0) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                                  SnackBar(
                                     backgroundColor: Colors.red,
-                                    content: Text(
-                                      "Paket sudah dihapus oleh vendor.",
-                                    ),
+                                    content: Text(l10n.packagesDeletedByVendor),
                                   ),
                                 );
                                 return;
@@ -213,8 +219,8 @@ class _CarddetailState extends State<Carddetail> {
                               ),
                               padding: const EdgeInsets.symmetric(vertical: 14),
                             ),
-                            child: const Text(
-                              "Pesan Sekarang",
+                            child: Text(
+                              l10n.orderNow,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.white,
@@ -234,8 +240,8 @@ class _CarddetailState extends State<Carddetail> {
                               ),
                               padding: const EdgeInsets.symmetric(vertical: 14),
                             ),
-                            child: const Text(
-                              "Hubungi",
+                            child: Text(
+                              l10n.contact,
                               style: TextStyle(fontSize: 14),
                             ),
                           ),
@@ -247,9 +253,24 @@ class _CarddetailState extends State<Carddetail> {
               ),
             ),
             const SizedBox(height: 10),
-            _buildPaketCard("Basic", harga.basic.harga, harga.basic.jasa),
-            _buildPaketCard("Premium", harga.premium.harga, harga.premium.jasa),
-            _buildPaketCard("Custom", harga.custom.harga, harga.custom.jasa),
+            _buildPaketCard(
+              "Basic",
+              harga.basic.harga,
+              harga.basic.jasa,
+              context,
+            ),
+            _buildPaketCard(
+              "Premium",
+              harga.premium.harga,
+              harga.premium.jasa,
+              context,
+            ),
+            _buildPaketCard(
+              "Custom",
+              harga.custom.harga,
+              harga.custom.jasa,
+              context,
+            ),
             if (testimoniList.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 20),
@@ -260,8 +281,8 @@ class _CarddetailState extends State<Carddetail> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "Ulasan Klien",
+                        Text(
+                          l10n.clientReviews,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -340,8 +361,14 @@ class _CarddetailState extends State<Carddetail> {
     );
   }
 
-  Widget _buildPaketCard(String tipe, int harga, String jasa) {
+  Widget _buildPaketCard(
+    String tipe,
+    int harga,
+    String jasa,
+    BuildContext context,
+  ) {
     final jasaList = jasa.split(",");
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -364,7 +391,7 @@ class _CarddetailState extends State<Carddetail> {
               "Rp ${formatPrice(harga)}",
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
             ),
-            const Text("per acara"),
+            Text(l10n.perEvent),
             const SizedBox(height: 20),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -386,9 +413,9 @@ class _CarddetailState extends State<Carddetail> {
                 onPressed: () {
                   if (harga == 0) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
+                      SnackBar(
                         backgroundColor: Colors.red,
-                        content: Text("Paket ini sudah dihapus oleh vendor."),
+                        content: Text(l10n.packagesDeletedByVendor),
                       ),
                     );
                     return;
@@ -406,8 +433,8 @@ class _CarddetailState extends State<Carddetail> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 223, 83, 129),
                 ),
-                child: const Text(
-                  "Pilih Paket",
+                child: Text(
+                  l10n.selectPackage,
                   style: TextStyle(color: Colors.white),
                 ),
               ),

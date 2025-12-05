@@ -125,7 +125,7 @@ abstract class AppLocalizations {
   /// No description provided for @portfolioAndReview.
   ///
   /// In en, this message translates to:
-  /// **'Portfolio & Review'**
+  /// **'Portfolio & Reviews'**
   String get portfolioAndReview;
 
   /// No description provided for @inspirationAndFeed.
@@ -191,7 +191,7 @@ abstract class AppLocalizations {
   /// No description provided for @categorySupportServices.
   ///
   /// In en, this message translates to:
-  /// **'Other Supporting\nServices'**
+  /// **'Other Support\nServices'**
   String get categorySupportServices;
 
   /// No description provided for @ourProduct.
@@ -203,13 +203,13 @@ abstract class AppLocalizations {
   /// No description provided for @searchVendorOrCategory.
   ///
   /// In en, this message translates to:
-  /// **'Search vendor or category...'**
+  /// **'Search vendors or categories...'**
   String get searchVendorOrCategory;
 
   /// No description provided for @noResults.
   ///
   /// In en, this message translates to:
-  /// **'No results'**
+  /// **'No results found'**
   String get noResults;
 
   /// No description provided for @userProfile.
@@ -329,7 +329,7 @@ abstract class AppLocalizations {
   /// No description provided for @requiredFields.
   ///
   /// In en, this message translates to:
-  /// **'Name, email, and phone are required'**
+  /// **'Name, email, and phone number are required'**
   String get requiredFields;
 
   /// No description provided for @locationAndDateRequired.
@@ -413,7 +413,7 @@ abstract class AppLocalizations {
   /// No description provided for @unknownVendor.
   ///
   /// In en, this message translates to:
-  /// **'Unknown Vendor'**
+  /// **'Unknown vendor'**
   String get unknownVendor;
 
   /// No description provided for @package.
@@ -461,7 +461,7 @@ abstract class AppLocalizations {
   /// No description provided for @allRatings.
   ///
   /// In en, this message translates to:
-  /// **'All'**
+  /// **'All Ratings'**
   String get allRatings;
 
   /// No description provided for @serviceType.
@@ -509,7 +509,7 @@ abstract class AppLocalizations {
   /// No description provided for @addSpecialNotes.
   ///
   /// In en, this message translates to:
-  /// **'Add notes or special requests'**
+  /// **'Add special notes or requests'**
   String get addSpecialNotes;
 
   /// No description provided for @priceSummary.
@@ -539,7 +539,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginAsCustomer.
   ///
   /// In en, this message translates to:
-  /// **'Log in as customer to purchase a package'**
+  /// **'Log in as customer to purchase packages'**
   String get loginAsCustomer;
 
   /// No description provided for @selectEventDateFirst.
@@ -635,7 +635,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutApplication.
   ///
   /// In en, this message translates to:
-  /// **'About Application'**
+  /// **'About the Application'**
   String get aboutApplication;
 
   /// No description provided for @appInformation.
@@ -701,13 +701,13 @@ abstract class AppLocalizations {
   /// No description provided for @aboutAppDescription1.
   ///
   /// In en, this message translates to:
-  /// **'EventHub is an all-in-one platform for hiring professional services for your various event needs.'**
+  /// **'EventHub is an all-in-one platform for hiring professional services for your event needs.'**
   String get aboutAppDescription1;
 
   /// No description provided for @aboutAppDescription2.
   ///
   /// In en, this message translates to:
-  /// **'This app connects customers with trusted vendors in one easy-to-use place.'**
+  /// **'This app connects Customers with trusted Vendors in one easy-to-use platform.'**
   String get aboutAppDescription2;
 
   /// No description provided for @forVendors.
@@ -719,7 +719,7 @@ abstract class AppLocalizations {
   /// No description provided for @vendorDescription.
   ///
   /// In en, this message translates to:
-  /// **'Vendors can add and manage their service packages directly through the app, making it easier to reach more potential customers.'**
+  /// **'Vendors can add and manage their service packages directly within the app, making it easier to reach more potential customers.'**
   String get vendorDescription;
 
   /// No description provided for @termsOfService.
@@ -733,6 +733,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Privacy Policy'**
   String get privacyPolicy;
+
+  /// No description provided for @vendorProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Vendor Profile'**
+  String get vendorProfile;
+
+  /// No description provided for @failedToLoadVendor.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load vendor data'**
+  String get failedToLoadVendor;
+
+  /// No description provided for @noDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'No description'**
+  String get noDescription;
+
+  /// No description provided for @yourPackages.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Packages'**
+  String get yourPackages;
+
+  /// No description provided for @priceNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get priceNotSet;
+
+  /// No description provided for @noDescriptionAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No description available'**
+  String get noDescriptionAvailable;
+
+  /// No description provided for @deleteConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Confirmation'**
+  String get deleteConfirmation;
+
+  /// No description provided for @confirmDeletePackage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete the package \'{package}\'?'**
+  String confirmDeletePackage(Object package);
+
+  /// No description provided for @packageDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Package \'{package}\' deleted successfully.'**
+  String packageDeletedSuccessfully(Object package);
+
+  /// No description provided for @vendorNotLoggedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Vendor not logged in.'**
+  String get vendorNotLoggedIn;
+
+  /// No description provided for @noImageSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'No image selected.'**
+  String get noImageSelected;
+
+  /// No description provided for @profilePictureUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile picture updated successfully.'**
+  String get profilePictureUpdated;
+
+  /// No description provided for @failedToUpdatePicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update profile picture: {error}'**
+  String failedToUpdatePicture(Object error);
+
+  /// No description provided for @editPackagePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Package Price'**
+  String get editPackagePrice;
+
+  /// No description provided for @packageName.
+  ///
+  /// In en, this message translates to:
+  /// **'Package Name'**
+  String get packageName;
+
+  /// No description provided for @enterPackagePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter package price (e.g.: 500000)'**
+  String get enterPackagePrice;
+
+  /// No description provided for @priceRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Price cannot be empty'**
+  String get priceRequired;
+
+  /// No description provided for @enterValidPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid price'**
+  String get enterValidPrice;
+
+  /// No description provided for @serviceDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Description (separate with commas)'**
+  String get serviceDescription;
+
+  /// No description provided for @serviceExample.
+  ///
+  /// In en, this message translates to:
+  /// **'Example: Photographer, Videographer, Printed Album'**
+  String get serviceExample;
+
+  /// No description provided for @serviceDescriptionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Service description cannot be empty'**
+  String get serviceDescriptionRequired;
+
+  /// No description provided for @useCommaSeparator.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a comma (,) to separate services'**
+  String get useCommaSeparator;
+
+  /// No description provided for @packagePriceUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Package price updated successfully!'**
+  String get packagePriceUpdated;
+
+  /// No description provided for @vendorDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Vendor Details'**
+  String get vendorDetails;
+
+  /// No description provided for @about.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get about;
+
+  /// No description provided for @noDescriptionForVendor.
+  ///
+  /// In en, this message translates to:
+  /// **'No description available for this vendor.'**
+  String get noDescriptionForVendor;
+
+  /// No description provided for @orderNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Now'**
+  String get orderNow;
+
+  /// No description provided for @contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get contact;
+
+  /// No description provided for @clientReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Client Reviews'**
+  String get clientReviews;
+
+  /// No description provided for @perEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'per event'**
+  String get perEvent;
+
+  /// No description provided for @vendorNotFoundInDatabase.
+  ///
+  /// In en, this message translates to:
+  /// **'Vendor not found in the database'**
+  String get vendorNotFoundInDatabase;
+
+  /// No description provided for @failedToLoadVendorData.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load vendor data: {error}'**
+  String failedToLoadVendorData(Object error);
+
+  /// No description provided for @packagesDeletedByVendor.
+  ///
+  /// In en, this message translates to:
+  /// **'Packages have been deleted by the vendor.'**
+  String get packagesDeletedByVendor;
+
+  /// No description provided for @thisPackageDeletedByVendor.
+  ///
+  /// In en, this message translates to:
+  /// **'This package has been deleted by the vendor.'**
+  String get thisPackageDeletedByVendor;
 
   /// No description provided for @search.
   ///
@@ -805,12 +1009,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Description'**
   String get description;
-
-  /// No description provided for @contact.
-  ///
-  /// In en, this message translates to:
-  /// **'Contact'**
-  String get contact;
 
   /// No description provided for @email.
   ///

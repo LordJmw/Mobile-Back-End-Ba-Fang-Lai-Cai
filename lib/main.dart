@@ -20,10 +20,7 @@ void main() async {
   await languageProvider.loadLocale();
 
   runApp(
-    ChangeNotifierProvider.value(
-      value: languageProvider, // ✔ pakai provider yang sudah diload
-      child: const MyApp(),
-    ),
+    ChangeNotifierProvider.value(value: languageProvider, child: const MyApp()),
   );
 }
 
@@ -36,7 +33,7 @@ class MyApp extends StatelessWidget {
       builder: (context, languageProvider, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          locale: languageProvider.locale, // ✔ pakai locale dari provider
+          locale: languageProvider.locale, //
           supportedLocales: const [Locale('en'), Locale('id')],
           localizationsDelegates: const [
             AppLocalizations.delegate,

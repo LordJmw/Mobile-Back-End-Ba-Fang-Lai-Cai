@@ -21,7 +21,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewCategoryPage => 'View Category Page';
 
   @override
-  String get portfolioAndReview => 'Portfolio & Review';
+  String get portfolioAndReview => 'Portfolio & Reviews';
 
   @override
   String get inspirationAndFeed => 'Inspiration & Feed';
@@ -54,16 +54,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get categoryTransportationLogistics => 'Transportation &\nLogistics';
 
   @override
-  String get categorySupportServices => 'Other Supporting\nServices';
+  String get categorySupportServices => 'Other Support\nServices';
 
   @override
   String get ourProduct => 'Our Products';
 
   @override
-  String get searchVendorOrCategory => 'Search vendor or category...';
+  String get searchVendorOrCategory => 'Search vendors or categories...';
 
   @override
-  String get noResults => 'No results';
+  String get noResults => 'No results found';
 
   @override
   String get userProfile => 'User Profile';
@@ -123,7 +123,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addNotes => 'Add notes';
 
   @override
-  String get requiredFields => 'Name, email, and phone are required';
+  String get requiredFields => 'Name, email, and phone number are required';
 
   @override
   String get locationAndDateRequired => 'Location and date are required';
@@ -165,7 +165,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tryAgain => 'Try Again';
 
   @override
-  String get unknownVendor => 'Unknown Vendor';
+  String get unknownVendor => 'Unknown vendor';
 
   @override
   String get package => 'Package';
@@ -191,7 +191,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get allRatings => 'All';
+  String get allRatings => 'All Ratings';
 
   @override
   String get serviceType => 'Service Type';
@@ -215,7 +215,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectPackage => 'Select Package';
 
   @override
-  String get addSpecialNotes => 'Add notes or special requests';
+  String get addSpecialNotes => 'Add special notes or requests';
 
   @override
   String get priceSummary => 'Price Summary';
@@ -230,7 +230,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingData => 'Loading data...';
 
   @override
-  String get loginAsCustomer => 'Log in as customer to purchase a package';
+  String get loginAsCustomer => 'Log in as customer to purchase packages';
 
   @override
   String get selectEventDateFirst => 'Select event date first';
@@ -284,7 +284,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutApp => 'ABOUT THE APP';
 
   @override
-  String get aboutApplication => 'About Application';
+  String get aboutApplication => 'About the Application';
 
   @override
   String appInformation(Object appName) {
@@ -320,24 +320,139 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutAppDescription1 =>
-      'EventHub is an all-in-one platform for hiring professional services for your various event needs.';
+      'EventHub is an all-in-one platform for hiring professional services for your event needs.';
 
   @override
   String get aboutAppDescription2 =>
-      'This app connects customers with trusted vendors in one easy-to-use place.';
+      'This app connects Customers with trusted Vendors in one easy-to-use platform.';
 
   @override
   String get forVendors => 'For Vendors';
 
   @override
   String get vendorDescription =>
-      'Vendors can add and manage their service packages directly through the app, making it easier to reach more potential customers.';
+      'Vendors can add and manage their service packages directly within the app, making it easier to reach more potential customers.';
 
   @override
   String get termsOfService => 'Terms of Service';
 
   @override
   String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get vendorProfile => 'Vendor Profile';
+
+  @override
+  String get failedToLoadVendor => 'Failed to load vendor data';
+
+  @override
+  String get noDescription => 'No description';
+
+  @override
+  String get yourPackages => 'Your Packages';
+
+  @override
+  String get priceNotSet => 'Not set';
+
+  @override
+  String get noDescriptionAvailable => 'No description available';
+
+  @override
+  String get deleteConfirmation => 'Delete Confirmation';
+
+  @override
+  String confirmDeletePackage(Object package) {
+    return 'Are you sure you want to delete the package \'$package\'?';
+  }
+
+  @override
+  String packageDeletedSuccessfully(Object package) {
+    return 'Package \'$package\' deleted successfully.';
+  }
+
+  @override
+  String get vendorNotLoggedIn => 'Vendor not logged in.';
+
+  @override
+  String get noImageSelected => 'No image selected.';
+
+  @override
+  String get profilePictureUpdated => 'Profile picture updated successfully.';
+
+  @override
+  String failedToUpdatePicture(Object error) {
+    return 'Failed to update profile picture: $error';
+  }
+
+  @override
+  String get editPackagePrice => 'Edit Package Price';
+
+  @override
+  String get packageName => 'Package Name';
+
+  @override
+  String get enterPackagePrice => 'Enter package price (e.g.: 500000)';
+
+  @override
+  String get priceRequired => 'Price cannot be empty';
+
+  @override
+  String get enterValidPrice => 'Enter a valid price';
+
+  @override
+  String get serviceDescription => 'Service Description (separate with commas)';
+
+  @override
+  String get serviceExample =>
+      'Example: Photographer, Videographer, Printed Album';
+
+  @override
+  String get serviceDescriptionRequired =>
+      'Service description cannot be empty';
+
+  @override
+  String get useCommaSeparator => 'Use a comma (,) to separate services';
+
+  @override
+  String get packagePriceUpdated => 'Package price updated successfully!';
+
+  @override
+  String get vendorDetails => 'Vendor Details';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get noDescriptionForVendor =>
+      'No description available for this vendor.';
+
+  @override
+  String get orderNow => 'Order Now';
+
+  @override
+  String get contact => 'Contact';
+
+  @override
+  String get clientReviews => 'Client Reviews';
+
+  @override
+  String get perEvent => 'per event';
+
+  @override
+  String get vendorNotFoundInDatabase => 'Vendor not found in the database';
+
+  @override
+  String failedToLoadVendorData(Object error) {
+    return 'Failed to load vendor data: $error';
+  }
+
+  @override
+  String get packagesDeletedByVendor =>
+      'Packages have been deleted by the vendor.';
+
+  @override
+  String get thisPackageDeletedByVendor =>
+      'This package has been deleted by the vendor.';
 
   @override
   String get search => 'Search';
@@ -374,9 +489,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get description => 'Description';
-
-  @override
-  String get contact => 'Contact';
 
   @override
   String get email => 'Email';

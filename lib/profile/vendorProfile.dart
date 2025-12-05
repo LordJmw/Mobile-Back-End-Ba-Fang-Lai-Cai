@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
@@ -34,24 +36,31 @@ class _VendorprofileState extends State<Vendorprofile> {
     loadVendorData();
   }
 
-  void _showDeleteConfirmationDialog(Vendormodel vendor, String packageName) {
+  void _showDeleteConfirmationDialog(
+    Vendormodel vendor,
+    String packageName,
+    BuildContext context,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Konfirmasi Hapus"),
-          content: Text(
-            "Apakah Anda yakin ingin menghapus paket '$packageName'?",
-          ),
+          title: Text(l10n.deleteConfirmation),
+          content: Text(l10n.confirmDeletePackage(packageName)),
           actions: <Widget>[
             TextButton(
-              child: const Text("Batal"),
+              child: Text(l10n.cancel),
               onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              child: const Text("Hapus", style: TextStyle(color: Colors.red)),
+              child: Text(l10n.delete, style: TextStyle(color: Colors.red)),
               onPressed: () {
-                _deletePackage(vendor.penyedia.first.email, packageName);
+                _deletePackage(
+                  vendor.penyedia.first.email,
+                  packageName,
+                  context,
+                );
                 Navigator.of(context).pop();
               },
             ),
@@ -61,12 +70,17 @@ class _VendorprofileState extends State<Vendorprofile> {
     );
   }
 
-  Future<void> _deletePackage(String vendorEmail, String packageName) async {
+  Future<void> _deletePackage(
+    String vendorEmail,
+    String packageName,
+    BuildContext context,
+  ) async {
     await vendorDb.deletePackage(vendorEmail, packageName);
+    final l10n = AppLocalizations.of(context)!;
     loadVendorData();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Paket '$packageName' berhasil dihapus.")),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.orderDeletedSuccessfully)));
   }
 
   void _navigateToEditForm(
@@ -137,11 +151,12 @@ class _VendorprofileState extends State<Vendorprofile> {
       setState(() {
         _image = File(pickedFile.path);
       });
-      _updateProfilePicture();
+      _updateProfilePicture(context);
     }
   }
 
   void _showPicker(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext bc) {
@@ -150,7 +165,7 @@ class _VendorprofileState extends State<Vendorprofile> {
             children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: const Text('Gallery'),
+                title: Text(l10n.gallery),
                 onTap: () {
                   _pickImage(ImageSource.gallery);
                   Navigator.of(context).pop();
@@ -158,7 +173,7 @@ class _VendorprofileState extends State<Vendorprofile> {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_camera),
-                title: const Text('Camera'),
+                title: Text(l10n.camera),
                 onTap: () {
                   _pickImage(ImageSource.camera);
                   Navigator.of(context).pop();
@@ -171,19 +186,20 @@ class _VendorprofileState extends State<Vendorprofile> {
     );
   }
 
-  Future<void> _updateProfilePicture() async {
+  Future<void> _updateProfilePicture(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     final String? vendorEmail = await sessionManager.getEmail();
     if (vendorEmail == null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text("Vendor not logged in.")));
+      ).showSnackBar(SnackBar(content: Text(l10n.vendorNotLoggedIn)));
       return;
     }
 
     if (_image == null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text("No image selected.")));
+      ).showSnackBar(SnackBar(content: Text(l10n.noImageSelected)));
       return;
     }
 
@@ -198,8 +214,8 @@ class _VendorprofileState extends State<Vendorprofile> {
       await vendorDb.updateVendorImage(vendorEmail, imageUrl);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Profile picture updated successfully."),
+        SnackBar(
+          content: Text(l10n.profilePictureUpdated),
           backgroundColor: Colors.green,
         ),
       );
@@ -207,7 +223,7 @@ class _VendorprofileState extends State<Vendorprofile> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Failed to update profile picture: $e"),
+          content: Text(l10n.failedToUpdatePicture(e)),
           backgroundColor: Colors.red,
         ),
       );
@@ -216,9 +232,10 @@ class _VendorprofileState extends State<Vendorprofile> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profil Vendor"),
+        title: Text(l10n.vendorProfile),
         actions: [
           IconButton(
             onPressed: () {
@@ -247,7 +264,7 @@ class _VendorprofileState extends State<Vendorprofile> {
                 children: [
                   const Icon(Icons.error_outline, color: Colors.red, size: 60),
                   const SizedBox(height: 16),
-                  const Text("Tidak dapat memuat data vendor"),
+                  Text(l10n.failedToLoadVendor),
                   const SizedBox(height: 24),
                   ElevatedButton.icon(
                     onPressed: _logout,
@@ -308,7 +325,7 @@ class _VendorprofileState extends State<Vendorprofile> {
                 Text(
                   currentVendor.penyedia.first.deskripsi.isNotEmpty
                       ? currentVendor.penyedia.first.deskripsi
-                      : "Belum ada deskripsi",
+                      : l10n.noDescription,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10),
@@ -328,7 +345,7 @@ class _VendorprofileState extends State<Vendorprofile> {
                   child: Row(
                     children: [
                       Text(
-                        "Paket Anda (${currentVendor.penyedia.first.nama})",
+                        "${l10n.yourPackages} (${currentVendor.penyedia.first.nama})",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -338,7 +355,7 @@ class _VendorprofileState extends State<Vendorprofile> {
                     ],
                   ),
                 ),
-                _buildPackageList(currentVendor),
+                _buildPackageList(currentVendor, context),
               ],
             ),
           );
@@ -347,8 +364,9 @@ class _VendorprofileState extends State<Vendorprofile> {
     );
   }
 
-  Widget _buildPackageList(Vendormodel vendor) {
+  Widget _buildPackageList(Vendormodel vendor, BuildContext context) {
     final harga = vendor.penyedia.first.harga;
+    final l10n = AppLocalizations.of(context)!;
     final packages = {
       "Basic": harga.basic,
       "Premium": harga.premium,
@@ -358,8 +376,8 @@ class _VendorprofileState extends State<Vendorprofile> {
     List<Widget> packageWidgets = packages.entries.map((entry) {
       final packageName = entry.key;
       final data = entry.value;
-      final hargaText = data.harga > 0 ? "Rp ${data.harga}" : "Belum diatur";
-      final jasaText = data.jasa.isNotEmpty ? data.jasa : "Tidak ada deskripsi";
+      final hargaText = data.harga > 0 ? "Rp ${data.harga}" : l10n.priceNotSet;
+      final jasaText = data.jasa.isNotEmpty ? data.jasa : l10n.noDescription;
 
       return Card(
         margin: const EdgeInsets.only(bottom: 12),
@@ -426,7 +444,11 @@ class _VendorprofileState extends State<Vendorprofile> {
                         size: 20,
                       ),
                       onPressed: () {
-                        _showDeleteConfirmationDialog(vendor, packageName);
+                        _showDeleteConfirmationDialog(
+                          vendor,
+                          packageName,
+                          context,
+                        );
                       },
                     ),
                   ],

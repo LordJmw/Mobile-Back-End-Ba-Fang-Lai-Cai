@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations_en.dart';
 
 class EditPackageForm extends StatefulWidget {
   final String vendorEmail;
@@ -57,7 +59,10 @@ class _EditPackageFormState extends State<EditPackageForm> {
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Harga paket berhasil diperbarui!")),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.packagePriceUpdated),
+          backgroundColor: Colors.green,
+        ),
       );
       Navigator.pop(context);
     }
@@ -65,8 +70,9 @@ class _EditPackageFormState extends State<EditPackageForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text("Edit Harga Paket"), centerTitle: true),
+      appBar: AppBar(title: Text(l10n.editPackagePrice), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -75,8 +81,8 @@ class _EditPackageFormState extends State<EditPackageForm> {
             children: [
               TextFormField(
                 initialValue: widget.packageName,
-                decoration: const InputDecoration(
-                  labelText: "Nama Paket",
+                decoration: InputDecoration(
+                  labelText: l10n.packageName,
                   border: OutlineInputBorder(),
                 ),
                 readOnly: true,
@@ -85,21 +91,21 @@ class _EditPackageFormState extends State<EditPackageForm> {
 
               TextFormField(
                 controller: _hargaController,
-                decoration: const InputDecoration(
-                  labelText: "Harga Paket",
+                decoration: InputDecoration(
+                  labelText: l10n.price,
                   prefixText: "Rp ",
                   border: OutlineInputBorder(),
-                  hintText: "Masukkan harga paket (contoh: 500000)",
+                  hintText: l10n.enterPackagePrice,
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Harga tidak boleh kosong';
+                    return l10n.priceRequired;
                   }
                   final number = int.tryParse(value);
                   if (number == null || number <= 0) {
-                    return 'Masukkan harga yang valid';
+                    return l10n.enterValidPrice;
                   }
                   return null;
                 },
@@ -108,20 +114,20 @@ class _EditPackageFormState extends State<EditPackageForm> {
 
               TextFormField(
                 controller: _jasaController,
-                decoration: const InputDecoration(
-                  labelText: "Deskripsi Jasa (Pisahkan dengan koma)",
-                  hintText: "Contoh: Fotografer, Videografer, Album Cetak",
+                decoration: InputDecoration(
+                  labelText: l10n.serviceDescription,
+                  hintText: l10n.serviceExample,
                   border: OutlineInputBorder(),
                 ),
                 maxLines: 3,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Deskripsi jasa tidak boleh kosong';
+                    return l10n.serviceDescriptionRequired;
                   }
 
                   final invalidSeparators = RegExp(r'[.;:/\-]');
                   if (invalidSeparators.hasMatch(value)) {
-                    return 'Gunakan koma (,) untuk memisahkan jasa';
+                    return l10n.useCommaSeparator;
                   }
                   return null;
                 },
@@ -135,7 +141,7 @@ class _EditPackageFormState extends State<EditPackageForm> {
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: const Text("Simpan Perubahan"),
+                child: Text(l10n.save),
               ),
             ],
           ),

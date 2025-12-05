@@ -213,7 +213,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get noPackagesAvailable => 'Tidak ada paket tersedia';
 
   @override
-  String get selectPackage => 'Pilih paket';
+  String get selectPackage => 'Pilih Paket';
 
   @override
   String get addSpecialNotes => 'Tambahkan catatan atau permintaan khusus';
@@ -342,6 +342,117 @@ class AppLocalizationsId extends AppLocalizations {
   String get privacyPolicy => 'Kebijakan Privasi';
 
   @override
+  String get vendorProfile => 'Profil Vendor';
+
+  @override
+  String get failedToLoadVendor => 'Tidak dapat memuat data vendor';
+
+  @override
+  String get noDescription => 'Belum ada deskripsi';
+
+  @override
+  String get yourPackages => 'Paket Anda';
+
+  @override
+  String get priceNotSet => 'Belum diatur';
+
+  @override
+  String get noDescriptionAvailable => 'Tidak ada deskripsi';
+
+  @override
+  String get deleteConfirmation => 'Konfirmasi Hapus';
+
+  @override
+  String confirmDeletePackage(Object package) {
+    return 'Apakah Anda yakin ingin menghapus paket \'$package\'?';
+  }
+
+  @override
+  String packageDeletedSuccessfully(Object package) {
+    return 'Paket \'$package\' berhasil dihapus.';
+  }
+
+  @override
+  String get vendorNotLoggedIn => 'Vendor tidak login.';
+
+  @override
+  String get noImageSelected => 'Tidak ada gambar yang dipilih.';
+
+  @override
+  String get profilePictureUpdated => 'Foto profil berhasil diperbarui.';
+
+  @override
+  String failedToUpdatePicture(Object error) {
+    return 'Gagal memperbarui foto profil: $error';
+  }
+
+  @override
+  String get editPackagePrice => 'Edit Harga Paket';
+
+  @override
+  String get packageName => 'Nama Paket';
+
+  @override
+  String get enterPackagePrice => 'Masukkan harga paket (contoh: 500000)';
+
+  @override
+  String get priceRequired => 'Harga tidak boleh kosong';
+
+  @override
+  String get enterValidPrice => 'Masukkan harga yang valid';
+
+  @override
+  String get serviceDescription => 'Deskripsi Jasa (Pisahkan dengan koma)';
+
+  @override
+  String get serviceExample => 'Contoh: Fotografer, Videografer, Album Cetak';
+
+  @override
+  String get serviceDescriptionRequired => 'Deskripsi jasa tidak boleh kosong';
+
+  @override
+  String get useCommaSeparator => 'Gunakan koma (,) untuk memisahkan jasa';
+
+  @override
+  String get packagePriceUpdated => 'Harga paket berhasil diperbarui!';
+
+  @override
+  String get vendorDetails => 'Detail Vendor';
+
+  @override
+  String get about => 'Tentang';
+
+  @override
+  String get noDescriptionForVendor => 'Belum ada deskripsi untuk vendor ini.';
+
+  @override
+  String get orderNow => 'Pesan Sekarang';
+
+  @override
+  String get contact => 'Kontak';
+
+  @override
+  String get clientReviews => 'Ulasan Klien';
+
+  @override
+  String get perEvent => 'per acara';
+
+  @override
+  String get vendorNotFoundInDatabase => 'Vendor tidak ditemukan di database';
+
+  @override
+  String failedToLoadVendorData(Object error) {
+    return 'Gagal memuat data vendor: $error';
+  }
+
+  @override
+  String get packagesDeletedByVendor => 'Paket sudah dihapus oleh vendor.';
+
+  @override
+  String get thisPackageDeletedByVendor =>
+      'Paket ini sudah dihapus oleh vendor.';
+
+  @override
   String get search => 'Cari';
 
   @override
@@ -376,9 +487,6 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get description => 'Deskripsi';
-
-  @override
-  String get contact => 'Kontak';
 
   @override
   String get email => 'Email';

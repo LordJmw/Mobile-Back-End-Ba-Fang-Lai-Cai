@@ -26,14 +26,48 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
   Future<bool> _requestContactPermission() async {
     PermissionStatus status = await Permission.contacts.status;
 
-    if (status.isGranted) {
-      return true;
-    }
+    if (status.isGranted) return true;
 
     status = await Permission.contacts.request();
 
-    if (status.isGranted) {
-      return true;
+    if (status.isGranted) return true;
+
+    if (status.isDenied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Izin kontak diperlukan untuk registrasi."),
+          backgroundColor: Colors.red,
+        ),
+      );
+
+      status = await Permission.contacts.request();
+
+      if (status.isGranted) return true;
+
+      if (status.isDenied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Izin kontak ditolak. Aktifkan secara manual di Pengaturan.",
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return false;
+      }
+    }
+
+    if (status.isPermanentlyDenied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Izin kontak diblokir. Aktifkan secara manual di Pengaturan.",
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+      openAppSettings();
+      return false;
     }
 
     return false;
@@ -42,6 +76,9 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
   Future<void> _saveCustomer() async {
     try {
       if (!_formKey.currentState!.validate()) return;
+
+      bool granted = await _requestContactPermission();
+      if (!granted) return;
 
       final customer = CustomerModel(
         nama: _namaController.text,
@@ -54,6 +91,7 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
 
       final db = CustomerDatabase();
       await db.insertCustomer(customer);
+
       final eventlogs = Eventlogs();
       await eventlogs.logRegisterActivity(
         customer.email,
@@ -68,21 +106,6 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
           content: Text("Akun berhasil didaftarkan!"),
         ),
       );
-
-      // izin cek
-      bool granted = await _requestContactPermission();
-
-      while (!granted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            backgroundColor: Colors.red,
-            content: Text("Izin kontak diperlukan untuk melanjutkan"),
-          ),
-        );
-
-        await Future.delayed(const Duration(seconds: 1));
-        granted = await _requestContactPermission();
-      }
 
       Navigator.pushReplacement(
         context,

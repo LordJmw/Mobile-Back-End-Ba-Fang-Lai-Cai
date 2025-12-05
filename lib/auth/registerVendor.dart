@@ -5,7 +5,6 @@ import 'package:projek_uts_mbr/auth/loginVendor.dart';
 import 'package:projek_uts_mbr/auth/logincostumer.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
-import 'dart:convert';
 import 'package:permission_handler/permission_handler.dart';
 
 class RegisterVendor extends StatefulWidget {
@@ -41,87 +40,64 @@ class _RegisterVendorState extends State<RegisterVendor> {
     _loadCategories();
   }
 
-  Future<void> _askContactPermission() async {
-    await Future.delayed(const Duration(milliseconds: 200));
-
+  Future<bool> _askContactPermission() async {
     var status = await Permission.contacts.status;
 
-    if (status.isGranted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => LoginCustomer()),
-      );
-      return;
-    }
+    if (status.isGranted) return true;
 
     status = await Permission.contacts.request();
+    if (status.isGranted) return true;
 
-    if (status.isGranted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => LoginCustomer()),
+    if (status.isDenied) {
+      final retry = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Izin Kontak Diperlukan"),
+          content: const Text("Izinkan akses kontak untuk melanjutkan."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text("Coba Lagi"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text("Batal"),
+            ),
+          ],
+        ),
       );
-    } else if (status.isDenied) {
-      _showRetryDialog();
-    } else if (status.isPermanentlyDenied) {
-      _showOpenSettingDialog();
+
+      if (retry == true) {
+        status = await Permission.contacts.request();
+        if (status.isGranted) return true;
+      }
     }
-  }
 
-  void _showRetryDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Izin Kontak Diperlukan"),
-        content: const Text(
-          "Aplikasi membutuhkan izin kontak agar bisa melanjutkan. Izinkan sekarang?",
+    if (status.isPermanentlyDenied) {
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Izin Ditolak Permanen"),
+          content: const Text("Aktifkan akses kontak dari pengaturan."),
+          actions: [
+            TextButton(
+              onPressed: () {
+                openAppSettings();
+                Navigator.pop(context);
+              },
+              child: const Text("Buka Pengaturan"),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
+      );
+    }
 
-              var status = await Permission.contacts.request();
-
-              if (status.isGranted) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => LoginCustomer()),
-                );
-              } else {
-                _showOpenSettingDialog();
-              }
-            },
-            child: const Text("Coba Lagi"),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showOpenSettingDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Izin Ditolak Permanen"),
-        content: const Text(
-          "Kamu menolak izin kontak berkali-kali. Aktifkan secara manual di Pengaturan.",
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              openAppSettings();
-              Navigator.pop(context);
-            },
-            child: const Text("Buka Pengaturan"),
-          ),
-        ],
-      ),
-    );
+    return false;
   }
 
   Future<void> _loadCategories() async {
     final db = Vendordatabase();
+    await db.initDataAwal();
     final cats = await db.getCategories();
     setState(() {
       categories = cats;
@@ -164,21 +140,15 @@ class _RegisterVendorState extends State<RegisterVendor> {
     final db = Vendordatabase();
     await db.insertVendor(vendor);
 
+    bool granted = await _askContactPermission();
+    if (!granted) return;
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text("Vendor berhasil didaftarkan!"),
         backgroundColor: Colors.green,
       ),
     );
-
-    await Eventlogs().logVendorRegisterActivity(
-      penyedia.email,
-      "vendor",
-      selectedCategory!,
-      penyedia.nama,
-    );
-
-    await _askContactPermission();
 
     Navigator.pushReplacement(
       context,
