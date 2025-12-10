@@ -32,29 +32,6 @@ class CustomerDatabase {
       };
 
       await firestorDb.collection("customers").doc(uid).set(customerToAdd);
-
-      // final url = Uri.parse("${base_url.customer}/register");
-      // final response = await http.post(
-      //   url,
-      //   headers: {"Content-Type": "application/json"},
-      //   body: jsonEncode({
-      //     "id": uid,
-      //     "nama": customer.nama,
-      //     "email": customer.email,
-      //     "password": customer.password,
-      //     "telepon": customer.telepon,
-      //     "alamat": customer.alamat,
-      //   }),
-      // );
-      // if (response.statusCode == 201) {
-      //   print("Register ke Node.js sukses");
-      //   final data = jsonDecode(response.body);
-      //   return data['customerId'];
-      // } else {
-      //    print("Gagal register ke Node.js: ${response.statusCode}");
-      //    print("Body: ${response.body}");
-      //   throw Exception("Register Node.js gagal");
-      // }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         print("Email sudah digunakan");
@@ -97,25 +74,6 @@ class CustomerDatabase {
       }
 
       return null;
-
-      // final url = Uri.parse("${base_url.customer}/login");
-      // final response = await http.post(
-      //   url,
-      //   headers: {"Content-Type": "application/json"},
-      //   body: jsonEncode({"email": email, "password": password}),
-      // );
-      // if (response.statusCode == 200) {
-      //   print("Login ke customer sukses");
-      //   final data = jsonDecode(response.body);
-      //   return CustomerModel.fromJson(data['user']);
-      // } else if (response.statusCode == 401) {
-      //   print("Email atau password salah");
-      //   return null;
-      // } else {
-      //   print("Gagal login ke Node.js: ${response.statusCode}");
-      //   print("Body: ${response.body}");
-      //   throw Exception("Login Node.js gagal");
-      // }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         print('Tidak ada user dengan email tersebut.');
@@ -148,20 +106,6 @@ class CustomerDatabase {
         print("customers dengan email ${email} tidak ditemukan");
         return null;
       }
-
-      // final url = Uri.parse("${base_url.customer}/email/${email}");
-      // final response = await http.get(url);
-      // if (response.statusCode == 200) {
-      //   final decoded = jsonDecode(response.body);
-      //   final results = decoded['results'];
-      //   if (results != null && results.isNotEmpty) {
-      //     return CustomerModel.fromJson(results[0]);
-      //   } else {
-      //     print("Tidak ada customer dengan email: $email");
-      //     return null;
-      //   }
-      // }
-      // throw Exception('Server error while getCustomer by email');
     } catch (e) {
       print("error getCustomer by email: $e");
       rethrow;
@@ -203,19 +147,6 @@ class CustomerDatabase {
 
       print("update profile customer sukses");
       return true;
-
-      // final response = await http.put(
-      //   Uri.parse('${base_url.customer}/update/${customer.id}'),
-      //   headers: {"Content-Type": "application/json"},
-      //   body: jsonEncode(customer.toJson()),
-      // );
-      // if (response.statusCode == 200) {
-      //   ...
-      //   return true;
-      // } else {
-      //   print("Failed to update customer...");
-      //   return false;
-      // }
     } catch (e) {
       print(e);
       rethrow;
@@ -247,5 +178,73 @@ class CustomerDatabase {
     if (!doc.exists) return null;
 
     return CustomerModel.fromJson(doc.data()!);
+  }
+
+  Future<bool> deleteCustomerAccount() async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception("NO_USER_LOGGED_IN");
+      }
+
+      final String uid = user.uid;
+      final String email = user.email ?? '';
+
+      await firestorDb.collection("customers").doc(uid).delete();
+      print("Customer document deleted successfully");
+
+      await user.delete();
+      print("Firebase Auth user deleted successfully");
+
+      return true;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        print('User needs to reauthenticate.');
+        throw Exception("REQUIRES_RECENT_LOGIN");
+      }
+      print("Firebase Auth error during deletion: ${e.code} - ${e.message}");
+      throw Exception("AUTH_ERROR");
+    } catch (e) {
+      print("Error deleting customer account: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> reauthenticateUser(String password) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception("NO_USER_LOGGED_IN");
+      }
+
+      final email = user.email;
+      if (email == null) {
+        throw Exception("NO_EMAIL_FOUND");
+      }
+
+      final credential = EmailAuthProvider.credential(
+        email: email,
+        password: password,
+      );
+
+      await user.reauthenticateWithCredential(credential);
+      print("User reauthenticated successfully");
+    } on FirebaseAuthException catch (e) {
+      print("Reauthentication failed: ${e.code} - ${e.message}");
+      if (e.code == 'wrong-password') {
+        throw Exception("WRONG_PASSWORD");
+      } else if (e.code == 'user-mismatch') {
+        throw Exception("USER_MISMATCH");
+      } else if (e.code == 'user-not-found') {
+        throw Exception("USER_NOT_FOUND");
+      } else if (e.code == 'invalid-credential') {
+        throw Exception("INVALID_CREDENTIAL");
+      } else if (e.code == 'invalid-email') {
+        throw Exception("INVALID_EMAIL");
+      } else if (e.code == 'too-many-requests') {
+        throw Exception("TOO_MANY_REQUESTS");
+      }
+      throw Exception("REAUTH_FAILED");
+    }
   }
 }

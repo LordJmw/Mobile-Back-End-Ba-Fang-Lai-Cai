@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LanguageProvider extends ChangeNotifier {
+  //default pertama kali launch indonesia
   Locale _locale = const Locale('id');
   bool _isLoading = true;
 

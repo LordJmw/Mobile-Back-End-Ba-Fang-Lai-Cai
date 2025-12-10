@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/model/CustomerModel.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -23,22 +26,57 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
   final TextEditingController _teleponController = TextEditingController();
   final TextEditingController _alamatController = TextEditingController();
 
-  Future<bool> _requestContactPermission() async {
+  Future<bool> _requestContactPermission(BuildContext context) async {
     PermissionStatus status = await Permission.contacts.status;
-
+    final l10n = AppLocalizations.of(context)!;
     if (status.isGranted) return true;
+
+    bool firstDialog = await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) {
+        return AlertDialog(
+          title: Text(l10n.permissionContactRequired),
+          content: Text(l10n.permissionContactRequiredMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: Text(l10n.continueDialog),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (!firstDialog) return false;
 
     status = await Permission.contacts.request();
 
     if (status.isGranted) return true;
 
     if (status.isDenied) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Izin kontak diperlukan untuk registrasi."),
-          backgroundColor: Colors.red,
-        ),
+      bool secondDialog = await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) {
+          return AlertDialog(
+            title: Text(l10n.permissionRequired),
+            content: Text(l10n.pleaseAllowContactToRegister),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text(l10n.tryAgain),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text(l10n.cancel),
+              ),
+            ],
+          );
+        },
       );
+
+      if (!secondDialog) return false;
 
       status = await Permission.contacts.request();
 
@@ -46,10 +84,8 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
 
       if (status.isDenied) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              "Izin kontak ditolak. Aktifkan secara manual di Pengaturan.",
-            ),
+          SnackBar(
+            content: Text(l10n.contactPermissionDenied),
             backgroundColor: Colors.red,
           ),
         );
@@ -59,10 +95,8 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
 
     if (status.isPermanentlyDenied) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Izin kontak diblokir. Aktifkan secara manual di Pengaturan.",
-          ),
+        SnackBar(
+          content: Text(l10n.contactPermissionBlocked),
           backgroundColor: Colors.red,
         ),
       );
@@ -73,11 +107,12 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
     return false;
   }
 
-  Future<void> _saveCustomer() async {
+  Future<void> _saveCustomer(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     try {
       if (!_formKey.currentState!.validate()) return;
 
-      bool granted = await _requestContactPermission();
+      bool granted = await _requestContactPermission(context);
       if (!granted) return;
 
       final customer = CustomerModel(
@@ -101,9 +136,9 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           backgroundColor: Colors.green,
-          content: Text("Akun berhasil didaftarkan!"),
+          content: Text(l10n.registerSuccess),
         ),
       );
 
@@ -114,16 +149,16 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
     } catch (e) {
       if (e.toString().contains("EMAIL_USED")) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             backgroundColor: Colors.red,
-            content: Text("Email ini sudah terdaftar"),
+            content: Text(l10n.registerEmailUsed),
           ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,
-            content: Text("Terjadi kesalahan: ${e.toString()}"),
+            content: Text("${l10n.registerGeneralError(e)}"),
           ),
         );
       }
@@ -132,6 +167,8 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
@@ -144,46 +181,44 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
               key: _formKey,
               child: Column(
                 children: [
-                  const Text(
-                    "Buat Akun Customer Baru",
-                    style: TextStyle(
+                  Text(
+                    l10n.registerCreateTitle,
+                    style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.pink,
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const Text(
-                    "Isi data untuk mendaftar Customer",
-                    style: TextStyle(color: Colors.grey),
+                  Text(
+                    l10n.registerCreateSubtitle,
+                    style: const TextStyle(color: Colors.grey),
                   ),
                   const SizedBox(height: 30),
-
                   TextFormField(
                     controller: _namaController,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.person_outline),
-                      labelText: "Nama Lengkap",
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.person_outline),
+                      labelText: l10n.registerFullName,
+                      border: const OutlineInputBorder(),
                     ),
                     validator: (value) =>
-                        value!.isEmpty ? "Nama wajib diisi" : null,
+                        value!.isEmpty ? l10n.errorNameRequired : null,
                   ),
                   const SizedBox(height: 20),
 
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.email_outlined),
-                      labelText: "Email",
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.email_outlined),
+                      labelText: l10n.registerEmail,
+                      border: const OutlineInputBorder(),
                     ),
                     validator: (value) {
-                      if (value!.isEmpty) return "Email wajib diisi";
+                      if (value!.isEmpty) return l10n.errorEmailRequired;
                       final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                      if (!regex.hasMatch(value))
-                        return "Format email tidak valid";
+                      if (!regex.hasMatch(value)) return l10n.errorEmailInvalid;
                       return null;
                     },
                   ),
@@ -192,14 +227,14 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
                   TextFormField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.lock_outline),
-                      labelText: "Password",
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.lock_outline),
+                      labelText: l10n.registerPassword,
+                      border: const OutlineInputBorder(),
                     ),
                     validator: (value) {
-                      if (value!.isEmpty) return "Password wajib diisi";
-                      if (value.length < 6) return "Minimal 6 karakter";
+                      if (value!.isEmpty) return l10n.errorPasswordRequired;
+                      if (value.length < 6) return l10n.errorPasswordMinLength;
                       return null;
                     },
                   ),
@@ -208,17 +243,16 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
                   TextFormField(
                     controller: _confirmController,
                     obscureText: true,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.lock_outline),
-                      labelText: "Konfirmasi Password",
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.lock_outline),
+                      labelText: l10n.registerConfirmPassword,
+                      border: const OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value!.isEmpty)
-                        return "Konfirmasi password wajib diisi";
-                      if (value != _passwordController.text) {
-                        return "Password tidak sama";
-                      }
+                        return l10n.errorConfirmPasswordRequired;
+                      if (value != _passwordController.text)
+                        return l10n.errorPasswordNotMatch;
                       return null;
                     },
                   ),
@@ -228,20 +262,17 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
                     controller: _teleponController,
                     keyboardType: TextInputType.phone,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.phone_android_outlined),
-                      labelText: "Nomor Telepon",
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.phone_android_outlined),
+                      labelText: l10n.registerPhoneNumber,
+                      border: const OutlineInputBorder(),
                     ),
                     validator: (value) {
-                      if (value!.isEmpty) return "Nomor telepon wajib diisi";
+                      if (value!.isEmpty) return l10n.errorPhoneRequired;
                       final regex = RegExp(r'^[0-9]+$');
-                      if (!regex.hasMatch(value)) {
-                        return "Nomor telepon hanya boleh angka";
-                      }
-                      if (value.length < 10) {
-                        return "Nomor telepon minimal 10 digit";
-                      }
+                      if (!regex.hasMatch(value))
+                        return l10n.errorPhoneOnlyNumber;
+                      if (value.length < 10) return l10n.errorPhoneMinDigit;
                       return null;
                     },
                   ),
@@ -249,18 +280,20 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
 
                   TextFormField(
                     controller: _alamatController,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.home_outlined),
-                      labelText: "Alamat Lengkap",
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.home_outlined),
+                      labelText: l10n.registerAddress,
+                      border: const OutlineInputBorder(),
                     ),
                     validator: (value) =>
-                        value!.isEmpty ? "Alamat wajib diisi" : null,
+                        value!.isEmpty ? l10n.errorAddressRequired : null,
                   ),
                   const SizedBox(height: 30),
 
                   ElevatedButton(
-                    onPressed: _saveCustomer,
+                    onPressed: () {
+                      _saveCustomer(context);
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.pink,
                       minimumSize: const Size(double.infinity, 50),
@@ -269,9 +302,9 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
                       ),
                       elevation: 5,
                     ),
-                    child: const Text(
-                      "Daftar",
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    child: Text(
+                      l10n.registerButton,
+                      style: const TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -283,9 +316,9 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
                         MaterialPageRoute(builder: (_) => LoginCustomer()),
                       );
                     },
-                    child: const Text(
-                      "Sudah punya akun? Masuk",
-                      style: TextStyle(color: Colors.pink),
+                    child: Text(
+                      l10n.registerHaveAccount,
+                      style: const TextStyle(color: Colors.pink),
                     ),
                   ),
                 ],

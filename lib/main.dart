@@ -14,8 +14,7 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
-  // Load bahasa dari SharedPreferences sebelum app berjalan
+  //load bahasa dari sharedPreference sebelum app berjalan
   final languageProvider = LanguageProvider();
   await languageProvider.loadLocale();
 
@@ -33,7 +32,7 @@ class MyApp extends StatelessWidget {
       builder: (context, languageProvider, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          locale: languageProvider.locale, //
+          locale: languageProvider.locale,
           supportedLocales: const [Locale('en'), Locale('id')],
           localizationsDelegates: const [
             AppLocalizations.delegate,
@@ -112,6 +111,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     if (loading) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator(color: Colors.pink)),
@@ -125,13 +125,16 @@ class _MainScreenState extends State<MainScreen> {
         onTap: (i) => setState(() => _selectedIndex = i),
         selectedItemColor: Colors.pink,
         unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: l10n.home),
           BottomNavigationBarItem(
             icon: Icon(Icons.all_inbox),
-            label: 'Lihat Semua',
+            label: l10n.viewAll,
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: l10n.profile,
+          ),
         ],
       ),
     );

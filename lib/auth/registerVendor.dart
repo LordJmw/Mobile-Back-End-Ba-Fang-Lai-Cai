@@ -4,6 +4,7 @@ import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/loginVendor.dart';
 import 'package:projek_uts_mbr/auth/logincostumer.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -40,7 +41,8 @@ class _RegisterVendorState extends State<RegisterVendor> {
     _loadCategories();
   }
 
-  Future<bool> _askContactPermission() async {
+  Future<bool> _askContactPermission(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     var status = await Permission.contacts.status;
 
     if (status.isGranted) return true;
@@ -52,16 +54,16 @@ class _RegisterVendorState extends State<RegisterVendor> {
       final retry = await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text("Izin Kontak Diperlukan"),
-          content: const Text("Izinkan akses kontak untuk melanjutkan."),
+          title: Text(l10n.permissionContactRequired),
+          content: Text(l10n.permissionContactRequiredMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text("Coba Lagi"),
+              child: Text(l10n.tryAgain),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text("Batal"),
+              child: Text(l10n.cancel),
             ),
           ],
         ),
@@ -77,15 +79,15 @@ class _RegisterVendorState extends State<RegisterVendor> {
       await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text("Izin Ditolak Permanen"),
-          content: const Text("Aktifkan akses kontak dari pengaturan."),
+          title: Text(l10n.permissionDitolakPermanenTitle),
+          content: Text(l10n.permissionDitolakPermanenMessage),
           actions: [
             TextButton(
               onPressed: () {
                 openAppSettings();
                 Navigator.pop(context);
               },
-              child: const Text("Buka Pengaturan"),
+              child: Text(l10n.bukaPengaturan),
             ),
           ],
         ),
@@ -104,7 +106,8 @@ class _RegisterVendorState extends State<RegisterVendor> {
     });
   }
 
-  Future<void> _saveVendor() async {
+  Future<void> _saveVendor(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()) return;
 
     final penyedia = Penyedia(
@@ -140,12 +143,12 @@ class _RegisterVendorState extends State<RegisterVendor> {
     final db = Vendordatabase();
     await db.insertVendor(vendor);
 
-    bool granted = await _askContactPermission();
+    bool granted = await _askContactPermission(context);
     if (!granted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Vendor berhasil didaftarkan!"),
+      SnackBar(
+        content: Text(l10n.registerVendorSuccess),
         backgroundColor: Colors.green,
       ),
     );
@@ -158,6 +161,8 @@ class _RegisterVendorState extends State<RegisterVendor> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Card(
@@ -170,215 +175,231 @@ class _RegisterVendorState extends State<RegisterVendor> {
               key: _formKey,
               child: Column(
                 children: [
-                  const Text(
-                    "Buat Akun Vendor Baru",
-                    style: TextStyle(
+                  Text(
+                    l10n.registerVendorTitle,
+                    style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.pink,
                     ),
                   ),
                   const SizedBox(height: 20),
+
                   TextFormField(
                     controller: _namatokoController,
-                    decoration: const InputDecoration(
-                      labelText: "Nama Toko",
-                      prefixIcon: Icon(Icons.store_outlined),
+                    decoration: InputDecoration(
+                      labelText: l10n.registerVendorName,
+                      prefixIcon: const Icon(Icons.store_outlined),
                     ),
-                    validator: (value) =>
-                        value!.isEmpty ? "Nama toko wajib diisi" : null,
+                    validator: (v) =>
+                        v!.isEmpty ? l10n.errorNameRequired : null,
                   ),
                   const SizedBox(height: 15),
+
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      labelText: "Email",
-                      prefixIcon: Icon(Icons.email_outlined),
+                    decoration: InputDecoration(
+                      labelText: l10n.registerVendorEmail,
+                      prefixIcon: const Icon(Icons.email_outlined),
                     ),
-                    validator: (value) {
-                      if (value!.isEmpty) return "Email wajib diisi";
+                    validator: (v) {
+                      if (v!.isEmpty) return l10n.errorEmailRequired;
                       final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                      if (!regex.hasMatch(value)) return "Email tidak valid";
+                      if (!regex.hasMatch(v)) return l10n.errorEmailInvalid;
                       return null;
                     },
                   ),
                   const SizedBox(height: 15),
+
                   TextFormField(
                     controller: _teleponController,
                     keyboardType: TextInputType.phone,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                      labelText: "Nomor Telepon",
-                      prefixIcon: Icon(Icons.phone_outlined),
+                    decoration: InputDecoration(
+                      labelText: l10n.registerVendorPhone,
+                      prefixIcon: const Icon(Icons.phone_outlined),
                     ),
-                    validator: (value) {
-                      if (value!.isEmpty) return "Nomor telepon wajib diisi";
-                      if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                        return "Hanya angka yang diperbolehkan";
+                    validator: (v) {
+                      if (v!.isEmpty) return l10n.errorPhoneRequired;
+                      if (!RegExp(r'^[0-9]+$').hasMatch(v)) {
+                        return l10n.errorPhoneOnlyNumber;
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 15),
+
                   DropdownButtonFormField<String>(
                     value: selectedCategory,
-                    decoration: const InputDecoration(
-                      labelText: "Kategori Vendor",
-                      prefixIcon: Icon(Icons.category_outlined),
+                    decoration: InputDecoration(
+                      labelText: l10n.categoryPage,
+                      prefixIcon: const Icon(Icons.category_outlined),
                     ),
                     items: categories
                         .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                         .toList(),
-                    onChanged: (value) => setState(() {
-                      selectedCategory = value;
-                    }),
-                    validator: (value) =>
-                        value == null ? "Pilih kategori vendor" : null,
+                    onChanged: (v) => setState(() => selectedCategory = v),
+                    validator: (v) => v == null ? l10n.requiredFields : null,
                   ),
                   const SizedBox(height: 15),
+
                   TextFormField(
                     controller: _alamatController,
-                    decoration: const InputDecoration(
-                      labelText: "Alamat Toko",
-                      prefixIcon: Icon(Icons.home_outlined),
+                    decoration: InputDecoration(
+                      labelText: l10n.registerVendorAddress,
+                      prefixIcon: const Icon(Icons.home_outlined),
                     ),
-                    validator: (value) =>
-                        value!.isEmpty ? "Alamat wajib diisi" : null,
+                    validator: (v) =>
+                        v!.isEmpty ? l10n.errorAddressRequired : null,
                   ),
                   const SizedBox(height: 15),
+
                   TextFormField(
                     controller: _deskripsiController,
                     maxLines: 3,
-                    decoration: const InputDecoration(
-                      labelText: "Deskripsi Toko",
-                      prefixIcon: Icon(Icons.description_outlined),
+                    decoration: InputDecoration(
+                      labelText: l10n.description,
+                      prefixIcon: const Icon(Icons.description_outlined),
                     ),
-                    validator: (value) =>
-                        value!.isEmpty ? "Deskripsi wajib diisi" : null,
+                    validator: (v) =>
+                        v!.isEmpty ? l10n.serviceDescriptionRequired : null,
                   ),
                   const SizedBox(height: 20),
-                  const Text(
-                    "Paket Basic",
-                    style: TextStyle(
+
+                  Text(
+                    l10n.paketBasic,
+                    style: const TextStyle(
                       color: Colors.pink,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 10),
+
                   TextFormField(
                     controller: _hargaBasicController,
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(labelText: "Harga Basic"),
+                    decoration: InputDecoration(labelText: l10n.hargaBasic),
                     validator: (v) {
                       if (v == null || v.isEmpty)
-                        return "Harga Basic wajib diisi";
+                        return l10n.hargaBasicWajibDiisi;
                       final value = int.tryParse(v);
-                      if (value == null) return "Harga tidak valid";
+                      if (value == null) return l10n.hargaTidakValid;
                       if (value > 10000000)
-                        return "Harga tidak boleh lebih dari 10 juta";
+                        return l10n.hargaTidakBolehLebihDari10Juta;
                       return null;
                     },
                   ),
+
                   TextFormField(
                     controller: _jasaBasicController,
-                    decoration: const InputDecoration(labelText: "Jasa Basic"),
+                    decoration: InputDecoration(labelText: l10n.jasaBasic),
                     validator: (v) =>
-                        v!.isEmpty ? "Jasa Premium wajib diisi" : null,
+                        v!.isEmpty ? l10n.jasaBasicWajibDiisi : null,
                   ),
                   const SizedBox(height: 20),
-                  const Text(
-                    "Paket Premium",
-                    style: TextStyle(
+
+                  Text(
+                    l10n.paketPremium,
+                    style: const TextStyle(
                       color: Colors.pink,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+
                   TextFormField(
                     controller: _hargaPremiumController,
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                      labelText: "Harga Premium",
-                    ),
+                    decoration: InputDecoration(labelText: l10n.hargaPremium),
                     validator: (v) {
                       if (v == null || v.isEmpty)
-                        return "Harga Basic wajib diisi";
+                        return l10n.hargaPremiumWajibDiisi;
                       final value = int.tryParse(v);
-                      if (value == null) return "Harga tidak valid";
+                      if (value == null) return l10n.hargaTidakValid;
                       if (value > 10000000)
-                        return "Harga tidak boleh lebih dari 10 juta";
+                        return l10n.hargaTidakBolehLebihDari10Juta;
                       return null;
                     },
                   ),
+
                   TextFormField(
                     controller: _jasaPremiumController,
-                    decoration: const InputDecoration(
-                      labelText: "Jasa Premium",
-                    ),
+                    decoration: InputDecoration(labelText: l10n.jasaPremium),
                     validator: (v) =>
-                        v!.isEmpty ? "Jasa Premium wajib diisi" : null,
+                        v!.isEmpty ? l10n.jasaPremiumWajibDiisi : null,
                   ),
                   const SizedBox(height: 20),
-                  const Text(
-                    "Paket Custom",
-                    style: TextStyle(
+
+                  Text(
+                    l10n.paketCustom,
+                    style: const TextStyle(
                       color: Colors.pink,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+
                   TextFormField(
                     controller: _hargaCustomController,
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                      labelText: "Harga Custom",
-                    ),
+                    decoration: InputDecoration(labelText: l10n.hargaCustom),
                     validator: (v) {
                       if (v == null || v.isEmpty)
-                        return "Harga Basic wajib diisi";
+                        return l10n.hargaCustomWajibDiisi;
                       final value = int.tryParse(v);
-                      if (value == null) return "Harga tidak valid";
+                      if (value == null) return l10n.hargaTidakValid;
                       if (value > 10000000)
-                        return "Harga tidak boleh lebih dari 10 juta";
+                        return l10n.hargaTidakBolehLebihDari10Juta;
                       return null;
                     },
                   ),
+
                   TextFormField(
                     controller: _jasaCustomController,
-                    decoration: const InputDecoration(labelText: "Jasa Custom"),
+                    decoration: InputDecoration(labelText: l10n.jasaCustom),
                     validator: (v) =>
-                        v!.isEmpty ? "Jasa Custom wajib diisi" : null,
+                        v!.isEmpty ? l10n.jasaCustomWajibDiisi : null,
                   ),
+
                   const SizedBox(height: 20),
+
                   TextFormField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: const InputDecoration(labelText: "Password"),
-                    validator: (v) =>
-                        v!.length < 6 ? "Minimal 6 karakter" : null,
+                    decoration: InputDecoration(
+                      labelText: l10n.registerVendorPassword,
+                    ),
+                    validator: (v) => v == null || v.length < 6
+                        ? l10n.errorPasswordMinLength
+                        : null,
                   ),
+
                   TextFormField(
                     controller: _confirmController,
                     obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: "Konfirmasi Password",
+                    decoration: InputDecoration(
+                      labelText: l10n.registerVendorConfirmPassword,
                     ),
                     validator: (v) => v != _passwordController.text
-                        ? "Password tidak sama"
+                        ? l10n.errorPasswordNotMatch
                         : null,
                   ),
+
                   const SizedBox(height: 30),
+
                   ElevatedButton(
-                    onPressed: _saveVendor,
+                    onPressed: () {
+                      _saveVendor(context);
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.pink,
                       minimumSize: const Size(double.infinity, 50),
                     ),
-                    child: const Text(
-                      "Daftar Vendor",
-                      style: TextStyle(color: Colors.white),
+                    child: Text(
+                      l10n.registerVendorButton,
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 ],

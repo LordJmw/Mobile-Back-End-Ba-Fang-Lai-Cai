@@ -231,7 +231,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get loadingData => 'Sedang memuat data...';
 
   @override
-  String get loginAsCustomer =>
+  String get loginAsCustomerToBuy =>
       'Login sebagai customer untuk dapat membeli paket';
 
   @override
@@ -451,6 +451,316 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get thisPackageDeletedByVendor =>
       'Paket ini sudah dihapus oleh vendor.';
+
+  @override
+  String get deleteAccount => 'Hapus Akun';
+
+  @override
+  String get deleteAccountWarning =>
+      'Apakah Anda yakin ingin menghapus akun Anda? Tindakan ini tidak dapat dibatalkan.';
+
+  @override
+  String get deleteAccountConsequences =>
+      'Semua data Anda, pesanan, dan preferensi akan dihapus secara permanen.';
+
+  @override
+  String get enterPasswordToConfirm =>
+      'Masukkan password Anda untuk konfirmasi:';
+
+  @override
+  String get enterYourPassword => 'Masukkan password Anda';
+
+  @override
+  String get deletingAccount => 'Menghapus akun...';
+
+  @override
+  String get pleaseEnterPassword => 'Silakan masukkan password Anda';
+
+  @override
+  String get wrongPassword => 'Password salah. Silakan coba lagi.';
+
+  @override
+  String get requiresRecentLogin =>
+      'Untuk alasan keamanan, silakan login ulang sebelum menghapus akun.';
+
+  @override
+  String get tooManyAttempts =>
+      'Terlalu banyak percobaan. Silakan coba lagi nanti.';
+
+  @override
+  String get deleteAccountFailed => 'Gagal menghapus akun. Silakan coba lagi.';
+
+  @override
+  String get accountDeletedSuccessfully => 'Akun berhasil dihapus.';
+
+  @override
+  String get permanentDeleteWarning =>
+      'Hapus akun dan data Anda secara permanen';
+
+  @override
+  String get dangerZone => 'Zona Bahaya';
+
+  @override
+  String get welcome => 'Selamat Datang!';
+
+  @override
+  String get loginToContinue => 'Masuk untuk melanjutkan';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get emailRequired => 'Email wajib diisi';
+
+  @override
+  String get invalidEmailFormat => 'Format email tidak valid';
+
+  @override
+  String get passwordRequired => 'Password wajib diisi';
+
+  @override
+  String get passwordMinLength => 'Minimal 6 karakter';
+
+  @override
+  String get login => 'Masuk';
+
+  @override
+  String get noAccountRegister => 'Belum punya akun? Daftar';
+
+  @override
+  String get loginAsCustomer => 'Login sebagai Customer';
+
+  @override
+  String get loginSuccess => 'Login berhasil!';
+
+  @override
+  String get invalidCredentials => 'Email atau password salah!';
+
+  @override
+  String get loginAsVendor => 'Login sebagai Vendor';
+
+  @override
+  String get registerCreateTitle => 'Buat Akun Customer Baru';
+
+  @override
+  String get registerCreateSubtitle => 'Isi data untuk mendaftar Customer';
+
+  @override
+  String get registerFullName => 'Nama Lengkap';
+
+  @override
+  String get registerEmail => 'Email';
+
+  @override
+  String get registerPassword => 'Password';
+
+  @override
+  String get registerConfirmPassword => 'Konfirmasi Password';
+
+  @override
+  String get registerPhoneNumber => 'Nomor Telepon';
+
+  @override
+  String get registerAddress => 'Alamat Lengkap';
+
+  @override
+  String get registerButton => 'Daftar';
+
+  @override
+  String get registerHaveAccount => 'Sudah punya akun? Masuk';
+
+  @override
+  String get errorNameRequired => 'Nama wajib diisi';
+
+  @override
+  String get errorEmailRequired => 'Email wajib diisi';
+
+  @override
+  String get errorEmailInvalid => 'Format email tidak valid';
+
+  @override
+  String get errorPasswordRequired => 'Password wajib diisi';
+
+  @override
+  String get errorPasswordMinLength => 'Minimal 6 karakter';
+
+  @override
+  String get errorConfirmPasswordRequired => 'Konfirmasi password wajib diisi';
+
+  @override
+  String get errorPasswordNotMatch => 'Password tidak sama';
+
+  @override
+  String get errorPhoneRequired => 'Nomor telepon wajib diisi';
+
+  @override
+  String get errorPhoneOnlyNumber => 'Nomor telepon hanya boleh angka';
+
+  @override
+  String get errorPhoneMinDigit => 'Nomor telepon minimal 10 digit';
+
+  @override
+  String get errorAddressRequired => 'Alamat wajib diisi';
+
+  @override
+  String get permissionContactRequired =>
+      'Izin kontak diperlukan untuk registrasi.';
+
+  @override
+  String get permissionContactDenied =>
+      'Izin kontak ditolak. Aktifkan secara manual di Pengaturan.';
+
+  @override
+  String get permissionContactBlocked =>
+      'Izin kontak diblokir. Aktifkan secara manual di Pengaturan.';
+
+  @override
+  String get registerSuccess => 'Akun berhasil didaftarkan!';
+
+  @override
+  String get registerEmailUsed => 'Email ini sudah terdaftar';
+
+  @override
+  String registerGeneralError(Object error) {
+    return 'Terjadi kesalahan: $error';
+  }
+
+  @override
+  String get registerVendorTitle => 'Buat Akun Vendor Baru';
+
+  @override
+  String get registerVendorSubtitle => 'Isi data untuk mendaftar Vendor';
+
+  @override
+  String get registerVendorName => 'Nama Toko';
+
+  @override
+  String get registerVendorEmail => 'Email';
+
+  @override
+  String get registerVendorPassword => 'Password';
+
+  @override
+  String get registerVendorConfirmPassword => 'Konfirmasi Password';
+
+  @override
+  String get registerVendorPhone => 'Nomor Telepon';
+
+  @override
+  String get registerVendorAddress => 'Alamat Toko';
+
+  @override
+  String get registerVendorButton => 'Daftar Vendor';
+
+  @override
+  String get basicPriceRequired => 'Harga Basic wajib diisi';
+
+  @override
+  String get premiumPriceRequired => 'Harga Premium wajib diisi';
+
+  @override
+  String get customPriceRequired => 'Harga Custom wajib diisi';
+
+  @override
+  String get priceInvalid => 'Harga tidak valid';
+
+  @override
+  String get priceTooHigh => 'Harga tidak boleh lebih dari 10 juta';
+
+  @override
+  String get paketBasic => 'Paket Basic';
+
+  @override
+  String get paketPremium => 'Paket Premium';
+
+  @override
+  String get paketCustom => 'Paket Custom';
+
+  @override
+  String get hargaBasic => 'Harga Basic';
+
+  @override
+  String get jasaBasic => 'Jasa Basic';
+
+  @override
+  String get hargaPremium => 'Harga Premium';
+
+  @override
+  String get jasaPremium => 'Jasa Premium';
+
+  @override
+  String get hargaCustom => 'Harga Custom';
+
+  @override
+  String get jasaCustom => 'Jasa Custom';
+
+  @override
+  String get hargaBasicWajibDiisi => 'Harga Basic wajib diisi';
+
+  @override
+  String get jasaBasicWajibDiisi => 'Jasa Basic wajib diisi';
+
+  @override
+  String get hargaPremiumWajibDiisi => 'Harga Premium wajib diisi';
+
+  @override
+  String get jasaPremiumWajibDiisi => 'Jasa Premium wajib diisi';
+
+  @override
+  String get hargaCustomWajibDiisi => 'Harga Custom wajib diisi';
+
+  @override
+  String get jasaCustomWajibDiisi => 'Jasa Custom wajib diisi';
+
+  @override
+  String get hargaTidakValid => 'Harga tidak valid';
+
+  @override
+  String get hargaTidakBolehLebihDari10Juta =>
+      'Harga tidak boleh lebih dari 10 juta';
+
+  @override
+  String get registerVendorSuccess => 'Vendor berhasil didaftarkan!';
+
+  @override
+  String get permissionContactRequiredTitle => 'Izin Kontak Diperlukan';
+
+  @override
+  String get permissionContactRequiredMessage =>
+      'Izinkan akses kontak untuk melanjutkan.';
+
+  @override
+  String get cobaLagi => 'Coba Lagi';
+
+  @override
+  String get batal => 'Batal';
+
+  @override
+  String get permissionDitolakPermanenTitle => 'Izin Ditolak Permanen';
+
+  @override
+  String get permissionDitolakPermanenMessage =>
+      'Aktifkan akses kontak dari pengaturan.';
+
+  @override
+  String get bukaPengaturan => 'Buka Pengaturan';
+
+  @override
+  String get continueDialog => 'lanjutkan';
+
+  @override
+  String get permissionRequired => 'Izin Diperlukan';
+
+  @override
+  String get pleaseAllowContactToRegister =>
+      'Silakan izinkan kontak agar bisa mendaftar.';
+
+  @override
+  String get contactPermissionDenied => 'Izin kontak ditolak.';
+
+  @override
+  String get contactPermissionBlocked =>
+      'Izin kontak diblokir. Aktifkan di Pengaturan.';
 
   @override
   String get search => 'Cari';

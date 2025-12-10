@@ -138,25 +138,62 @@ class _VendorprofileState extends State<Vendorprofile> {
     );
   }
 
-  Future<void> _requestPermissions() async {
-    await [Permission.camera, Permission.storage].request();
+  Future<void> _pickImageStorage(ImageSource source) async {
+    final PermissionStatus statusStorage = Platform.isAndroid
+        ? await Permission.photos
+              .request() // Android 13+
+        : await Permission.storage.request(); // Android 12 ke bawah & iOS lama
+
+    if (statusStorage.isGranted) {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: source);
+
+      if (pickedFile != null) {
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+      }
+    } else if (statusStorage.isDenied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Izin galeri dibutuhkan untuk memilih gambar."),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else if (statusStorage.isPermanentlyDenied) {
+      await openAppSettings();
+    }
   }
 
-  Future<void> _pickImage(ImageSource source) async {
-    await _requestPermissions();
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: source);
+  Future<void> _pickImageCamera() async {
+    final PermissionStatus statusCamera = await Permission.camera.request();
 
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
-      _updateProfilePicture(context);
+    if (statusCamera.isGranted) {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 80,
+      );
+      // DIsimpan secara lokal karena jika menggunakan firebase storage perlu billing(bayar :>)
+      if (pickedFile != null) {
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+      }
+    } else if (statusCamera.isDenied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Izin kamera dibutuhkan untuk mengambil foto."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      // sama aja pak
+    } else if (statusCamera.isPermanentlyDenied) {
+      await openAppSettings();
     }
   }
 
   void _showPicker(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       builder: (BuildContext bc) {
@@ -165,17 +202,17 @@ class _VendorprofileState extends State<Vendorprofile> {
             children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: Text(l10n.gallery),
+                title: const Text('Gallery'),
                 onTap: () {
-                  _pickImage(ImageSource.gallery);
+                  _pickImageStorage(ImageSource.gallery);
                   Navigator.of(context).pop();
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.photo_camera),
-                title: Text(l10n.camera),
+                title: const Text('Camera'),
                 onTap: () {
-                  _pickImage(ImageSource.camera);
+                  _pickImageCamera();
                   Navigator.of(context).pop();
                 },
               ),
@@ -464,16 +501,16 @@ class _VendorprofileState extends State<Vendorprofile> {
       children: [
         ...packageWidgets,
         const SizedBox(height: 20),
-        ElevatedButton.icon(
-          onPressed: _logout,
-          icon: const Icon(Icons.logout),
-          label: const Text("Logout"),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.pink,
-            foregroundColor: Colors.white,
-            minimumSize: const Size(double.infinity, 50),
-          ),
-        ),
+        // ElevatedButton.icon(
+        //   onPressed: _logout,
+        //   icon: const Icon(Icons.logout),
+        //   label: const Text("Logout"),
+        //   style: ElevatedButton.styleFrom(
+        //     backgroundColor: Colors.pink,
+        //     foregroundColor: Colors.white,
+        //     minimumSize: const Size(double.infinity, 50),
+        //   ),
+        // ),
       ],
     );
   }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/loginVendor.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/main.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 import '../home/home.dart';
@@ -29,7 +31,7 @@ class _LoginCustomerState extends State<LoginCustomer> {
       passwordController.text,
     );
 
-    print("customer di login ${customer}");
+    final t = AppLocalizations.of(context)!;
 
     if (customer != null) {
       final sessionManager = SessionManager();
@@ -39,10 +41,7 @@ class _LoginCustomerState extends State<LoginCustomer> {
       await eventlogs.logLoginActivity(customer.email, "customer");
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.green,
-          content: Text("Login berhasil!"),
-        ),
+        SnackBar(backgroundColor: Colors.green, content: Text(t.loginSuccess)),
       );
 
       Navigator.pushAndRemoveUntil(
@@ -52,9 +51,9 @@ class _LoginCustomerState extends State<LoginCustomer> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           backgroundColor: Colors.pink,
-          content: Text("Email atau password salah!"),
+          content: Text(t.invalidCredentials),
         ),
       );
     }
@@ -62,6 +61,8 @@ class _LoginCustomerState extends State<LoginCustomer> {
 
   @override
   Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -85,6 +86,7 @@ class _LoginCustomerState extends State<LoginCustomer> {
               ),
             ),
             const SizedBox(height: 30),
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Card(
@@ -98,61 +100,69 @@ class _LoginCustomerState extends State<LoginCustomer> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        const Text(
-                          "Selamat Datang!",
-                          style: TextStyle(
+                        Text(
+                          t.welcome,
+                          style: const TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: Colors.pink,
                           ),
                         ),
                         const SizedBox(height: 10),
-                        const Text(
-                          "Masuk untuk melanjutkan",
-                          style: TextStyle(color: Colors.grey),
+
+                        Text(
+                          t.loginToContinue,
+                          style: const TextStyle(color: Colors.grey),
                         ),
                         const SizedBox(height: 30),
+
                         TextFormField(
                           controller: emailController,
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.email_outlined),
-                            labelText: "Email",
+                            labelText: t.email,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                           validator: (value) {
-                            if (value!.isEmpty) return "Email wajib diisi";
+                            if (value!.isEmpty) return t.emailRequired;
+
                             final regex = RegExp(
                               r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                             );
-                            if (!regex.hasMatch(value))
-                              return "Format email tidak valid";
+
+                            if (!regex.hasMatch(value)) {
+                              return t.invalidEmailFormat;
+                            }
+
                             return null;
                           },
                         ),
+
                         const SizedBox(height: 20),
+
                         TextFormField(
                           controller: passwordController,
                           obscureText: true,
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.lock_outline),
-                            labelText: "Password",
+                            labelText: t.password,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                           validator: (value) {
-                            if (value!.isEmpty) return "Password wajib diisi";
-                            if (value.length < 6) return "Minimal 6 karakter";
+                            if (value!.isEmpty) return t.passwordRequired;
+                            if (value.length < 6) return t.passwordMinLength;
                             return null;
                           },
                         ),
+
                         const SizedBox(height: 30),
+
                         ElevatedButton(
-                          onPressed: () async {
-                            await logincustomers();
-                          },
+                          onPressed: logincustomers,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.pink,
                             minimumSize: const Size(double.infinity, 50),
@@ -161,12 +171,17 @@ class _LoginCustomerState extends State<LoginCustomer> {
                             ),
                             elevation: 5,
                           ),
-                          child: const Text(
-                            "Masuk",
-                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          child: Text(
+                            t.login,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
+
                         const SizedBox(height: 20),
+
                         TextButton(
                           onPressed: () {
                             Navigator.pushReplacement(
@@ -174,11 +189,12 @@ class _LoginCustomerState extends State<LoginCustomer> {
                               MaterialPageRoute(builder: (_) => RegisterPage()),
                             );
                           },
-                          child: const Text(
-                            "Belum punya akun? Daftar",
-                            style: TextStyle(color: Colors.pink),
+                          child: Text(
+                            t.noAccountRegister,
+                            style: const TextStyle(color: Colors.pink),
                           ),
                         ),
+
                         TextButton(
                           onPressed: () {
                             Navigator.pushReplacement(
@@ -186,9 +202,9 @@ class _LoginCustomerState extends State<LoginCustomer> {
                               MaterialPageRoute(builder: (_) => LoginVendor()),
                             );
                           },
-                          child: const Text(
-                            "Login sebagai Vendor",
-                            style: TextStyle(
+                          child: Text(
+                            t.loginAsVendor,
+                            style: const TextStyle(
                               color: Colors.pink,
                               decoration: TextDecoration.underline,
                               decorationColor: Colors.pink,

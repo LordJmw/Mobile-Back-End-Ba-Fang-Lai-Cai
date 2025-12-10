@@ -115,19 +115,58 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
-  Future<void> _requestPermissions() async {
-    await [Permission.camera, Permission.storage].request();
+  Future<void> _pickImageStorage(ImageSource source) async {
+    final PermissionStatus statusStorage = Platform.isAndroid
+        ? await Permission.photos
+              .request() // Android 13+
+        : await Permission.storage.request(); // Android 12 ke bawah & iOS lama
+
+    if (statusStorage.isGranted) {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: source);
+
+      if (pickedFile != null) {
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+      }
+    } else if (statusStorage.isDenied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Izin galeri dibutuhkan untuk memilih gambar."),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else if (statusStorage.isPermanentlyDenied) {
+      await openAppSettings();
+    }
   }
 
-  Future<void> _pickImage(ImageSource source) async {
-    await _requestPermissions();
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: source);
+  Future<void> _pickImageCamera() async {
+    final PermissionStatus statusCamera = await Permission.camera.request();
 
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
+    if (statusCamera.isGranted) {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 80,
+      );
+      // DIsimpan secara lokal karena jika menggunakan firebase storage perlu billing(bayar :>)
+      if (pickedFile != null) {
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+      }
+    } else if (statusCamera.isDenied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Izin kamera dibutuhkan untuk mengambil foto."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      // sama aja pak
+    } else if (statusCamera.isPermanentlyDenied) {
+      await openAppSettings();
     }
   }
 
@@ -140,17 +179,17 @@ class _UserProfileState extends State<UserProfile> {
             children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: Text(AppLocalizations.of(context)!.gallery),
+                title: const Text('Gallery'),
                 onTap: () {
-                  _pickImage(ImageSource.gallery);
+                  _pickImageStorage(ImageSource.gallery);
                   Navigator.of(context).pop();
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.photo_camera),
-                title: Text(AppLocalizations.of(context)!.camera),
+                title: const Text('Camera'),
                 onTap: () {
-                  _pickImage(ImageSource.camera);
+                  _pickImageCamera();
                   Navigator.of(context).pop();
                 },
               ),
@@ -859,24 +898,24 @@ class _UserProfileState extends State<UserProfile> {
                         }
                       },
                       itemBuilder: (context) => [
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'edit',
                           child: Row(
                             children: [
                               Icon(Icons.edit, size: 20),
                               SizedBox(width: 8),
-                              Text('Edit'),
+                              Text(AppLocalizations.of(context)!.edit),
                             ],
                           ),
                         ),
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'delete',
                           child: Row(
                             children: [
                               Icon(Icons.delete, size: 20, color: Colors.red),
                               SizedBox(width: 8),
                               Text(
-                                'Hapus',
+                                AppLocalizations.of(context)!.delete,
                                 style: TextStyle(color: Colors.red),
                               ),
                             ],

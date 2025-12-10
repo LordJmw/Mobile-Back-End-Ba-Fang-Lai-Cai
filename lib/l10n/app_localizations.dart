@@ -191,7 +191,7 @@ abstract class AppLocalizations {
   /// No description provided for @categorySupportServices.
   ///
   /// In en, this message translates to:
-  /// **'Other Support\nServices'**
+  /// **'Other\nSupport Services'**
   String get categorySupportServices;
 
   /// No description provided for @ourProduct.
@@ -203,13 +203,13 @@ abstract class AppLocalizations {
   /// No description provided for @searchVendorOrCategory.
   ///
   /// In en, this message translates to:
-  /// **'Search vendors or categories...'**
+  /// **'Search vendor or category...'**
   String get searchVendorOrCategory;
 
   /// No description provided for @noResults.
   ///
   /// In en, this message translates to:
-  /// **'No results found'**
+  /// **'No results'**
   String get noResults;
 
   /// No description provided for @userProfile.
@@ -239,7 +239,7 @@ abstract class AppLocalizations {
   /// No description provided for @pleaseBuyPackage.
   ///
   /// In en, this message translates to:
-  /// **'Please purchase a package from a vendor.'**
+  /// **'Please buy a package from a vendor.'**
   String get pleaseBuyPackage;
 
   /// No description provided for @failedToLoadCustomer.
@@ -329,7 +329,7 @@ abstract class AppLocalizations {
   /// No description provided for @requiredFields.
   ///
   /// In en, this message translates to:
-  /// **'Name, email, and phone number are required'**
+  /// **'Name, email, and phone must be filled'**
   String get requiredFields;
 
   /// No description provided for @locationAndDateRequired.
@@ -389,7 +389,7 @@ abstract class AppLocalizations {
   /// No description provided for @eventDateLabel.
   ///
   /// In en, this message translates to:
-  /// **'Event Date'**
+  /// **'Event date'**
   String get eventDateLabel;
 
   /// No description provided for @locationLabel.
@@ -461,7 +461,7 @@ abstract class AppLocalizations {
   /// No description provided for @allRatings.
   ///
   /// In en, this message translates to:
-  /// **'All Ratings'**
+  /// **'All'**
   String get allRatings;
 
   /// No description provided for @serviceType.
@@ -509,7 +509,7 @@ abstract class AppLocalizations {
   /// No description provided for @addSpecialNotes.
   ///
   /// In en, this message translates to:
-  /// **'Add special notes or requests'**
+  /// **'Add notes or special requests'**
   String get addSpecialNotes;
 
   /// No description provided for @priceSummary.
@@ -536,11 +536,11 @@ abstract class AppLocalizations {
   /// **'Loading data...'**
   String get loadingData;
 
-  /// No description provided for @loginAsCustomer.
+  /// No description provided for @loginAsCustomerToBuy.
   ///
   /// In en, this message translates to:
-  /// **'Log in as customer to purchase packages'**
-  String get loginAsCustomer;
+  /// **'Login as customer to purchase a package'**
+  String get loginAsCustomerToBuy;
 
   /// No description provided for @selectEventDateFirst.
   ///
@@ -557,7 +557,7 @@ abstract class AppLocalizations {
   /// No description provided for @packageNotAvailable.
   ///
   /// In en, this message translates to:
-  /// **'Package not available. Please choose another.'**
+  /// **'Package not available. Please choose another package.'**
   String get packageNotAvailable;
 
   /// No description provided for @purchaseSuccessful.
@@ -629,13 +629,13 @@ abstract class AppLocalizations {
   /// No description provided for @aboutApp.
   ///
   /// In en, this message translates to:
-  /// **'ABOUT THE APP'**
+  /// **'ABOUT APP'**
   String get aboutApp;
 
   /// No description provided for @aboutApplication.
   ///
   /// In en, this message translates to:
-  /// **'About the Application'**
+  /// **'About Application'**
   String get aboutApplication;
 
   /// No description provided for @appInformation.
@@ -701,13 +701,13 @@ abstract class AppLocalizations {
   /// No description provided for @aboutAppDescription1.
   ///
   /// In en, this message translates to:
-  /// **'EventHub is an all-in-one platform for hiring professional services for your event needs.'**
+  /// **'EventHub is an all-in-one platform to hire professional services for all your event needs.'**
   String get aboutAppDescription1;
 
   /// No description provided for @aboutAppDescription2.
   ///
   /// In en, this message translates to:
-  /// **'This app connects Customers with trusted Vendors in one easy-to-use platform.'**
+  /// **'This application connects customers with trusted vendors in one easy-to-use place.'**
   String get aboutAppDescription2;
 
   /// No description provided for @forVendors.
@@ -719,7 +719,7 @@ abstract class AppLocalizations {
   /// No description provided for @vendorDescription.
   ///
   /// In en, this message translates to:
-  /// **'Vendors can add and manage their service packages directly within the app, making it easier to reach more potential customers.'**
+  /// **'Vendors can add and manage their service packages directly through the app, making it easier to reach more potential customers.'**
   String get vendorDescription;
 
   /// No description provided for @termsOfService.
@@ -749,7 +749,7 @@ abstract class AppLocalizations {
   /// No description provided for @noDescription.
   ///
   /// In en, this message translates to:
-  /// **'No description'**
+  /// **'No description yet'**
   String get noDescription;
 
   /// No description provided for @yourPackages.
@@ -827,7 +827,7 @@ abstract class AppLocalizations {
   /// No description provided for @enterPackagePrice.
   ///
   /// In en, this message translates to:
-  /// **'Enter package price (e.g.: 500000)'**
+  /// **'Enter package price (example: 500000)'**
   String get enterPackagePrice;
 
   /// No description provided for @priceRequired.
@@ -863,7 +863,7 @@ abstract class AppLocalizations {
   /// No description provided for @useCommaSeparator.
   ///
   /// In en, this message translates to:
-  /// **'Use a comma (,) to separate services'**
+  /// **'Use commas (,) to separate services'**
   String get useCommaSeparator;
 
   /// No description provided for @packagePriceUpdated.
@@ -887,7 +887,7 @@ abstract class AppLocalizations {
   /// No description provided for @noDescriptionForVendor.
   ///
   /// In en, this message translates to:
-  /// **'No description available for this vendor.'**
+  /// **'No description for this vendor.'**
   String get noDescriptionForVendor;
 
   /// No description provided for @orderNow.
@@ -917,7 +917,7 @@ abstract class AppLocalizations {
   /// No description provided for @vendorNotFoundInDatabase.
   ///
   /// In en, this message translates to:
-  /// **'Vendor not found in the database'**
+  /// **'Vendor not found in database'**
   String get vendorNotFoundInDatabase;
 
   /// No description provided for @failedToLoadVendorData.
@@ -937,6 +937,594 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This package has been deleted by the vendor.'**
   String get thisPackageDeletedByVendor;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete your account? This action cannot be undone.'**
+  String get deleteAccountWarning;
+
+  /// No description provided for @deleteAccountConsequences.
+  ///
+  /// In en, this message translates to:
+  /// **'All your data, orders, and preferences will be permanently deleted.'**
+  String get deleteAccountConsequences;
+
+  /// No description provided for @enterPasswordToConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password to confirm:'**
+  String get enterPasswordToConfirm;
+
+  /// No description provided for @enterYourPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password'**
+  String get enterYourPassword;
+
+  /// No description provided for @deletingAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting account...'**
+  String get deletingAccount;
+
+  /// No description provided for @pleaseEnterPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your password'**
+  String get pleaseEnterPassword;
+
+  /// No description provided for @wrongPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect password. Please try again.'**
+  String get wrongPassword;
+
+  /// No description provided for @requiresRecentLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'For security reasons, please log in again before deleting your account.'**
+  String get requiresRecentLogin;
+
+  /// No description provided for @tooManyAttempts.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Please try again later.'**
+  String get tooManyAttempts;
+
+  /// No description provided for @deleteAccountFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete account. Please try again.'**
+  String get deleteAccountFailed;
+
+  /// No description provided for @accountDeletedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deleted successfully.'**
+  String get accountDeletedSuccessfully;
+
+  /// No description provided for @permanentDeleteWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently delete your account and data'**
+  String get permanentDeleteWarning;
+
+  /// No description provided for @dangerZone.
+  ///
+  /// In en, this message translates to:
+  /// **'Danger Zone'**
+  String get dangerZone;
+
+  /// No description provided for @welcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome!'**
+  String get welcome;
+
+  /// No description provided for @loginToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Login to continue'**
+  String get loginToContinue;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @emailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is required'**
+  String get emailRequired;
+
+  /// No description provided for @invalidEmailFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email format'**
+  String get invalidEmailFormat;
+
+  /// No description provided for @passwordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required'**
+  String get passwordRequired;
+
+  /// No description provided for @passwordMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum 6 characters'**
+  String get passwordMinLength;
+
+  /// No description provided for @login.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get login;
+
+  /// No description provided for @noAccountRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account? Register'**
+  String get noAccountRegister;
+
+  /// No description provided for @loginAsCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'Login as Customer'**
+  String get loginAsCustomer;
+
+  /// No description provided for @loginSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Login successful!'**
+  String get loginSuccess;
+
+  /// No description provided for @invalidCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect email or password!'**
+  String get invalidCredentials;
+
+  /// No description provided for @loginAsVendor.
+  ///
+  /// In en, this message translates to:
+  /// **'Login as Vendor'**
+  String get loginAsVendor;
+
+  /// No description provided for @registerCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Customer Account'**
+  String get registerCreateTitle;
+
+  /// No description provided for @registerCreateSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in the details to register as a customer'**
+  String get registerCreateSubtitle;
+
+  /// No description provided for @registerFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get registerFullName;
+
+  /// No description provided for @registerEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get registerEmail;
+
+  /// No description provided for @registerPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get registerPassword;
+
+  /// No description provided for @registerConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get registerConfirmPassword;
+
+  /// No description provided for @registerPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get registerPhoneNumber;
+
+  /// No description provided for @registerAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Address'**
+  String get registerAddress;
+
+  /// No description provided for @registerButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get registerButton;
+
+  /// No description provided for @registerHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? Login'**
+  String get registerHaveAccount;
+
+  /// No description provided for @errorNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required'**
+  String get errorNameRequired;
+
+  /// No description provided for @errorEmailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is required'**
+  String get errorEmailRequired;
+
+  /// No description provided for @errorEmailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email format'**
+  String get errorEmailInvalid;
+
+  /// No description provided for @errorPasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required'**
+  String get errorPasswordRequired;
+
+  /// No description provided for @errorPasswordMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum 6 characters'**
+  String get errorPasswordMinLength;
+
+  /// No description provided for @errorConfirmPasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password is required'**
+  String get errorConfirmPasswordRequired;
+
+  /// No description provided for @errorPasswordNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get errorPasswordNotMatch;
+
+  /// No description provided for @errorPhoneRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number is required'**
+  String get errorPhoneRequired;
+
+  /// No description provided for @errorPhoneOnlyNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number must be numeric'**
+  String get errorPhoneOnlyNumber;
+
+  /// No description provided for @errorPhoneMinDigit.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number must be at least 10 digits'**
+  String get errorPhoneMinDigit;
+
+  /// No description provided for @errorAddressRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Address is required'**
+  String get errorAddressRequired;
+
+  /// No description provided for @permissionContactRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact permission is required for registration.'**
+  String get permissionContactRequired;
+
+  /// No description provided for @permissionContactDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact permission denied. Please enable it manually in Settings.'**
+  String get permissionContactDenied;
+
+  /// No description provided for @permissionContactBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact permission blocked. Please enable it manually in Settings.'**
+  String get permissionContactBlocked;
+
+  /// No description provided for @registerSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Account registered successfully!'**
+  String get registerSuccess;
+
+  /// No description provided for @registerEmailUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'This email is already registered'**
+  String get registerEmailUsed;
+
+  /// No description provided for @registerGeneralError.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred: {error}'**
+  String registerGeneralError(Object error);
+
+  /// No description provided for @registerVendorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Vendor Account'**
+  String get registerVendorTitle;
+
+  /// No description provided for @registerVendorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in the details to register as a vendor'**
+  String get registerVendorSubtitle;
+
+  /// No description provided for @registerVendorName.
+  ///
+  /// In en, this message translates to:
+  /// **'Store Name'**
+  String get registerVendorName;
+
+  /// No description provided for @registerVendorEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get registerVendorEmail;
+
+  /// No description provided for @registerVendorPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get registerVendorPassword;
+
+  /// No description provided for @registerVendorConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get registerVendorConfirmPassword;
+
+  /// No description provided for @registerVendorPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get registerVendorPhone;
+
+  /// No description provided for @registerVendorAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Store Address'**
+  String get registerVendorAddress;
+
+  /// No description provided for @registerVendorButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Register Vendor'**
+  String get registerVendorButton;
+
+  /// No description provided for @basicPriceRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic package price is required'**
+  String get basicPriceRequired;
+
+  /// No description provided for @premiumPriceRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium package price is required'**
+  String get premiumPriceRequired;
+
+  /// No description provided for @customPriceRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom package price is required'**
+  String get customPriceRequired;
+
+  /// No description provided for @priceInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid price'**
+  String get priceInvalid;
+
+  /// No description provided for @priceTooHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Price cannot exceed 10 million'**
+  String get priceTooHigh;
+
+  /// No description provided for @paketBasic.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Package'**
+  String get paketBasic;
+
+  /// No description provided for @paketPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Package'**
+  String get paketPremium;
+
+  /// No description provided for @paketCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Package'**
+  String get paketCustom;
+
+  /// No description provided for @hargaBasic.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Price'**
+  String get hargaBasic;
+
+  /// No description provided for @jasaBasic.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Service'**
+  String get jasaBasic;
+
+  /// No description provided for @hargaPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Price'**
+  String get hargaPremium;
+
+  /// No description provided for @jasaPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Service'**
+  String get jasaPremium;
+
+  /// No description provided for @hargaCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Price'**
+  String get hargaCustom;
+
+  /// No description provided for @jasaCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Service'**
+  String get jasaCustom;
+
+  /// No description provided for @hargaBasicWajibDiisi.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic price is required'**
+  String get hargaBasicWajibDiisi;
+
+  /// No description provided for @jasaBasicWajibDiisi.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic service is required'**
+  String get jasaBasicWajibDiisi;
+
+  /// No description provided for @hargaPremiumWajibDiisi.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium price is required'**
+  String get hargaPremiumWajibDiisi;
+
+  /// No description provided for @jasaPremiumWajibDiisi.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium service is required'**
+  String get jasaPremiumWajibDiisi;
+
+  /// No description provided for @hargaCustomWajibDiisi.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom price is required'**
+  String get hargaCustomWajibDiisi;
+
+  /// No description provided for @jasaCustomWajibDiisi.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom service is required'**
+  String get jasaCustomWajibDiisi;
+
+  /// No description provided for @hargaTidakValid.
+  ///
+  /// In en, this message translates to:
+  /// **'Price is not valid'**
+  String get hargaTidakValid;
+
+  /// No description provided for @hargaTidakBolehLebihDari10Juta.
+  ///
+  /// In en, this message translates to:
+  /// **'Price cannot exceed 10 million'**
+  String get hargaTidakBolehLebihDari10Juta;
+
+  /// No description provided for @registerVendorSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Vendor registered successfully!'**
+  String get registerVendorSuccess;
+
+  /// No description provided for @permissionContactRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Permission Required'**
+  String get permissionContactRequiredTitle;
+
+  /// No description provided for @permissionContactRequiredMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow contact access to continue.'**
+  String get permissionContactRequiredMessage;
+
+  /// No description provided for @cobaLagi.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
+  String get cobaLagi;
+
+  /// No description provided for @batal.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get batal;
+
+  /// No description provided for @permissionDitolakPermanenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission Permanently Denied'**
+  String get permissionDitolakPermanenTitle;
+
+  /// No description provided for @permissionDitolakPermanenMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable contact access from settings.'**
+  String get permissionDitolakPermanenMessage;
+
+  /// No description provided for @bukaPengaturan.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get bukaPengaturan;
+
+  /// No description provided for @continueDialog.
+  ///
+  /// In en, this message translates to:
+  /// **'continue'**
+  String get continueDialog;
+
+  /// No description provided for @permissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission Required'**
+  String get permissionRequired;
+
+  /// No description provided for @pleaseAllowContactToRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Please allow contact access to register.'**
+  String get pleaseAllowContactToRegister;
+
+  /// No description provided for @contactPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact permission denied.'**
+  String get contactPermissionDenied;
+
+  /// No description provided for @contactPermissionBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact permission blocked. Enable in Settings.'**
+  String get contactPermissionBlocked;
 
   /// No description provided for @search.
   ///

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/main.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 import '../home/home.dart';
@@ -28,14 +30,17 @@ class _LoginVendorState extends State<LoginVendor> {
       _passwordController.text,
     );
 
+    final loc = AppLocalizations.of(context)!;
+
     if (vendor != null) {
       final sessionManager = SessionManager();
       await sessionManager.createLoginSession(vendor.email, "vendor");
       await Eventlogs().logVendorLoginActivity(_emailController.text, "vendor");
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           backgroundColor: Colors.green,
-          content: Text("Login berhasil!"),
+          content: Text(loc.loginSuccess),
         ),
       );
 
@@ -46,9 +51,9 @@ class _LoginVendorState extends State<LoginVendor> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           backgroundColor: Colors.pink,
-          content: Text("Email atau password salah!"),
+          content: Text(loc.invalidCredentials),
         ),
       );
     }
@@ -56,6 +61,8 @@ class _LoginVendorState extends State<LoginVendor> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -92,61 +99,67 @@ class _LoginVendorState extends State<LoginVendor> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        const Text(
-                          "Selamat Datang!",
-                          style: TextStyle(
+                        Text(
+                          loc.welcome,
+                          style: const TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: Colors.pink,
                           ),
                         ),
                         const SizedBox(height: 10),
-                        const Text(
-                          "Masuk untuk melanjutkan",
-                          style: TextStyle(color: Colors.grey),
+                        Text(
+                          loc.loginToContinue,
+                          style: const TextStyle(color: Colors.grey),
                         ),
                         const SizedBox(height: 30),
+
                         TextFormField(
                           controller: _emailController,
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.email_outlined),
-                            labelText: "Email",
+                            labelText: loc.email,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                           validator: (value) {
-                            if (value!.isEmpty) return "Email wajib diisi";
+                            if (value!.isEmpty) return loc.emailRequired;
+
                             final regex = RegExp(
                               r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                             );
-                            if (!regex.hasMatch(value))
-                              return "Format email tidak valid";
+
+                            if (!regex.hasMatch(value)) {
+                              return loc.invalidEmailFormat;
+                            }
                             return null;
                           },
                         ),
+
                         const SizedBox(height: 20),
+
                         TextFormField(
                           controller: _passwordController,
                           obscureText: true,
                           decoration: InputDecoration(
                             prefixIcon: const Icon(Icons.lock_outline),
-                            labelText: "Password",
+                            labelText: loc.password,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                           validator: (value) {
-                            if (value!.isEmpty) return "Password wajib diisi";
-                            if (value.length < 6) return "Minimal 6 karakter";
+                            if (value!.isEmpty) return loc.passwordRequired;
+                            if (value.length < 6) return loc.passwordMinLength;
                             return null;
                           },
                         ),
+
                         const SizedBox(height: 30),
+
                         ElevatedButton(
-                          onPressed: () async {
-                            await loginvendors();
-                          },
+                          onPressed: () async => await loginvendors(),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.pink,
                             minimumSize: const Size(double.infinity, 50),
@@ -155,12 +168,17 @@ class _LoginVendorState extends State<LoginVendor> {
                             ),
                             elevation: 5,
                           ),
-                          child: const Text(
-                            "Masuk",
-                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          child: Text(
+                            loc.login,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
+
                         const SizedBox(height: 20),
+
                         TextButton(
                           onPressed: () {
                             Navigator.pushReplacement(
@@ -168,11 +186,12 @@ class _LoginVendorState extends State<LoginVendor> {
                               MaterialPageRoute(builder: (_) => RegisterPage()),
                             );
                           },
-                          child: const Text(
-                            "Belum punya akun? Daftar",
-                            style: TextStyle(color: Colors.pink),
+                          child: Text(
+                            loc.noAccountRegister,
+                            style: const TextStyle(color: Colors.pink),
                           ),
                         ),
+
                         TextButton(
                           onPressed: () {
                             Navigator.pushReplacement(
@@ -182,9 +201,9 @@ class _LoginVendorState extends State<LoginVendor> {
                               ),
                             );
                           },
-                          child: const Text(
-                            "Login sebagai Customer",
-                            style: TextStyle(
+                          child: Text(
+                            loc.loginAsCustomer,
+                            style: const TextStyle(
                               color: Colors.pink,
                               decoration: TextDecoration.underline,
                               decorationColor: Colors.pink,

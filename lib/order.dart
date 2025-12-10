@@ -212,7 +212,7 @@ class _OrderPageState extends State<OrderPage> {
       print("User type: $userType, Email: $email"); // Debug
 
       if (userType == "vendor") {
-        _showError("Login sebagai customer untuk dapat membeli paket");
+        _showError(AppLocalizations.of(context)!.loginAsCustomerToBuy);
         setState(() => isBuying = false);
         return;
       }

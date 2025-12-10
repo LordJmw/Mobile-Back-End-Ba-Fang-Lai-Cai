@@ -1,13 +1,14 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
+import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 import 'package:provider/provider.dart';
 import 'language_modal.dart';
 import 'about_app_modal.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -20,6 +21,17 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _notificationsEnabled = true;
   String _selectedLanguage = 'Indonesia';
 
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isDeleting = false;
+  bool _showPassword = false;
+  final CustomerDatabase _customerDb = CustomerDatabase();
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   Future<void> _logout() async {
     final session = SessionManager();
     await session.logout();
@@ -29,6 +41,232 @@ class _SettingsPageState extends State<SettingsPage> {
       MaterialPageRoute(builder: (context) => LoginCustomer()),
       (route) => false,
     );
+  }
+
+  Future<void> _showDeleteAccountDialog() async {
+    final l10n = AppLocalizations.of(context)!;
+
+    _passwordController.clear();
+    _isDeleting = false;
+    _showPassword = false;
+
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Row(
+              children: [
+                Icon(Icons.warning_amber_rounded, color: Colors.red, size: 24),
+                const SizedBox(width: 10),
+                Text(
+                  l10n.deleteAccount,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                    fontSize: 20,
+                  ),
+                ),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.deleteAccountWarning,
+                  style: TextStyle(fontSize: 15, color: Colors.grey[700]),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  l10n.deleteAccountConsequences,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  l10n.enterPasswordToConfirm,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    color: Colors.grey[800],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: _passwordController,
+                  obscureText: !_showPassword,
+                  decoration: InputDecoration(
+                    hintText: l10n.enterYourPassword,
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _showPassword ? Icons.visibility_off : Icons.visibility,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _showPassword = !_showPassword;
+                        });
+                      },
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 15,
+                    ),
+                  ),
+                ),
+                if (_isDeleting) ...[
+                  const SizedBox(height: 15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        l10n.deletingAccount,
+                        style: TextStyle(color: Colors.red, fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: _isDeleting
+                    ? null
+                    : () {
+                        Navigator.of(context).pop();
+                      },
+                child: Text(
+                  l10n.cancel,
+                  style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: _isDeleting
+                    ? null
+                    : () async {
+                        if (_passwordController.text.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(l10n.pleaseEnterPassword),
+                              backgroundColor: Colors.orange,
+                            ),
+                          );
+                          return;
+                        }
+
+                        setState(() {
+                          _isDeleting = true;
+                        });
+
+                        await _deleteAccountWithPassword(
+                          _passwordController.text,
+                          setState,
+                        );
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  disabledBackgroundColor: Colors.red.withOpacity(0.5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  l10n.deleteAccount,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _deleteAccountWithPassword(
+    String password,
+    StateSetter setState,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+
+    try {
+      await _customerDb.reauthenticateUser(password);
+
+      final success = await _customerDb.deleteCustomerAccount();
+
+      if (success) {
+        Navigator.of(context).pop();
+        _showSuccessMessageAndLogout();
+      }
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        _isDeleting = false;
+      });
+
+      String errorMessage = l10n.deleteAccountFailed;
+      if (e.code == 'wrong-password') {
+        errorMessage = l10n.wrongPassword;
+      } else if (e.code == 'requires-recent-login') {
+        errorMessage = l10n.requiresRecentLogin;
+      } else if (e.code == 'too-many-requests') {
+        errorMessage = l10n.tooManyAttempts;
+      } else if (e.code == 'user-not-found') {
+        errorMessage = "User tidak ditemukan";
+      } else if (e.code == 'invalid-credential') {
+        errorMessage = "Kredensial tidak valid";
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+      );
+    } catch (e) {
+      setState(() {
+        _isDeleting = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.deleteAccountFailed),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void _showSuccessMessageAndLogout() {
+    final l10n = AppLocalizations.of(context)!;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(l10n.accountDeletedSuccessfully),
+        backgroundColor: Colors.green,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+
+    Future.delayed(const Duration(seconds: 2), () {
+      _logout();
+    });
   }
 
   @override
@@ -41,7 +279,7 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: Text(
           l10n.settings,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 20,
             color: Colors.black87,
@@ -58,22 +296,21 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Profile Section
               _buildProfileSection(context),
               const SizedBox(height: 24),
 
-              // App Settings Section
               _buildSettingsSection(
                 languageProvider,
                 _selectedLanguage,
                 context,
               ),
 
-              // About Section
               const SizedBox(height: 32),
               _buildAboutSection(context),
 
-              // Logout Button
+              const SizedBox(height: 32),
+              _buildDangerZoneSection(context),
+
               const SizedBox(height: 40),
               _buildLogoutButton(),
             ],
@@ -118,7 +355,7 @@ class _SettingsPageState extends State<SettingsPage> {
               children: [
                 Text(
                   l10n.appSettings,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -160,7 +397,6 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       child: Column(
         children: [
-          // Header Section Title
           Padding(
             padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
             child: Row(
@@ -181,7 +417,6 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           const SizedBox(height: 12),
 
-          // Language Setting
           _buildSettingItem(
             icon: Icons.language_rounded,
             iconColor: Colors.blue,
@@ -196,7 +431,6 @@ class _SettingsPageState extends State<SettingsPage> {
                     LanguageModal(currentLanguage: selectedLanguage),
               );
               if (result != null) {
-                // Update locale melalui provider
                 final newLocale = languageProvider.getLocaleFromName(result);
                 await languageProvider.setLocale(newLocale);
 
@@ -220,20 +454,16 @@ class _SettingsPageState extends State<SettingsPage> {
 
           const Divider(indent: 20, endIndent: 20, height: 0),
 
-          // Notifications Setting
           _buildNotificationSetting(context),
 
           const Divider(indent: 20, endIndent: 20, height: 0),
 
-          // Theme Setting (Optional)
           _buildSettingItem(
             icon: Icons.dark_mode_rounded,
             iconColor: Colors.purple,
             title: l10n.theme,
             subtitle: l10n.automatic,
-            onTap: () {
-              // Untuk tema bisa ditambahkan nanti
-            },
+            onTap: () {},
           ),
         ],
       ),
@@ -259,7 +489,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       title: Text(
         l10n.notifications,
-        style: TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.w500,
           fontSize: 16,
           color: Colors.black87,
@@ -374,7 +604,6 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           const SizedBox(height: 12),
 
-          // About App
           _buildAboutItem(
             icon: Icons.info_rounded,
             iconColor: Colors.blue,
@@ -392,7 +621,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
           const Divider(indent: 20, endIndent: 20, height: 0),
 
-          // App Version
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: ListTile(
@@ -412,7 +640,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               title: Text(
                 l10n.appVersion,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 16,
                   color: Colors.black87,
@@ -503,6 +731,90 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
       onTap: onTap,
+    );
+  }
+
+  Widget _buildDangerZoneSection(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
+            child: Row(
+              children: [
+                Icon(Icons.dangerous_rounded, color: Colors.red[700], size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  l10n.dangerZone,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                    color: Colors.red[700],
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          ListTile(
+            contentPadding: const EdgeInsets.only(left: 16, right: 20),
+            leading: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.delete_forever_rounded,
+                color: Colors.red[700],
+                size: 22,
+              ),
+            ),
+            title: Text(
+              l10n.deleteAccount,
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                color: Colors.red[700],
+              ),
+            ),
+            subtitle: Text(
+              l10n.permanentDeleteWarning,
+              style: TextStyle(color: Colors.grey[600], fontSize: 13),
+            ),
+            trailing: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.chevron_right_rounded,
+                size: 18,
+                color: Colors.red,
+              ),
+            ),
+            onTap: () {
+              _showDeleteAccountDialog();
+            },
+          ),
+        ],
+      ),
     );
   }
 

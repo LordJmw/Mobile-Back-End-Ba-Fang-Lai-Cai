@@ -54,16 +54,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get categoryTransportationLogistics => 'Transportation &\nLogistics';
 
   @override
-  String get categorySupportServices => 'Other Support\nServices';
+  String get categorySupportServices => 'Other\nSupport Services';
 
   @override
   String get ourProduct => 'Our Products';
 
   @override
-  String get searchVendorOrCategory => 'Search vendors or categories...';
+  String get searchVendorOrCategory => 'Search vendor or category...';
 
   @override
-  String get noResults => 'No results found';
+  String get noResults => 'No results';
 
   @override
   String get userProfile => 'User Profile';
@@ -78,7 +78,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noPurchasesYet => 'No purchases yet.';
 
   @override
-  String get pleaseBuyPackage => 'Please purchase a package from a vendor.';
+  String get pleaseBuyPackage => 'Please buy a package from a vendor.';
 
   @override
   String get failedToLoadCustomer => 'Failed to load customer data';
@@ -123,7 +123,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addNotes => 'Add notes';
 
   @override
-  String get requiredFields => 'Name, email, and phone number are required';
+  String get requiredFields => 'Name, email, and phone must be filled';
 
   @override
   String get locationAndDateRequired => 'Location and date are required';
@@ -153,7 +153,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get purchaseDate => 'Purchased on';
 
   @override
-  String get eventDateLabel => 'Event Date';
+  String get eventDateLabel => 'Event date';
 
   @override
   String get locationLabel => 'Location';
@@ -191,7 +191,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get allRatings => 'All Ratings';
+  String get allRatings => 'All';
 
   @override
   String get serviceType => 'Service Type';
@@ -215,7 +215,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectPackage => 'Select Package';
 
   @override
-  String get addSpecialNotes => 'Add special notes or requests';
+  String get addSpecialNotes => 'Add notes or special requests';
 
   @override
   String get priceSummary => 'Price Summary';
@@ -230,7 +230,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadingData => 'Loading data...';
 
   @override
-  String get loginAsCustomer => 'Log in as customer to purchase packages';
+  String get loginAsCustomerToBuy => 'Login as customer to purchase a package';
 
   @override
   String get selectEventDateFirst => 'Select event date first';
@@ -240,7 +240,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get packageNotAvailable =>
-      'Package not available. Please choose another.';
+      'Package not available. Please choose another package.';
 
   @override
   String get purchaseSuccessful =>
@@ -281,10 +281,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get aboutApp => 'ABOUT THE APP';
+  String get aboutApp => 'ABOUT APP';
 
   @override
-  String get aboutApplication => 'About the Application';
+  String get aboutApplication => 'About Application';
 
   @override
   String appInformation(Object appName) {
@@ -320,18 +320,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutAppDescription1 =>
-      'EventHub is an all-in-one platform for hiring professional services for your event needs.';
+      'EventHub is an all-in-one platform to hire professional services for all your event needs.';
 
   @override
   String get aboutAppDescription2 =>
-      'This app connects Customers with trusted Vendors in one easy-to-use platform.';
+      'This application connects customers with trusted vendors in one easy-to-use place.';
 
   @override
   String get forVendors => 'For Vendors';
 
   @override
   String get vendorDescription =>
-      'Vendors can add and manage their service packages directly within the app, making it easier to reach more potential customers.';
+      'Vendors can add and manage their service packages directly through the app, making it easier to reach more potential customers.';
 
   @override
   String get termsOfService => 'Terms of Service';
@@ -346,7 +346,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get failedToLoadVendor => 'Failed to load vendor data';
 
   @override
-  String get noDescription => 'No description';
+  String get noDescription => 'No description yet';
 
   @override
   String get yourPackages => 'Your Packages';
@@ -391,7 +391,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get packageName => 'Package Name';
 
   @override
-  String get enterPackagePrice => 'Enter package price (e.g.: 500000)';
+  String get enterPackagePrice => 'Enter package price (example: 500000)';
 
   @override
   String get priceRequired => 'Price cannot be empty';
@@ -411,7 +411,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Service description cannot be empty';
 
   @override
-  String get useCommaSeparator => 'Use a comma (,) to separate services';
+  String get useCommaSeparator => 'Use commas (,) to separate services';
 
   @override
   String get packagePriceUpdated => 'Package price updated successfully!';
@@ -423,8 +423,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get about => 'About';
 
   @override
-  String get noDescriptionForVendor =>
-      'No description available for this vendor.';
+  String get noDescriptionForVendor => 'No description for this vendor.';
 
   @override
   String get orderNow => 'Order Now';
@@ -439,7 +438,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get perEvent => 'per event';
 
   @override
-  String get vendorNotFoundInDatabase => 'Vendor not found in the database';
+  String get vendorNotFoundInDatabase => 'Vendor not found in database';
 
   @override
   String failedToLoadVendorData(Object error) {
@@ -453,6 +452,316 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get thisPackageDeletedByVendor =>
       'This package has been deleted by the vendor.';
+
+  @override
+  String get deleteAccount => 'Delete Account';
+
+  @override
+  String get deleteAccountWarning =>
+      'Are you sure you want to delete your account? This action cannot be undone.';
+
+  @override
+  String get deleteAccountConsequences =>
+      'All your data, orders, and preferences will be permanently deleted.';
+
+  @override
+  String get enterPasswordToConfirm => 'Enter your password to confirm:';
+
+  @override
+  String get enterYourPassword => 'Enter your password';
+
+  @override
+  String get deletingAccount => 'Deleting account...';
+
+  @override
+  String get pleaseEnterPassword => 'Please enter your password';
+
+  @override
+  String get wrongPassword => 'Incorrect password. Please try again.';
+
+  @override
+  String get requiresRecentLogin =>
+      'For security reasons, please log in again before deleting your account.';
+
+  @override
+  String get tooManyAttempts => 'Too many attempts. Please try again later.';
+
+  @override
+  String get deleteAccountFailed =>
+      'Failed to delete account. Please try again.';
+
+  @override
+  String get accountDeletedSuccessfully => 'Account deleted successfully.';
+
+  @override
+  String get permanentDeleteWarning =>
+      'Permanently delete your account and data';
+
+  @override
+  String get dangerZone => 'Danger Zone';
+
+  @override
+  String get welcome => 'Welcome!';
+
+  @override
+  String get loginToContinue => 'Login to continue';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get emailRequired => 'Email is required';
+
+  @override
+  String get invalidEmailFormat => 'Invalid email format';
+
+  @override
+  String get passwordRequired => 'Password is required';
+
+  @override
+  String get passwordMinLength => 'Minimum 6 characters';
+
+  @override
+  String get login => 'Login';
+
+  @override
+  String get noAccountRegister => 'Don\'t have an account? Register';
+
+  @override
+  String get loginAsCustomer => 'Login as Customer';
+
+  @override
+  String get loginSuccess => 'Login successful!';
+
+  @override
+  String get invalidCredentials => 'Incorrect email or password!';
+
+  @override
+  String get loginAsVendor => 'Login as Vendor';
+
+  @override
+  String get registerCreateTitle => 'Create New Customer Account';
+
+  @override
+  String get registerCreateSubtitle =>
+      'Fill in the details to register as a customer';
+
+  @override
+  String get registerFullName => 'Full Name';
+
+  @override
+  String get registerEmail => 'Email';
+
+  @override
+  String get registerPassword => 'Password';
+
+  @override
+  String get registerConfirmPassword => 'Confirm Password';
+
+  @override
+  String get registerPhoneNumber => 'Phone Number';
+
+  @override
+  String get registerAddress => 'Full Address';
+
+  @override
+  String get registerButton => 'Register';
+
+  @override
+  String get registerHaveAccount => 'Already have an account? Login';
+
+  @override
+  String get errorNameRequired => 'Name is required';
+
+  @override
+  String get errorEmailRequired => 'Email is required';
+
+  @override
+  String get errorEmailInvalid => 'Invalid email format';
+
+  @override
+  String get errorPasswordRequired => 'Password is required';
+
+  @override
+  String get errorPasswordMinLength => 'Minimum 6 characters';
+
+  @override
+  String get errorConfirmPasswordRequired => 'Confirm password is required';
+
+  @override
+  String get errorPasswordNotMatch => 'Passwords do not match';
+
+  @override
+  String get errorPhoneRequired => 'Phone number is required';
+
+  @override
+  String get errorPhoneOnlyNumber => 'Phone number must be numeric';
+
+  @override
+  String get errorPhoneMinDigit => 'Phone number must be at least 10 digits';
+
+  @override
+  String get errorAddressRequired => 'Address is required';
+
+  @override
+  String get permissionContactRequired =>
+      'Contact permission is required for registration.';
+
+  @override
+  String get permissionContactDenied =>
+      'Contact permission denied. Please enable it manually in Settings.';
+
+  @override
+  String get permissionContactBlocked =>
+      'Contact permission blocked. Please enable it manually in Settings.';
+
+  @override
+  String get registerSuccess => 'Account registered successfully!';
+
+  @override
+  String get registerEmailUsed => 'This email is already registered';
+
+  @override
+  String registerGeneralError(Object error) {
+    return 'An error occurred: $error';
+  }
+
+  @override
+  String get registerVendorTitle => 'Create New Vendor Account';
+
+  @override
+  String get registerVendorSubtitle =>
+      'Fill in the details to register as a vendor';
+
+  @override
+  String get registerVendorName => 'Store Name';
+
+  @override
+  String get registerVendorEmail => 'Email';
+
+  @override
+  String get registerVendorPassword => 'Password';
+
+  @override
+  String get registerVendorConfirmPassword => 'Confirm Password';
+
+  @override
+  String get registerVendorPhone => 'Phone Number';
+
+  @override
+  String get registerVendorAddress => 'Store Address';
+
+  @override
+  String get registerVendorButton => 'Register Vendor';
+
+  @override
+  String get basicPriceRequired => 'Basic package price is required';
+
+  @override
+  String get premiumPriceRequired => 'Premium package price is required';
+
+  @override
+  String get customPriceRequired => 'Custom package price is required';
+
+  @override
+  String get priceInvalid => 'Invalid price';
+
+  @override
+  String get priceTooHigh => 'Price cannot exceed 10 million';
+
+  @override
+  String get paketBasic => 'Basic Package';
+
+  @override
+  String get paketPremium => 'Premium Package';
+
+  @override
+  String get paketCustom => 'Custom Package';
+
+  @override
+  String get hargaBasic => 'Basic Price';
+
+  @override
+  String get jasaBasic => 'Basic Service';
+
+  @override
+  String get hargaPremium => 'Premium Price';
+
+  @override
+  String get jasaPremium => 'Premium Service';
+
+  @override
+  String get hargaCustom => 'Custom Price';
+
+  @override
+  String get jasaCustom => 'Custom Service';
+
+  @override
+  String get hargaBasicWajibDiisi => 'Basic price is required';
+
+  @override
+  String get jasaBasicWajibDiisi => 'Basic service is required';
+
+  @override
+  String get hargaPremiumWajibDiisi => 'Premium price is required';
+
+  @override
+  String get jasaPremiumWajibDiisi => 'Premium service is required';
+
+  @override
+  String get hargaCustomWajibDiisi => 'Custom price is required';
+
+  @override
+  String get jasaCustomWajibDiisi => 'Custom service is required';
+
+  @override
+  String get hargaTidakValid => 'Price is not valid';
+
+  @override
+  String get hargaTidakBolehLebihDari10Juta => 'Price cannot exceed 10 million';
+
+  @override
+  String get registerVendorSuccess => 'Vendor registered successfully!';
+
+  @override
+  String get permissionContactRequiredTitle => 'Contact Permission Required';
+
+  @override
+  String get permissionContactRequiredMessage =>
+      'Allow contact access to continue.';
+
+  @override
+  String get cobaLagi => 'Try Again';
+
+  @override
+  String get batal => 'Cancel';
+
+  @override
+  String get permissionDitolakPermanenTitle => 'Permission Permanently Denied';
+
+  @override
+  String get permissionDitolakPermanenMessage =>
+      'Enable contact access from settings.';
+
+  @override
+  String get bukaPengaturan => 'Open Settings';
+
+  @override
+  String get continueDialog => 'continue';
+
+  @override
+  String get permissionRequired => 'Permission Required';
+
+  @override
+  String get pleaseAllowContactToRegister =>
+      'Please allow contact access to register.';
+
+  @override
+  String get contactPermissionDenied => 'Contact permission denied.';
+
+  @override
+  String get contactPermissionBlocked =>
+      'Contact permission blocked. Enable in Settings.';
 
   @override
   String get search => 'Search';
