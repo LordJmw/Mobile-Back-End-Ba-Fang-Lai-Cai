@@ -57,6 +57,7 @@
   "tryAgain": "Try Again",
   "unknownVendor": "Unknown vendor",
   "package": "Package",
+  "categoryVendor" : "Vendor Categories",
 
   "categoryPage": "Category Page",
   "filter": "Filter",

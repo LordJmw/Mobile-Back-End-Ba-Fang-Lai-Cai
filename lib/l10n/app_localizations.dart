@@ -422,6 +422,12 @@ abstract class AppLocalizations {
   /// **'Package'**
   String get package;
 
+  /// No description provided for @categoryVendor.
+  ///
+  /// In en, this message translates to:
+  /// **'Vendor Categories'**
+  String get categoryVendor;
+
   /// No description provided for @categoryPage.
   ///
   /// In en, this message translates to:

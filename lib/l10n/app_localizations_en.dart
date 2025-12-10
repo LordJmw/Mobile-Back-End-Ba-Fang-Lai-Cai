@@ -171,6 +171,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get package => 'Package';
 
   @override
+  String get categoryVendor => 'Vendor Categories';
+
+  @override
   String get categoryPage => 'Category Page';
 
   @override

@@ -942,7 +942,7 @@ class _UserProfileState extends State<UserProfile> {
                 if (purchase.purchaseDetails.notes != null &&
                     purchase.purchaseDetails.notes.isNotEmpty)
                   Text(
-                    "${AppLocalizations.of(context)!.location}: ${purchase.purchaseDetails.notes}",
+                    "${AppLocalizations.of(context)!.notes}: ${purchase.purchaseDetails.notes}",
                   ),
                 const SizedBox(height: 8),
                 Text(

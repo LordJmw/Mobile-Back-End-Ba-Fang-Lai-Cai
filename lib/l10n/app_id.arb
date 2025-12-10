@@ -57,6 +57,7 @@
   "tryAgain": "Coba Lagi",
   "unknownVendor": "Vendor tidak diketahui",
   "package": "Paket",
+  "categoryVendor" : "Kategori Vendor",
 
   "categoryPage": "Halaman Kategori",
   "filter": "Filter",

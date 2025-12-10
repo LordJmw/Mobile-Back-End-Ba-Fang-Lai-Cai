@@ -171,6 +171,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get package => 'Paket';
 
   @override
+  String get categoryVendor => 'Kategori Vendor';
+
+  @override
   String get categoryPage => 'Halaman Kategori';
 
   @override

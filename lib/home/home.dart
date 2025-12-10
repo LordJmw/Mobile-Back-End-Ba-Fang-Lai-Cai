@@ -7,11 +7,11 @@ import 'package:projek_uts_mbr/services/sessionManager.dart';
 import 'package:projek_uts_mbr/main.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
-import 'package:projek_uts_mbr/category.dart';
+import 'package:projek_uts_mbr/category/category.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'dart:convert';
-
+import 'package:projek_uts_mbr/category/category_consts.dart';
 import 'package:projek_uts_mbr/auth/register.dart';
 
 class HomePage extends StatefulWidget {
@@ -56,22 +56,22 @@ class _HomePageState extends State<HomePage> {
   //   }
   // }
 
-  List<Map<String, dynamic>> getLocalizedCategories(AppLocalizations l10n) {
-    return [
-      {"icon": Icons.camera_alt_outlined, "label": l10n.categoryPhotography},
-      {"icon": Icons.event, "label": l10n.categoryEventOrganizer},
-      {"icon": Icons.brush, "label": l10n.categoryMakeupFashion},
-      {"icon": Icons.music_note, "label": l10n.categoryEntertainment},
-      {"icon": Icons.chair, "label": l10n.categoryDecorVenue},
-      {"icon": Icons.restaurant, "label": l10n.categoryCateringFB},
-      {"icon": Icons.tv, "label": l10n.categoryTechEventProduction},
-      {
-        "icon": Icons.local_shipping,
-        "label": l10n.categoryTransportationLogistics,
-      },
-      {"icon": Icons.handshake, "label": l10n.categorySupportServices},
-    ];
-  }
+  // List<Map<String, dynamic>> getLocalizedCategories(AppLocalizations l10n) {
+  //   return [
+  //     {"icon": Icons.camera_alt_outlined, "label": l10n.categoryPhotography},
+  //     {"icon": Icons.event, "label": l10n.categoryEventOrganizer},
+  //     {"icon": Icons.brush, "label": l10n.categoryMakeupFashion},
+  //     {"icon": Icons.music_note, "label": l10n.categoryEntertainment},
+  //     {"icon": Icons.chair, "label": l10n.categoryDecorVenue},
+  //     {"icon": Icons.restaurant, "label": l10n.categoryCateringFB},
+  //     {"icon": Icons.tv, "label": l10n.categoryTechEventProduction},
+  //     {
+  //       "icon": Icons.local_shipping,
+  //       "label": l10n.categoryTransportationLogistics,
+  //     },
+  //     {"icon": Icons.handshake, "label": l10n.categorySupportServices},
+  //   ];
+  // }
 
   // List<Map<String, dynamic>> _getDefaultCategories() {
   //   return [
@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     AppLocalizations l10n = AppLocalizations.of(context)!;
-    final categories = getLocalizedCategories(l10n);
+    final categories = CategoryConst.getLocalizedCategories(l10n);
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(title: Text(l10n.appTitle), backgroundColor: Colors.pink),
@@ -198,10 +198,10 @@ class _HomePageState extends State<HomePage> {
             //     minimumSize: const Size(double.infinity, 50),
             //   ),
             // ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(16),
               child: Text(
-                "Kategori Vendor",
+                l10n.categoryVendor,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
@@ -214,7 +214,11 @@ class _HomePageState extends State<HomePage> {
                 separatorBuilder: (_, __) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
                   final category = categories[index];
-                  return _buildCategory(category["icon"], category["label"]);
+                  return _buildCategory(
+                    category["icon"],
+                    category["label"],
+                    category['code'],
+                  );
                 },
               ),
             ),
@@ -338,42 +342,46 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildCategory(IconData icon, String label) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.pink,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            padding: const EdgeInsets.all(16),
-          ),
-          onPressed: () async {
-            await Eventlogs().categoryIconButtonClicked(
-              label.replaceAll("\n", " "),
-              "HomePage",
-            );
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CategoryPage(
-                  category: label.replaceAll("\n", " "),
-                  useSavedPreferences: false,
-                ),
+  Widget _buildCategory(IconData icon, String label, String code) {
+    return SizedBox(
+      width: 90,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.pink,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
               ),
-            );
-          },
-          child: Icon(icon, color: Colors.white, size: 28),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 12),
-        ),
-      ],
+              padding: const EdgeInsets.all(16),
+            ),
+            onPressed: () async {
+              await Eventlogs().categoryIconButtonClicked(
+                label.replaceAll("\n", " "),
+                "HomePage",
+              );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      CategoryPage(category: code, useSavedPreferences: false),
+                ),
+              );
+            },
+            child: Icon(icon, color: Colors.white, size: 28),
+          ),
+          const SizedBox(height: 6),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 12),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
