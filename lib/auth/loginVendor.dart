@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
@@ -23,8 +24,14 @@ class _LoginVendorState extends State<LoginVendor> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  Future<void> loginvendors() async {
-    if (!_formKey.currentState!.validate()) return;
+  Future<void> loginvendors(lang) async {
+    if (!_formKey.currentState!.validate()){
+      SemanticsService.announce(
+        tr('button', 'loginKosong', lang),
+        TextDirection.ltr);
+      
+      return;
+    } 
 
     final db = Vendordatabase();
     final vendor = await db.LoginVendor(
@@ -172,7 +179,7 @@ class _LoginVendorState extends State<LoginVendor> {
                           hint: tr('button', 'loginAkunButtonHint', lang),
                           excludeSemantics: true,
                           child: ElevatedButton(
-                            onPressed: () async => await loginvendors(),
+                            onPressed: () async => await loginvendors(lang),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.pink,
                               minimumSize: const Size(double.infinity, 50),

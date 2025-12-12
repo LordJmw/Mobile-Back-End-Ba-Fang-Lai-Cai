@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/loginVendor.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
@@ -23,8 +24,14 @@ class _LoginCustomerState extends State<LoginCustomer> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  Future<void> logincustomers() async {
-    if (!_formKey.currentState!.validate()) return;
+  Future<void> logincustomers(lang) async {
+    if (!_formKey.currentState!.validate()){
+      SemanticsService.announce(
+        tr('button', 'loginKosong', lang),
+        TextDirection.ltr);
+      
+      return;
+    }
 
     final db = CustomerDatabase();
 
@@ -178,7 +185,7 @@ class _LoginCustomerState extends State<LoginCustomer> {
                           hint: tr('button', 'loginAkunButtonHint', lang),
                           excludeSemantics: true,
                           child: ElevatedButton(
-                            onPressed: logincustomers,
+                            onPressed: () async => await logincustomers(lang),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.pink,
                               minimumSize: const Size(double.infinity, 50),

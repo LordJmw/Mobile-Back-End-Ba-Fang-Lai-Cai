@@ -2,6 +2,18 @@ import 'package:flutter/material.dart';
 
 const Map<String, Map<String, Map<String, String>>> semanticsText = {
   'button': {
+    "registerKosong" : {
+      "id" : "untuk melanjutkan pendaftaran akun silahkan isi formulir pendaftaran terlebih dahulu",
+      "en" : "To continue with the account registration, please fill out the registration form first."
+    },
+    "loginKosong" : {
+      "id" : "email atau password anda masih kosong, silahkan isi terlebih dahulu",
+      "en" : "Your email and password are blank. Please fill it in first."
+    },
+    "loginProcessing" : {
+      "id" : "Sedang memproses login",
+      "en" : "processing login"
+    },
     'bottomNavBarLabel': {'id': 'Halaman home', 'en': 'Home page'},
     'kategoriCard': {
       'id': '{name1} dengan rating {name2} dan harga mulai dari {name3}',

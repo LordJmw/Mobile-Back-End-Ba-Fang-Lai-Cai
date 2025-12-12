@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
@@ -109,10 +110,15 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
     return false;
   }
 
-  Future<void> _saveCustomer(BuildContext context) async {
+  Future<void> _saveCustomer(BuildContext context,lang) async {
     final l10n = AppLocalizations.of(context)!;
     try {
-      if (!_formKey.currentState!.validate()) return;
+      if (!_formKey.currentState!.validate()){
+        SemanticsService.announce(
+        tr('button', 'registerKosong', lang),
+        TextDirection.ltr);
+        return;
+      } 
 
       bool granted = await _requestContactPermission(context);
       if (!granted) return;
@@ -327,7 +333,7 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
                     excludeSemantics: true,
                     child: ElevatedButton(
                       onPressed: () {
-                        _saveCustomer(context);
+                        _saveCustomer(context,lang);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.pink,

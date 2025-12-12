@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/logincostumer.dart';
@@ -108,9 +109,15 @@ class _RegisterVendorState extends State<RegisterVendor> {
     });
   }
 
-  Future<void> _saveVendor(BuildContext context) async {
+  Future<void> _saveVendor(BuildContext context,lang) async {
     final l10n = AppLocalizations.of(context)!;
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()){
+      SemanticsService.announce(
+        tr('button', 'registerKosong', lang),
+        TextDirection.ltr);
+      
+      return;
+    }
 
     final penyedia = Penyedia(
       nama: _namatokoController.text,
@@ -488,7 +495,7 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     excludeSemantics: true,
                     child: ElevatedButton(
                       onPressed: () {
-                        _saveVendor(context);
+                        _saveVendor(context,lang);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.pink,
