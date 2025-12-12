@@ -87,4 +87,59 @@ class CategoryConst {
       },
     ];
   }
+
+  static String codeToLocalizedLabel(String code, AppLocalizations l10n) {
+    switch (code) {
+      case photography:
+        return l10n.categoryPhotography;
+      case eventOrganizer:
+        return l10n.categoryEventOrganizer;
+      case makeupFashion:
+        return l10n.categoryMakeupFashion;
+      case entertainment:
+        return l10n.categoryEntertainment;
+      case decorVenue:
+        return l10n.categoryDecorVenue;
+      case cateringFB:
+        return l10n.categoryCateringFB;
+      case techEventProduction:
+        return l10n.categoryTechEventProduction;
+      case transportationLogistics:
+        return l10n.categoryTransportationLogistics;
+      case supportServices:
+        return l10n.categorySupportServices;
+      default:
+        return code;
+    }
+  }
+
+  static String codeToLocalizedName(String code, AppLocalizations l10n) {
+    final dbLabel = codeToDbLabel[code];
+    if (dbLabel != null) {
+      // Cari label yang sesuai dengan dbLabel
+      switch (dbLabel) {
+        case "Fotografi & Videografi":
+          return l10n.categoryPhotography.replaceAll("\n", " ");
+        case "Event Organizer & Planner":
+          return l10n.categoryEventOrganizer.replaceAll("\n", " ");
+        case "Makeup & Fashion":
+          return l10n.categoryMakeupFashion.replaceAll("\n", " ");
+        case "Entertainment & Performers":
+          return l10n.categoryEntertainment.replaceAll("\n", " ");
+        case "Dekorasi & Venue":
+          return l10n.categoryDecorVenue.replaceAll("\n", " ");
+        case "Catering & F&B":
+          return l10n.categoryCateringFB.replaceAll("\n", " ");
+        case "Teknologi & Produksi Acara":
+          return l10n.categoryTechEventProduction.replaceAll("\n", " ");
+        case "Transportasi & Logistik":
+          return l10n.categoryTransportationLogistics.replaceAll("\n", " ");
+        case "Layanan Pendukung Lainnya":
+          return l10n.categorySupportServices.replaceAll("\n", " ");
+        default:
+          return dbLabel;
+      }
+    }
+    return code;
+  }
 }

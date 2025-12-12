@@ -504,6 +504,48 @@ class AppLocalizationsId extends AppLocalizations {
   String get dangerZone => 'Zona Bahaya';
 
   @override
+  String get inviteFriends => 'Undang Teman';
+
+  @override
+  String get inviteFriendsDescription => 'Undang teman untuk bergabung';
+
+  @override
+  String get permissionDenied => 'Izin akses kontak ditolak';
+
+  @override
+  String get noContactsFound => 'Tidak ada kontak ditemukan';
+
+  @override
+  String get noPhoneNumber => 'Tidak ada nomor telepon';
+
+  @override
+  String get chooseContactToInvite => 'Pilih kontak yang ingin diundang';
+
+  @override
+  String get inviteButton => 'Undang';
+
+  @override
+  String inviteTitle(Object name) {
+    return 'Undang $name';
+  }
+
+  @override
+  String inviteMessage(Object name) {
+    return 'Apakah Anda ingin mengundang $name untuk bergabung di aplikasi ini?';
+  }
+
+  @override
+  String get sendInvitation => 'Kirim Undangan';
+
+  @override
+  String inviteSuccess(Object name) {
+    return 'Undangan telah dikirim ke $name';
+  }
+
+  @override
+  String get unknownInitial => '?';
+
+  @override
   String get welcome => 'Selamat Datang!';
 
   @override

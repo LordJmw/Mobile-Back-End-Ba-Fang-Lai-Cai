@@ -39,7 +39,7 @@ class Purchasehistorydatabase {
   Future<List<PurchaseHistory>> getPurchaseHistory() async {
     try {
       final uid = await CustomerDatabase().getCurrentUserId();
-
+      print("ada id kok di database ${uid}");
       final url = Uri.parse("${base_url.purchaseHistoryUrl}/$uid");
       final response = await http.get(url);
 

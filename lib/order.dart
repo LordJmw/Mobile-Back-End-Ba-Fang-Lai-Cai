@@ -4,12 +4,15 @@ import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/databases/purchaseHistoryDatabase.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import 'package:projek_uts_mbr/helper/semantics.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations_en.dart';
 import 'package:projek_uts_mbr/main.dart';
 import 'package:projek_uts_mbr/model/purchaseHistoryModel.dart';
+import 'package:projek_uts_mbr/provider/language_provider.dart';
 import 'package:projek_uts_mbr/services/dataServices.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
+import 'package:provider/provider.dart';
 
 class OrderPage extends StatefulWidget {
   final String namaVendor;
@@ -311,7 +314,9 @@ class _OrderPageState extends State<OrderPage> {
 
   @override
   Widget build(BuildContext context) {
+    final lang = Provider.of<LanguageProvider>(context).locale;
     final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 243, 243, 245),
       appBar: AppBar(title: Text(l10n.paymentPage), centerTitle: true),
@@ -349,103 +354,180 @@ class _OrderPageState extends State<OrderPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            l10n.orderForm,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                          Semantics(
+                            container: true,
+                            child: Text(
+                              l10n.orderForm,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           const SizedBox(height: 20),
 
                           // TANGGAL
-                          Text(l10n.eventDate),
-                          const SizedBox(height: 5),
-                          InkWell(
-                            onTap: _pickDate,
-                            child: InputDecorator(
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                prefixIcon: const Icon(Icons.calendar_today),
-                              ),
-                              child: Text(
-                                selectedDate == null
-                                    ? l10n.eventDateLabel
-                                    : "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
+                          SizedBox(
+                            child: Semantics(
+                              container: true,
+                              excludeSemantics: true,
+                              label: selectedDate == null
+                                  ? tr('textField', 'pemesananTglTLabel', lang)
+                                  : trDropDown(
+                                      'textField',
+                                      'pemesananTglFLabel',
+                                      lang,
+                                      "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
+                                    ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(l10n.eventDate),
+                                  const SizedBox(height: 5),
+                                  InkWell(
+                                    onTap: _pickDate,
+                                    child: InputDecorator(
+                                      decoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        prefixIcon: const Icon(
+                                          Icons.calendar_today,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        selectedDate == null
+                                            ? l10n.eventDateLabel
+                                            : "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                           const SizedBox(height: 20),
 
                           // LOKASI
-                          Text(l10n.location),
-                          const SizedBox(height: 5),
-                          TextField(
-                            controller: _locationController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              hintText: l10n.enterEventLocation,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-
-                          // PAKET
-                          Text(l10n.selectedPackage),
-                          const SizedBox(height: 5),
-                          packages.isEmpty
-                              ? Container(
-                                  padding: const EdgeInsets.all(16),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    l10n.noPackagesAvailable,
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                )
-                              : DropdownButtonFormField<String>(
-                                  value: selectedPackage,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                          SizedBox(
+                            child: Semantics(
+                              label: tr('textField', 'pemesananLokasi', lang),
+                              excludeSemantics: true,
+                              container: true,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(l10n.location),
+                                  const SizedBox(height: 5),
+                                  TextField(
+                                    controller: _locationController,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      hintText: l10n.enterEventLocation,
                                     ),
                                   ),
-                                  hint: const Text("Pilih paket"),
-                                  items: packages.entries.map((entry) {
-                                    return DropdownMenuItem(
-                                      value: entry.key,
-                                      child: Text(
-                                        "${entry.key} - Rp ${entry.value}",
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedPackage = value;
-                                      selectedPrice = packages[value];
-                                    });
-                                  },
-                                ),
+                                  const SizedBox(height: 20),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          // PAKET
+                          SizedBox(
+                            child: Semantics(
+                              label: selectedPackage == null
+                                  ? tr('textField', 'pilihPaketPesanT', lang)
+                                  : trDropDown(
+                                      'textField',
+                                      'pilihPaketPesanF',
+                                      lang,
+                                      '${selectedPackage}',
+                                    ),
+                              excludeSemantics: true,
+                              container: true,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(l10n.selectedPackage),
+                                  const SizedBox(height: 5),
+                                  packages.isEmpty
+                                      ? Container(
+                                          padding: const EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Colors.grey,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            l10n.noPackagesAvailable,
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        )
+                                      : DropdownButtonFormField<String>(
+                                          value: selectedPackage,
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                          hint: const Text("Pilih paket"),
+                                          items: packages.entries.map((entry) {
+                                            return DropdownMenuItem(
+                                              value: entry.key,
+                                              child: Text(
+                                                "${entry.key} - Rp ${entry.value}",
+                                              ),
+                                            );
+                                          }).toList(),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              selectedPackage = value;
+                                              selectedPrice = packages[value];
+                                            });
+                                          },
+                                        ),
+                                ],
+                              ),
+                            ),
+                          ),
 
                           const SizedBox(height: 20),
 
-                          Text(l10n.specialNotes),
-                          const SizedBox(height: 5),
-                          TextField(
-                            controller: _notesController,
-                            maxLines: 3,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
+                          SizedBox(
+                            child: Semantics(
+                              label: tr('textField', 'catatanKhusus', lang),
+                              container: true,
+                              excludeSemantics: true,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(l10n.specialNotes),
+                                  const SizedBox(height: 5),
+                                  TextField(
+                                    controller: _notesController,
+                                    maxLines: 3,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      hintText: l10n.addSpecialNotes,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              hintText: l10n.addSpecialNotes,
                             ),
                           ),
+
                           const SizedBox(height: 20),
 
                           Text(
@@ -471,20 +553,25 @@ class _OrderPageState extends State<OrderPage> {
                           ),
                           const SizedBox(height: 20),
 
-                          ElevatedButton(
-                            onPressed: () {
-                              beliPaket(context);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: const Size(double.infinity, 50),
-                              backgroundColor: Colors.pink,
-                              foregroundColor: Colors.white,
-                              textStyle: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                          Semantics(
+                            label: tr('button', 'bayarButton', lang),
+                            excludeSemantics: true,
+                            container: true,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                beliPaket(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(double.infinity, 50),
+                                backgroundColor: Colors.pink,
+                                foregroundColor: Colors.white,
+                                textStyle: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
+                              child: Text(AppLocalizations.of(context)!.payNow),
                             ),
-                            child: Text(AppLocalizations.of(context)!.payNow),
                           ),
                         ],
                       ),

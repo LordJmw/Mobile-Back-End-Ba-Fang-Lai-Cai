@@ -504,6 +504,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dangerZone => 'Danger Zone';
 
   @override
+  String get inviteFriends => 'Invite Friends';
+
+  @override
+  String get inviteFriendsDescription => 'Invite friends to join the app';
+
+  @override
+  String get permissionDenied => 'Permission denied to access contacts';
+
+  @override
+  String get noContactsFound => 'No contacts found';
+
+  @override
+  String get noPhoneNumber => 'No phone number';
+
+  @override
+  String get chooseContactToInvite => 'Select a contact to invite';
+
+  @override
+  String get inviteButton => 'Invite';
+
+  @override
+  String inviteTitle(Object name) {
+    return 'Invite $name';
+  }
+
+  @override
+  String inviteMessage(Object name) {
+    return 'Do you want to invite $name to join this app?';
+  }
+
+  @override
+  String get sendInvitation => 'Send Invitation';
+
+  @override
+  String inviteSuccess(Object name) {
+    return 'Invitation has been sent to $name';
+  }
+
+  @override
+  String get unknownInitial => '?';
+
+  @override
   String get welcome => 'Welcome!';
 
   @override

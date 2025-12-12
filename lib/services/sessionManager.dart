@@ -17,6 +17,14 @@ class SessionManager {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(IS_LOGGED_IN);
     await prefs.remove(EMAIL);
+
+    final keys = prefs.getKeys();
+    for (var key in keys) {
+      if (key.startsWith('category_') || key.startsWith('global_filter')) {
+        await prefs.remove(key);
+        print("Removed filter preference: $key");
+      }
+    }
   }
 
   Future<bool> isLoggedIn() async {

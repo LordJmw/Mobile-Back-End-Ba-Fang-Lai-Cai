@@ -169,6 +169,37 @@
   "permanentDeleteWarning": "Permanently delete your account and data",
   "dangerZone": "Danger Zone",
 
+  "inviteFriends": "Invite Friends",
+  "inviteFriendsDescription": "Invite friends to join the app",
+  "permissionDenied": "Permission denied to access contacts",
+  "noContactsFound": "No contacts found",
+  "noPhoneNumber": "No phone number",
+
+   "chooseContactToInvite": "Select a contact to invite",
+  "inviteButton": "Invite",
+
+  "inviteTitle": "Invite {name}",
+  "@inviteTitle": {
+    "description": "Dialog title for inviting a contact",
+    "placeholders": { "name": {} }
+  },
+
+  "inviteMessage": "Do you want to invite {name} to join this app?",
+  "@inviteMessage": {
+    "description": "Confirmation message when inviting a contact",
+    "placeholders": { "name": {} }
+  },
+
+  "sendInvitation": "Send Invitation",
+
+  "inviteSuccess": "Invitation has been sent to {name}",
+  "@inviteSuccess": {
+    "description": "Snackbar shown after successful invitation",
+    "placeholders": { "name": {} }
+  },
+
+  "unknownInitial": "?",
+
   "welcome": "Welcome!",
   "loginToContinue": "Login to continue",
   "password": "Password",

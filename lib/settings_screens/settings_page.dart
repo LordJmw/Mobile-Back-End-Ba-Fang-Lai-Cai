@@ -562,6 +562,7 @@ class _SettingsPageState extends State<SettingsPage> {
       onTap: onTap,
     );
   }
+  //seluruh page menerapkan l10n untuk internasionalisasi(2 bahasa)
 
   Widget _buildAboutSection(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;

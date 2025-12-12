@@ -170,6 +170,10 @@ class CustomerDatabase {
     return user.uid;
   }
 
+  Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
   Future<CustomerModel?> getCurrentCustomer() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) return null;

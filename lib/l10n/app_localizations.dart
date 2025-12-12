@@ -1028,6 +1028,78 @@ abstract class AppLocalizations {
   /// **'Danger Zone'**
   String get dangerZone;
 
+  /// No description provided for @inviteFriends.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite Friends'**
+  String get inviteFriends;
+
+  /// No description provided for @inviteFriendsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite friends to join the app'**
+  String get inviteFriendsDescription;
+
+  /// No description provided for @permissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission denied to access contacts'**
+  String get permissionDenied;
+
+  /// No description provided for @noContactsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No contacts found'**
+  String get noContactsFound;
+
+  /// No description provided for @noPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'No phone number'**
+  String get noPhoneNumber;
+
+  /// No description provided for @chooseContactToInvite.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a contact to invite'**
+  String get chooseContactToInvite;
+
+  /// No description provided for @inviteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite'**
+  String get inviteButton;
+
+  /// Dialog title for inviting a contact
+  ///
+  /// In en, this message translates to:
+  /// **'Invite {name}'**
+  String inviteTitle(Object name);
+
+  /// Confirmation message when inviting a contact
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to invite {name} to join this app?'**
+  String inviteMessage(Object name);
+
+  /// No description provided for @sendInvitation.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Invitation'**
+  String get sendInvitation;
+
+  /// Snackbar shown after successful invitation
+  ///
+  /// In en, this message translates to:
+  /// **'Invitation has been sent to {name}'**
+  String inviteSuccess(Object name);
+
+  /// No description provided for @unknownInitial.
+  ///
+  /// In en, this message translates to:
+  /// **'?'**
+  String get unknownInitial;
+
   /// No description provided for @welcome.
   ///
   /// In en, this message translates to:

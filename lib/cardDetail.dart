@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import 'package:projek_uts_mbr/helper/semantics.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/order.dart';
+import 'package:projek_uts_mbr/provider/language_provider.dart';
+import 'package:provider/provider.dart';
 
 class Carddetail extends StatefulWidget {
   final String namaVendor;
@@ -71,7 +74,9 @@ class _CarddetailState extends State<Carddetail> {
 
   @override
   Widget build(BuildContext context) {
+    final lang = Provider.of<LanguageProvider>(context).locale;
     final l10n = AppLocalizations.of(context)!;
+
     if (loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
@@ -112,47 +117,59 @@ class _CarddetailState extends State<Carddetail> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CircleAvatar(
-                          radius: 36,
-                          backgroundColor: Colors.grey[200],
-                          backgroundImage: NetworkImage(
-                            vendor!.penyedia.first.image,
+                    child: Semantics(
+                      excludeSemantics: true,
+                      container: true,
+                      label: trDetail(
+                        'textButton',
+                        'detailVendor',
+                        lang,
+                        vendor!.penyedia.first.nama,
+                        vendor!.penyedia.first.rating.toStringAsFixed(1),
+                        '${testimoniList.length}',
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CircleAvatar(
+                            radius: 36,
+                            backgroundColor: Colors.grey[200],
+                            backgroundImage: NetworkImage(
+                              vendor!.penyedia.first.image,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                vendor!.penyedia.first.nama,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  vendor!.penyedia.first.nama,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 6),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    "${vendor!.penyedia.first.rating.toStringAsFixed(1)} (${testimoniList.length} ulasan)",
-                                    style: const TextStyle(fontSize: 13),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                const SizedBox(height: 6),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                      size: 18,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      "${vendor!.penyedia.first.rating.toStringAsFixed(1)} (${testimoniList.length} ulasan)",
+                                      style: const TextStyle(fontSize: 13),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   Padding(
@@ -160,24 +177,36 @@ class _CarddetailState extends State<Carddetail> {
                       horizontal: 16,
                       vertical: 8,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "${l10n.about} ${vendor!.penyedia.first.nama.split(" ").first}",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                    child: Semantics(
+                      excludeSemantics: true,
+                      container: true,
+                      label:
+                          trDropDown(
+                            'textButton',
+                            'deskripsiVendorCard',
+                            lang,
+                            vendor!.penyedia.first.nama.split(" ").first,
+                          ) +
+                          ", ${vendor!.penyedia.first.deskripsi}",
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${l10n.about} ${vendor!.penyedia.first.nama.split(" ").first}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          vendor!.penyedia.first.deskripsi.isNotEmpty
-                              ? vendor!.penyedia.first.deskripsi
-                              : l10n.noDescriptionForVendor,
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                      ],
+                          const SizedBox(height: 8),
+                          Text(
+                            vendor!.penyedia.first.deskripsi.isNotEmpty
+                                ? vendor!.penyedia.first.deskripsi
+                                : l10n.noDescriptionForVendor,
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -186,63 +215,80 @@ class _CarddetailState extends State<Carddetail> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (harga.basic.harga == 0 &&
-                                  harga.premium.harga == 0 &&
-                                  harga.custom.harga == 0) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    backgroundColor: Colors.red,
-                                    content: Text(l10n.packagesDeletedByVendor),
+                          child: Semantics(
+                            excludeSemantics: true,
+                            container: true,
+                            label: tr('button', 'orderNow', lang),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (harga.basic.harga == 0 &&
+                                    harga.premium.harga == 0 &&
+                                    harga.custom.harga == 0) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      backgroundColor: Colors.red,
+                                      content: Text(
+                                        l10n.packagesDeletedByVendor,
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                }
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => OrderPage(
+                                      namaVendor: widget.namaVendor,
+                                    ),
                                   ),
                                 );
-                                return;
-                              }
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      OrderPage(namaVendor: widget.namaVendor),
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color.fromARGB(
+                                  255,
+                                  223,
+                                  83,
+                                  129,
                                 ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color.fromARGB(
-                                255,
-                                223,
-                                83,
-                                129,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
                               ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                            ),
-                            child: Text(
-                              l10n.orderNow,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.white,
+                              child: Text(
+                                l10n.orderNow,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {},
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.pink,
-                              side: const BorderSide(color: Colors.pink),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                          child: Semantics(
+                            excludeSemantics: true,
+                            container: true,
+                            label: tr('button', 'hubungiB', lang),
+                            child: OutlinedButton(
+                              onPressed: () {},
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.pink,
+                                side: const BorderSide(color: Colors.pink),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
                               ),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                            ),
-                            child: Text(
-                              l10n.contact,
-                              style: TextStyle(fontSize: 14),
+                              child: Text(
+                                l10n.contact,
+                                style: TextStyle(fontSize: 14),
+                              ),
                             ),
                           ),
                         ),
@@ -349,7 +395,7 @@ class _CarddetailState extends State<Carddetail> {
                               ),
                             ),
                           );
-                        }),
+                        }).toList(),
                       ],
                     ),
                   ),
@@ -367,8 +413,10 @@ class _CarddetailState extends State<Carddetail> {
     String jasa,
     BuildContext context,
   ) {
+    final lang = Provider.of<LanguageProvider>(context).locale;
     final jasaList = jasa.split(",");
     final l10n = AppLocalizations.of(context)!;
+
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -409,33 +457,38 @@ class _CarddetailState extends State<Carddetail> {
             const SizedBox(height: 15),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (harga == 0) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: Colors.red,
-                        content: Text(l10n.packagesDeletedByVendor),
+              child: Semantics(
+                excludeSemantics: true,
+                container: true,
+                label: tr('button', 'pilihPaket', lang),
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (harga == 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text(l10n.packagesDeletedByVendor),
+                        ),
+                      );
+                      return;
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OrderPage(
+                          namaVendor: widget.namaVendor,
+                          paketDipilih: tipe,
+                        ),
                       ),
                     );
-                    return;
-                  }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => OrderPage(
-                        namaVendor: widget.namaVendor,
-                        paketDipilih: tipe,
-                      ),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 223, 83, 129),
-                ),
-                child: Text(
-                  l10n.selectPackage,
-                  style: TextStyle(color: Colors.white),
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 223, 83, 129),
+                  ),
+                  child: Text(
+                    l10n.selectPackage,
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             ),

@@ -169,6 +169,37 @@
   "permanentDeleteWarning": "Hapus akun dan data Anda secara permanen",
   "dangerZone": "Zona Bahaya",
 
+   "inviteFriends": "Undang Teman",
+  "inviteFriendsDescription": "Undang teman untuk bergabung",
+  "permissionDenied": "Izin akses kontak ditolak",
+  "noContactsFound": "Tidak ada kontak ditemukan",
+  "noPhoneNumber": "Tidak ada nomor telepon",
+
+   "chooseContactToInvite": "Pilih kontak yang ingin diundang",
+  "inviteButton": "Undang",
+
+  "inviteTitle": "Undang {name}",
+  "@inviteTitle": {
+    "description": "Judul dialog untuk mengundang kontak",
+    "placeholders": { "name": {} }
+  },
+
+  "inviteMessage": "Apakah Anda ingin mengundang {name} untuk bergabung di aplikasi ini?",
+  "@inviteMessage": {
+    "description": "Pesan konfirmasi untuk mengundang kontak",
+    "placeholders": { "name": {} }
+  },
+
+  "sendInvitation": "Kirim Undangan",
+
+  "inviteSuccess": "Undangan telah dikirim ke {name}",
+  "@inviteSuccess": {
+    "description": "Snackbar sukses setelah undangan terkirim",
+    "placeholders": { "name": {} }
+  },
+
+  "unknownInitial": "?",
+
   "welcome": "Selamat Datang!",
   "loginToContinue": "Masuk untuk melanjutkan",
   "password": "Password",
