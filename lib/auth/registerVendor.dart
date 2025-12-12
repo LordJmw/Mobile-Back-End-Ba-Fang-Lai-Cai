@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
-import 'package:projek_uts_mbr/auth/loginVendor.dart';
 import 'package:projek_uts_mbr/auth/logincostumer.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
+import 'package:projek_uts_mbr/helper/semantics.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:projek_uts_mbr/provider/language_provider.dart';
+import 'package:provider/provider.dart';
 
 class RegisterVendor extends StatefulWidget {
   const RegisterVendor({super.key});
@@ -161,6 +163,7 @@ class _RegisterVendorState extends State<RegisterVendor> {
 
   @override
   Widget build(BuildContext context) {
+    final lang = Provider.of<LanguageProvider>(context).locale;
     final l10n = AppLocalizations.of(context)!;
 
     return Padding(
@@ -184,89 +187,137 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  TextFormField(
-                    controller: _namatokoController,
-                    decoration: InputDecoration(
-                      labelText: l10n.registerVendorName,
-                      prefixIcon: const Icon(Icons.store_outlined),
+                  Semantics(
+                    label: tr('textField', 'namaTokoLabel', lang),
+                    hint: tr('textField', 'namaTokoHint', lang),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _namatokoController,
+                      decoration: InputDecoration(
+                        labelText: l10n.registerVendorName,
+                        prefixIcon: const Icon(Icons.store_outlined),
+                      ),
+                      validator: (v) =>
+                          v!.isEmpty ? l10n.errorNameRequired : null,
                     ),
-                    validator: (v) =>
-                        v!.isEmpty ? l10n.errorNameRequired : null,
                   ),
                   const SizedBox(height: 15),
-
-                  TextFormField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      labelText: l10n.registerVendorEmail,
-                      prefixIcon: const Icon(Icons.email_outlined),
+                  Semantics(
+                    label: tr('textField', 'emailLabel', lang),
+                    hint: tr('textField', 'emailHint', lang),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        labelText: l10n.registerVendorEmail,
+                        prefixIcon: const Icon(Icons.email_outlined),
+                      ),
+                      validator: (v) {
+                        if (v!.isEmpty) return l10n.errorEmailRequired;
+                        final regex = RegExp(
+                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                        );
+                        if (!regex.hasMatch(v)) return l10n.errorEmailInvalid;
+                        return null;
+                      },
                     ),
-                    validator: (v) {
-                      if (v!.isEmpty) return l10n.errorEmailRequired;
-                      final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                      if (!regex.hasMatch(v)) return l10n.errorEmailInvalid;
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 15),
-
-                  TextFormField(
-                    controller: _teleponController,
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: InputDecoration(
-                      labelText: l10n.registerVendorPhone,
-                      prefixIcon: const Icon(Icons.phone_outlined),
+                  Semantics(
+                    label: tr('textField', 'teleponLabel', lang),
+                    hint: tr('textField', 'teleponHint', lang),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _teleponController,
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: InputDecoration(
+                        labelText: l10n.registerVendorPhone,
+                        prefixIcon: const Icon(Icons.phone_outlined),
+                      ),
+                      validator: (v) {
+                        if (v!.isEmpty) return l10n.errorPhoneRequired;
+                        if (!RegExp(r'^[0-9]+$').hasMatch(v)) {
+                          return l10n.errorPhoneOnlyNumber;
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (v) {
-                      if (v!.isEmpty) return l10n.errorPhoneRequired;
-                      if (!RegExp(r'^[0-9]+$').hasMatch(v)) {
-                        return l10n.errorPhoneOnlyNumber;
-                      }
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 15),
-
-                  DropdownButtonFormField<String>(
-                    value: selectedCategory,
-                    decoration: InputDecoration(
-                      labelText: l10n.categoryPage,
-                      prefixIcon: const Icon(Icons.category_outlined),
+                  Semantics(
+                    label: selectedCategory == null
+                        ? tr("textField", "kategoriTokoLabelT", lang)
+                        : trDropDown(
+                            'textField',
+                            "kategoriTokoLabelF",
+                            lang,
+                            '$selectedCategory',
+                          ),
+                    hint: selectedCategory == null
+                        ? tr("textField", "kategoriTokoHintT", lang)
+                        : tr("textField", "kategoriTokoHintF", lang),
+                    excludeSemantics: true,
+                    child: DropdownButtonFormField<String>(
+                      value: selectedCategory,
+                      decoration: InputDecoration(
+                        labelText: l10n.categoryPage,
+                        prefixIcon: const Icon(Icons.category_outlined),
+                      ),
+                      items: categories
+                          .map(
+                            (e) => DropdownMenuItem(
+                              value: e,
+                              child: Semantics(
+                                label: trDropDown(
+                                  'textField',
+                                  'vendorCategoryItemLabel',
+                                  lang,
+                                  e,
+                                ),
+                                excludeSemantics: true,
+                                child: Text(e),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (v) => setState(() => selectedCategory = v),
+                      validator: (v) => v == null ? l10n.requiredFields : null,
                     ),
-                    items: categories
-                        .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                        .toList(),
-                    onChanged: (v) => setState(() => selectedCategory = v),
-                    validator: (v) => v == null ? l10n.requiredFields : null,
                   ),
                   const SizedBox(height: 15),
-
-                  TextFormField(
-                    controller: _alamatController,
-                    decoration: InputDecoration(
-                      labelText: l10n.registerVendorAddress,
-                      prefixIcon: const Icon(Icons.home_outlined),
+                  Semantics(
+                    label: tr('textField', 'alamatLabel', lang),
+                    hint: tr('textField', 'alamatHint', lang),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _alamatController,
+                      decoration: InputDecoration(
+                        labelText: l10n.registerVendorAddress,
+                        prefixIcon: const Icon(Icons.home_outlined),
+                      ),
+                      validator: (v) =>
+                          v!.isEmpty ? l10n.errorAddressRequired : null,
                     ),
-                    validator: (v) =>
-                        v!.isEmpty ? l10n.errorAddressRequired : null,
                   ),
                   const SizedBox(height: 15),
-
-                  TextFormField(
-                    controller: _deskripsiController,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      labelText: l10n.description,
-                      prefixIcon: const Icon(Icons.description_outlined),
+                  Semantics(
+                    label: tr('textField', 'deskripsiTokoLabel', lang),
+                    hint: tr('textField', 'deskripsiTokoHint', lang),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _deskripsiController,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        labelText: l10n.description,
+                        prefixIcon: const Icon(Icons.description_outlined),
+                      ),
+                      validator: (v) =>
+                          v!.isEmpty ? l10n.serviceDescriptionRequired : null,
                     ),
-                    validator: (v) =>
-                        v!.isEmpty ? l10n.serviceDescriptionRequired : null,
                   ),
                   const SizedBox(height: 20),
-
                   Text(
                     l10n.paketBasic,
                     style: const TextStyle(
@@ -275,31 +326,38 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     ),
                   ),
                   const SizedBox(height: 10),
-
-                  TextFormField(
-                    controller: _hargaBasicController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: InputDecoration(labelText: l10n.hargaBasic),
-                    validator: (v) {
-                      if (v == null || v.isEmpty)
-                        return l10n.hargaBasicWajibDiisi;
-                      final value = int.tryParse(v);
-                      if (value == null) return l10n.hargaTidakValid;
-                      if (value > 10000000)
-                        return l10n.hargaTidakBolehLebihDari10Juta;
-                      return null;
-                    },
+                  Semantics(
+                    label: trDropDown('textField', 'hargaLabel', lang, 'Basic'),
+                    hint: trDropDown('textField', 'hargaHint', lang, 'Basic'),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _hargaBasicController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: InputDecoration(labelText: l10n.hargaBasic),
+                      validator: (v) {
+                        if (v == null || v.isEmpty)
+                          return l10n.hargaBasicWajibDiisi;
+                        final value = int.tryParse(v);
+                        if (value == null) return l10n.hargaTidakValid;
+                        if (value > 10000000)
+                          return l10n.hargaTidakBolehLebihDari10Juta;
+                        return null;
+                      },
+                    ),
                   ),
-
-                  TextFormField(
-                    controller: _jasaBasicController,
-                    decoration: InputDecoration(labelText: l10n.jasaBasic),
-                    validator: (v) =>
-                        v!.isEmpty ? l10n.jasaBasicWajibDiisi : null,
+                  Semantics(
+                    label: trDropDown('textField', 'jasaLabel', lang, 'Basic'),
+                    hint: trDropDown('textField', 'jasaHint', lang, 'Basic'),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _jasaBasicController,
+                      decoration: InputDecoration(labelText: l10n.jasaBasic),
+                      validator: (v) =>
+                          v!.isEmpty ? l10n.jasaBasicWajibDiisi : null,
+                    ),
                   ),
                   const SizedBox(height: 20),
-
                   Text(
                     l10n.paketPremium,
                     style: const TextStyle(
@@ -307,31 +365,48 @@ class _RegisterVendorState extends State<RegisterVendor> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
-                  TextFormField(
-                    controller: _hargaPremiumController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: InputDecoration(labelText: l10n.hargaPremium),
-                    validator: (v) {
-                      if (v == null || v.isEmpty)
-                        return l10n.hargaPremiumWajibDiisi;
-                      final value = int.tryParse(v);
-                      if (value == null) return l10n.hargaTidakValid;
-                      if (value > 10000000)
-                        return l10n.hargaTidakBolehLebihDari10Juta;
-                      return null;
-                    },
+                  Semantics(
+                    label: trDropDown(
+                      'textField',
+                      'hargaLabel',
+                      lang,
+                      'Premium',
+                    ),
+                    hint: trDropDown('textField', 'hargaHint', lang, 'Premium'),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _hargaPremiumController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: InputDecoration(labelText: l10n.hargaPremium),
+                      validator: (v) {
+                        if (v == null || v.isEmpty)
+                          return l10n.hargaPremiumWajibDiisi;
+                        final value = int.tryParse(v);
+                        if (value == null) return l10n.hargaTidakValid;
+                        if (value > 10000000)
+                          return l10n.hargaTidakBolehLebihDari10Juta;
+                        return null;
+                      },
+                    ),
                   ),
-
-                  TextFormField(
-                    controller: _jasaPremiumController,
-                    decoration: InputDecoration(labelText: l10n.jasaPremium),
-                    validator: (v) =>
-                        v!.isEmpty ? l10n.jasaPremiumWajibDiisi : null,
+                  Semantics(
+                    label: trDropDown(
+                      'textField',
+                      'jasaLabel',
+                      lang,
+                      'Premium',
+                    ),
+                    hint: trDropDown('textField', 'jasaHint', lang, 'Premium'),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _jasaPremiumController,
+                      decoration: InputDecoration(labelText: l10n.jasaPremium),
+                      validator: (v) =>
+                          v!.isEmpty ? l10n.jasaPremiumWajibDiisi : null,
+                    ),
                   ),
                   const SizedBox(height: 20),
-
                   Text(
                     l10n.paketCustom,
                     style: const TextStyle(
@@ -339,67 +414,108 @@ class _RegisterVendorState extends State<RegisterVendor> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
-                  TextFormField(
-                    controller: _hargaCustomController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: InputDecoration(labelText: l10n.hargaCustom),
-                    validator: (v) {
-                      if (v == null || v.isEmpty)
-                        return l10n.hargaCustomWajibDiisi;
-                      final value = int.tryParse(v);
-                      if (value == null) return l10n.hargaTidakValid;
-                      if (value > 10000000)
-                        return l10n.hargaTidakBolehLebihDari10Juta;
-                      return null;
-                    },
+                  Semantics(
+                    label: trDropDown(
+                      'textField',
+                      'hargaLabel',
+                      lang,
+                      'Custom',
+                    ),
+                    hint: trDropDown('textField', 'hargaHint', lang, 'Custom'),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _hargaCustomController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: InputDecoration(labelText: l10n.hargaCustom),
+                      validator: (v) {
+                        if (v == null || v.isEmpty)
+                          return l10n.hargaCustomWajibDiisi;
+                        final value = int.tryParse(v);
+                        if (value == null) return l10n.hargaTidakValid;
+                        if (value > 10000000)
+                          return l10n.hargaTidakBolehLebihDari10Juta;
+                        return null;
+                      },
+                    ),
                   ),
-
-                  TextFormField(
-                    controller: _jasaCustomController,
-                    decoration: InputDecoration(labelText: l10n.jasaCustom),
-                    validator: (v) =>
-                        v!.isEmpty ? l10n.jasaCustomWajibDiisi : null,
+                  Semantics(
+                    label: trDropDown('textField', 'jasaLabel', lang, 'Custom'),
+                    hint: trDropDown('textField', 'jasaHint', lang, 'Custom'),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _jasaCustomController,
+                      decoration: InputDecoration(labelText: l10n.jasaCustom),
+                      validator: (v) =>
+                          v!.isEmpty ? l10n.jasaCustomWajibDiisi : null,
+                    ),
                   ),
-
                   const SizedBox(height: 20),
-
-                  TextFormField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: l10n.registerVendorPassword,
+                  Semantics(
+                    label: tr('textField', 'passwordLabel', lang),
+                    hint: tr('textField', 'passwordHint', lang),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: l10n.registerVendorPassword,
+                      ),
+                      validator: (v) => v == null || v.length < 6
+                          ? l10n.errorPasswordMinLength
+                          : null,
                     ),
-                    validator: (v) => v == null || v.length < 6
-                        ? l10n.errorPasswordMinLength
-                        : null,
                   ),
-
-                  TextFormField(
-                    controller: _confirmController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: l10n.registerVendorConfirmPassword,
+                  Semantics(
+                    label: tr('textField', 'confirmPasswordLabel', lang),
+                    hint: tr('textField', 'confirmPasswordHint', lang),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _confirmController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: l10n.registerVendorConfirmPassword,
+                      ),
+                      validator: (v) => v != _passwordController.text
+                          ? l10n.errorPasswordNotMatch
+                          : null,
                     ),
-                    validator: (v) => v != _passwordController.text
-                        ? l10n.errorPasswordNotMatch
-                        : null,
                   ),
-
                   const SizedBox(height: 30),
-
-                  ElevatedButton(
-                    onPressed: () {
-                      _saveVendor(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink,
-                      minimumSize: const Size(double.infinity, 50),
+                  Semantics(
+                    label: tr('button', 'registerAkunButtonLabel', lang),
+                    hint: tr('button', 'registerAkunButtonHint', lang),
+                    excludeSemantics: true,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _saveVendor(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pink,
+                        minimumSize: const Size(double.infinity, 50),
+                      ),
+                      child: Text(
+                        l10n.registerVendorButton,
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     ),
-                    child: Text(
-                      l10n.registerVendorButton,
-                      style: const TextStyle(color: Colors.white),
+                  ),
+                  const SizedBox(height: 20),
+                  Semantics(
+                    label: tr('textButton', 'haveAccountTextBLabel', lang),
+                    hint: tr('textButton', 'haveAccountTextBHint', lang),
+                    excludeSemantics: true,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => LoginCustomer()),
+                        );
+                      },
+                      child: Text(
+                        l10n.registerHaveAccount,
+                        style: const TextStyle(color: Colors.pink),
+                      ),
                     ),
                   ),
                 ],

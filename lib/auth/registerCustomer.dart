@@ -1,13 +1,15 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
+import 'package:projek_uts_mbr/helper/semantics.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/model/CustomerModel.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:projek_uts_mbr/provider/language_provider.dart';
+import 'package:provider/provider.dart';
 
 class RegisterCustomer extends StatefulWidget {
   const RegisterCustomer({super.key});
@@ -167,6 +169,7 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
 
   @override
   Widget build(BuildContext context) {
+    final lang = Provider.of<LanguageProvider>(context).locale;
     final l10n = AppLocalizations.of(context)!;
 
     return Padding(
@@ -195,130 +198,170 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
                     style: const TextStyle(color: Colors.grey),
                   ),
                   const SizedBox(height: 30),
-                  TextFormField(
-                    controller: _namaController,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.person_outline),
-                      labelText: l10n.registerFullName,
-                      border: const OutlineInputBorder(),
+                  Semantics(
+                    label: tr('textField', 'namaLabel', lang),
+                    hint: tr('textField', 'namaHint', lang),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _namaController,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.person_outline),
+                        labelText: l10n.registerFullName,
+                        border: const OutlineInputBorder(),
+                      ),
+                      validator: (value) =>
+                          value!.isEmpty ? l10n.errorNameRequired : null,
                     ),
-                    validator: (value) =>
-                        value!.isEmpty ? l10n.errorNameRequired : null,
                   ),
                   const SizedBox(height: 20),
-
-                  TextFormField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.email_outlined),
-                      labelText: l10n.registerEmail,
-                      border: const OutlineInputBorder(),
+                  Semantics(
+                    label: tr('textField', 'emailLabel', lang),
+                    hint: tr('textField', 'emailHint', lang),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        labelText: l10n.registerEmail,
+                        border: const OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) return l10n.errorEmailRequired;
+                        final regex = RegExp(
+                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                        );
+                        if (!regex.hasMatch(value))
+                          return l10n.errorEmailInvalid;
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value!.isEmpty) return l10n.errorEmailRequired;
-                      final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                      if (!regex.hasMatch(value)) return l10n.errorEmailInvalid;
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 20),
-
-                  TextFormField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      labelText: l10n.registerPassword,
-                      border: const OutlineInputBorder(),
+                  Semantics(
+                    label: tr('textField', 'passwordLabel', lang),
+                    hint: tr('textField', 'passwordHint', lang),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        labelText: l10n.registerPassword,
+                        border: const OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) return l10n.errorPasswordRequired;
+                        if (value.length < 6)
+                          return l10n.errorPasswordMinLength;
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value!.isEmpty) return l10n.errorPasswordRequired;
-                      if (value.length < 6) return l10n.errorPasswordMinLength;
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 20),
-
-                  TextFormField(
-                    controller: _confirmController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      labelText: l10n.registerConfirmPassword,
-                      border: const OutlineInputBorder(),
+                  Semantics(
+                    label: tr('textField', 'confirmPasswordLabel', lang),
+                    hint: tr('textField', 'confirmPasswordHint', lang),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _confirmController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        labelText: l10n.registerConfirmPassword,
+                        border: const OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty)
+                          return l10n.errorConfirmPasswordRequired;
+                        if (value != _passwordController.text)
+                          return l10n.errorPasswordNotMatch;
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value!.isEmpty)
-                        return l10n.errorConfirmPasswordRequired;
-                      if (value != _passwordController.text)
-                        return l10n.errorPasswordNotMatch;
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 20),
-
-                  TextFormField(
-                    controller: _teleponController,
-                    keyboardType: TextInputType.phone,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.phone_android_outlined),
-                      labelText: l10n.registerPhoneNumber,
-                      border: const OutlineInputBorder(),
+                  Semantics(
+                    label: tr('textField', 'teleponLabel', lang),
+                    hint: tr('textField', 'teleponHint', lang),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _teleponController,
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.phone_android_outlined),
+                        labelText: l10n.registerPhoneNumber,
+                        border: const OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) return l10n.errorPhoneRequired;
+                        final regex = RegExp(r'^[0-9]+$');
+                        if (!regex.hasMatch(value))
+                          return l10n.errorPhoneOnlyNumber;
+                        if (value.length < 10) return l10n.errorPhoneMinDigit;
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value!.isEmpty) return l10n.errorPhoneRequired;
-                      final regex = RegExp(r'^[0-9]+$');
-                      if (!regex.hasMatch(value))
-                        return l10n.errorPhoneOnlyNumber;
-                      if (value.length < 10) return l10n.errorPhoneMinDigit;
-                      return null;
-                    },
                   ),
                   const SizedBox(height: 20),
-
-                  TextFormField(
-                    controller: _alamatController,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.home_outlined),
-                      labelText: l10n.registerAddress,
-                      border: const OutlineInputBorder(),
+                  Semantics(
+                    label: tr('textField', 'alamatLabel', lang),
+                    hint: tr('textField', 'alamatHint', lang),
+                    excludeSemantics: true,
+                    child: TextFormField(
+                      controller: _alamatController,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.home_outlined),
+                        labelText: l10n.registerAddress,
+                        border: const OutlineInputBorder(),
+                      ),
+                      validator: (value) =>
+                          value!.isEmpty ? l10n.errorAddressRequired : null,
                     ),
-                    validator: (value) =>
-                        value!.isEmpty ? l10n.errorAddressRequired : null,
                   ),
                   const SizedBox(height: 30),
-
-                  ElevatedButton(
-                    onPressed: () {
-                      _saveCustomer(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink,
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                  Semantics(
+                    label: tr('button', 'registerAkunButtonLabel', lang),
+                    hint: tr('button', 'registerAkunButtonHint', lang),
+                    excludeSemantics: true,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _saveCustomer(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pink,
+                        minimumSize: const Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 5,
                       ),
-                      elevation: 5,
-                    ),
-                    child: Text(
-                      l10n.registerButton,
-                      style: const TextStyle(fontSize: 16, color: Colors.white),
+                      child: Text(
+                        l10n.registerButton,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => LoginCustomer()),
-                      );
-                    },
-                    child: Text(
-                      l10n.registerHaveAccount,
-                      style: const TextStyle(color: Colors.pink),
+                  Semantics(
+                    label: tr('textButton', 'haveAccountTextBLabel', lang),
+                    hint: tr('textButton', 'haveAccountTextBHint', lang),
+                    excludeSemantics: true,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => LoginCustomer()),
+                        );
+                      },
+                      child: Text(
+                        l10n.registerHaveAccount,
+                        style: const TextStyle(color: Colors.pink),
+                      ),
                     ),
                   ),
                 ],

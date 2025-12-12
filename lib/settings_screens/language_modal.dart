@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/helper/semantics.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
+import 'package:projek_uts_mbr/provider/language_provider.dart';
+import 'package:provider/provider.dart';
 
 class LanguageModal extends StatefulWidget {
   final String currentLanguage;
@@ -23,6 +26,7 @@ class _LanguageModalState extends State<LanguageModal> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final lang = Provider.of<LanguageProvider>(context).locale;
     return Container(
       height: MediaQuery.of(context).size.height * 0.8,
       decoration: BoxDecoration(
@@ -57,10 +61,15 @@ class _LanguageModalState extends State<LanguageModal> {
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
             child: Row(
               children: [
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close_rounded),
-                  color: Colors.grey[600],
+                Semantics(
+                  label: tr('button', 'closeButtonLabel', lang),
+                  hint: tr('button', 'closeButtonHint', lang),
+                  excludeSemantics: true,
+                  child: IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close_rounded),
+                    color: Colors.grey[600],
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Text(
@@ -88,6 +97,7 @@ class _LanguageModalState extends State<LanguageModal> {
                   description: l10n.indonesianLanguage,
                   isSelected: _selectedLanguage == 'Indonesia',
                   onTap: () => _selectLanguage('Indonesia'),
+                  lang: lang,
                 ),
                 const SizedBox(height: 16),
                 _buildLanguageCard(
@@ -96,6 +106,7 @@ class _LanguageModalState extends State<LanguageModal> {
                   description: l10n.englishLanguage,
                   isSelected: _selectedLanguage == 'English',
                   onTap: () => _selectLanguage('English'),
+                  lang: lang,
                 ),
               ],
             ),
@@ -111,23 +122,28 @@ class _LanguageModalState extends State<LanguageModal> {
             child: SizedBox(
               width: double.infinity,
               height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context, _selectedLanguage);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6C63FF),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
+              child: Semantics(
+                label: tr('button', 'saveLanguageButtonLabel', lang),
+                hint: tr('button', 'saveLanguageButtonHint', lang),
+                excludeSemantics: true,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context, _selectedLanguage);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF6C63FF),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 0,
                   ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  l10n.save,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                  child: Text(
+                    l10n.save,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -144,77 +160,86 @@ class _LanguageModalState extends State<LanguageModal> {
     required String description,
     required bool isSelected,
     required VoidCallback onTap,
+    required Locale lang,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? const Color(0xFF6C63FF).withOpacity(0.1)
-              : Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isSelected ? const Color(0xFF6C63FF) : Colors.grey[200]!,
-            width: isSelected ? 2 : 1,
+    return Semantics(
+      label: trDropDown('button', 'languageButtonLabel', lang, language),
+      hint: isSelected
+          ? trDropDown('button', 'languageButtonTHint', lang, language)
+          : trDropDown('button', 'languageButtonFHint', lang, language),
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? const Color(0xFF6C63FF).withOpacity(0.1)
+                : Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected ? const Color(0xFF6C63FF) : Colors.grey[200]!,
+              width: isSelected ? 2 : 1,
+            ),
           ),
-        ),
-        child: Row(
-          children: [
-            // Flag/Code Circle
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: isSelected ? const Color(0xFF6C63FF) : Colors.grey[100],
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(
-                  code,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: isSelected ? Colors.white : Colors.grey[700],
+          child: Row(
+            children: [
+              // Flag/Code Circle
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? const Color(0xFF6C63FF)
+                      : Colors.grey[100],
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    code,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: isSelected ? Colors.white : Colors.grey[700],
+                    ),
                   ),
                 ),
               ),
-            ),
+              const SizedBox(width: 16),
 
-            const SizedBox(width: 16),
-
-            // Language Info
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    language,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: isSelected
-                          ? const Color(0xFF6C63FF)
-                          : Colors.black87,
+              // Language Info
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      language,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: isSelected
+                            ? const Color(0xFF6C63FF)
+                            : Colors.black87,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    description,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    Text(
+                      description,
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            // Check Icon
-            if (isSelected)
-              Icon(
-                Icons.check_circle_rounded,
-                color: const Color(0xFF6C63FF),
-                size: 24,
-              ),
-          ],
+              // Check Icon
+              if (isSelected)
+                Icon(
+                  Icons.check_circle_rounded,
+                  color: const Color(0xFF6C63FF),
+                  size: 24,
+                ),
+            ],
+          ),
         ),
       ),
     );

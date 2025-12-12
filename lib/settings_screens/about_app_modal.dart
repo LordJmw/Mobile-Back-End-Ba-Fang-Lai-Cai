@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/helper/semantics.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
+import 'package:projek_uts_mbr/provider/language_provider.dart';
+import 'package:provider/provider.dart';
 
 class AboutAppModal extends StatelessWidget {
   const AboutAppModal({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final lang = Provider.of<LanguageProvider>(context).locale;
     final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
@@ -51,7 +55,15 @@ class AboutAppModal extends StatelessWidget {
                       l10n.appTitle,
                       style: TextStyle(fontWeight: FontWeight.w700),
                     ),
-                    Text('v1.0.0', style: TextStyle(color: Colors.grey[600])),
+                    Semantics(
+                      label: tr('textButton', 'versionApps', lang),
+                      excludeSemantics: true,
+                      container: true,
+                      child: Text(
+                        'v1.0.0',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -62,11 +74,8 @@ class AboutAppModal extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             "${l10n.aboutAppDescription1}\n${l10n.aboutAppDescription2}",
-
             style: TextStyle(color: Colors.grey[700], height: 1.5),
           ),
-          const SizedBox(height: 20),
-
           const SizedBox(height: 20),
           Text(l10n.forVendors, style: TextStyle(fontWeight: FontWeight.w600)),
           const SizedBox(height: 12),
@@ -78,17 +87,25 @@ class AboutAppModal extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              TextButton(
-                onPressed: () {
-                  // Navigasi ke halaman terms
-                },
-                child: Text(l10n.termsPrivacy),
+              Semantics(
+                label: l10n.termsPrivacy,
+                excludeSemantics: true,
+                child: TextButton(
+                  onPressed: () {
+                    // Navigasi ke halaman terms
+                  },
+                  child: Text(l10n.termsPrivacy),
+                ),
               ),
-              TextButton(
-                onPressed: () {
-                  // Navigasi ke halaman privacy
-                },
-                child: Text(l10n.privacyPolicy),
+              Semantics(
+                label: l10n.privacyPolicy,
+                excludeSemantics: true,
+                child: TextButton(
+                  onPressed: () {
+                    // Navigasi ke halaman privacy
+                  },
+                  child: Text(l10n.privacyPolicy),
+                ),
               ),
             ],
           ),

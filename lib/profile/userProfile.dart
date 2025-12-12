@@ -463,7 +463,10 @@ class _UserProfileState extends State<UserProfile> {
     await showDialog(
       context: context,
       builder: (context) {
-        final lang = Provider.of<LanguageProvider>(context).locale;
+        final lang = Provider.of<LanguageProvider>(
+          context,
+          listen: false,
+        ).locale;
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
@@ -665,7 +668,7 @@ class _UserProfileState extends State<UserProfile> {
     int purchaseId,
     String vendorName,
   ) async {
-    final lang = Provider.of<LanguageProvider>(context).locale;
+    final lang = Provider.of<LanguageProvider>(context, listen: false).locale;
     bool confirm =
         await showDialog(
           context: context,
@@ -736,7 +739,7 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _inviteFriends(BuildContext context) async {
     try {
       final l10n = AppLocalizations.of(context)!;
-      final lang = Provider.of<LanguageProvider>(context).locale;
+      final lang = Provider.of<LanguageProvider>(context, listen: false).locale;
 
       final permissionStatus = await FlutterContacts.requestPermission();
 
@@ -795,7 +798,7 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget _buildContactsList(List<Contact> contacts, BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final lang = Provider.of<LanguageProvider>(context).locale;
+    final lang = Provider.of<LanguageProvider>(context, listen: false).locale;
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
@@ -910,7 +913,7 @@ class _UserProfileState extends State<UserProfile> {
 
   void _showInviteConfirmation(BuildContext context, Contact contact) {
     final l10n = AppLocalizations.of(context)!;
-    final lang = Provider.of<LanguageProvider>(context).locale;
+    final lang = Provider.of<LanguageProvider>(context, listen: false).locale;
 
     showDialog(
       context: context,
@@ -969,7 +972,7 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
-    final lang = Provider.of<LanguageProvider>(context).locale;
+    final lang = Provider.of<LanguageProvider>(context, listen: false).locale;
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
@@ -1260,7 +1263,7 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Widget _buildEmptyState() {
-    final lang = Provider.of<LanguageProvider>(context).locale;
+    final lang = Provider.of<LanguageProvider>(context, listen: false).locale;
     return Semantics(
       label: tr('card', 'emptyPurchaseHistoryLabel', lang),
       hint: tr('card', 'emptyPurchaseHistoryHint', lang),
@@ -1284,7 +1287,7 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Widget _buildPurchaseCard(PurchaseHistory purchase, BuildContext context) {
-    final lang = Provider.of<LanguageProvider>(context).locale;
+    final lang = Provider.of<LanguageProvider>(context, listen: false).locale;
     try {
       return Card(
         child: Container(

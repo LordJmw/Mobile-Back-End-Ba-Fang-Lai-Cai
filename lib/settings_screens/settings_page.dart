@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
+import 'package:projek_uts_mbr/helper/semantics.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
@@ -272,6 +273,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
+    final locale = languageProvider.locale;
     _selectedLanguage = languageProvider.getLanguageName();
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
@@ -312,7 +314,12 @@ class _SettingsPageState extends State<SettingsPage> {
               _buildDangerZoneSection(context),
 
               const SizedBox(height: 40),
-              _buildLogoutButton(),
+              Semantics(
+                label: tr('button', 'logoutButtonLabel', locale),
+                hint: tr('button', 'logoutButtonHint', locale),
+                excludeSemantics: true,
+                child: _buildLogoutButton(),
+              ),
             ],
           ),
         ),
@@ -383,6 +390,7 @@ class _SettingsPageState extends State<SettingsPage> {
     BuildContext context,
   ) {
     final l10n = AppLocalizations.of(context)!;
+    final locale = languageProvider.locale;
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -417,53 +425,80 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           const SizedBox(height: 12),
 
-          _buildSettingItem(
-            icon: Icons.language_rounded,
-            iconColor: Colors.blue,
-            title: l10n.language,
-            subtitle: _selectedLanguage,
-            onTap: () async {
-              final result = await showModalBottomSheet<String?>(
-                context: context,
-                backgroundColor: Colors.transparent,
-                isScrollControlled: true,
-                builder: (context) =>
-                    LanguageModal(currentLanguage: selectedLanguage),
-              );
-              if (result != null) {
-                final newLocale = languageProvider.getLocaleFromName(result);
-                await languageProvider.setLocale(newLocale);
-
-                setState(() {
-                  _selectedLanguage = result;
-                });
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(l10n.languageChangedTo(result)),
-                    backgroundColor: Colors.green,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+          Semantics(
+            label: trDropDown(
+              'button',
+              'settingsLanguageLabel',
+              locale,
+              _selectedLanguage,
+            ),
+            hint: trDropDown(
+              'button',
+              'settingsLanguageHint',
+              locale,
+              _selectedLanguage,
+            ),
+            excludeSemantics: true,
+            child: _buildSettingItem(
+              icon: Icons.language_rounded,
+              iconColor: Colors.blue,
+              title: l10n.language,
+              subtitle: _selectedLanguage,
+              onTap: () async {
+                final result = await showModalBottomSheet<String?>(
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  isScrollControlled: true,
+                  builder: (context) =>
+                      LanguageModal(currentLanguage: selectedLanguage),
                 );
-              }
-            },
+                if (result != null) {
+                  final newLocale = languageProvider.getLocaleFromName(result);
+                  await languageProvider.setLocale(newLocale);
+
+                  setState(() {
+                    _selectedLanguage = result;
+                  });
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(l10n.languageChangedTo(result)),
+                      backgroundColor: Colors.green,
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
           ),
 
           const Divider(indent: 20, endIndent: 20, height: 0),
 
-          _buildNotificationSetting(context),
+          Semantics(
+            label: tr('button', 'notifikasiButtonLabel', locale),
+            hint: _notificationsEnabled
+                ? tr('button', 'notifikasiButtonTHint', locale)
+                : tr('button', 'notifikasiButtonFHint', locale),
+            excludeSemantics: true,
+            child: _buildNotificationSetting(context),
+          ),
 
           const Divider(indent: 20, endIndent: 20, height: 0),
 
-          _buildSettingItem(
-            icon: Icons.dark_mode_rounded,
-            iconColor: Colors.purple,
-            title: l10n.theme,
-            subtitle: l10n.automatic,
-            onTap: () {},
+          Semantics(
+            label: tr('button', 'themeButtonLabel', locale),
+            hint: tr('button', 'themeButtonHint', locale),
+            excludeSemantics: true,
+            child: _buildSettingItem(
+              icon: Icons.dark_mode_rounded,
+              iconColor: Colors.purple,
+              title: l10n.theme,
+              subtitle: l10n.automatic,
+              onTap: () {},
+            ),
           ),
         ],
       ),
@@ -562,9 +597,10 @@ class _SettingsPageState extends State<SettingsPage> {
       onTap: onTap,
     );
   }
-  //seluruh page menerapkan l10n untuk internasionalisasi(2 bahasa)
 
   Widget _buildAboutSection(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final locale = languageProvider.locale;
     final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
@@ -580,7 +616,6 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       child: Column(
         children: [
-          // Header Section Title
           Padding(
             padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
             child: Row(
@@ -605,67 +640,77 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           const SizedBox(height: 12),
 
-          _buildAboutItem(
-            icon: Icons.info_rounded,
-            iconColor: Colors.blue,
-            title: l10n.aboutApp,
-            subtitle: l10n.appInformation("Ba Fang Lai Cai"),
-            onTap: () {
-              showModalBottomSheet(
-                context: context,
-                backgroundColor: Colors.transparent,
-                isScrollControlled: true,
-                builder: (context) => const AboutAppModal(),
-              );
-            },
+          Semantics(
+            label: tr('button', 'aboutButtonLabel', locale),
+            hint: tr('button', 'aboutButtonHint', locale),
+            excludeSemantics: true,
+            child: _buildAboutItem(
+              icon: Icons.info_rounded,
+              iconColor: Colors.blue,
+              title: l10n.aboutApp,
+              subtitle: l10n.appInformation("Ba Fang Lai Cai"),
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  isScrollControlled: true,
+                  builder: (context) => const AboutAppModal(),
+                );
+              },
+            ),
           ),
 
           const Divider(indent: 20, endIndent: 20, height: 0),
 
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            child: ListTile(
-              contentPadding: const EdgeInsets.only(left: 16, right: 20),
-              leading: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
-                  shape: BoxShape.circle,
+          Semantics(
+            label: tr('button', 'versionButtonLabel', locale),
+            hint: tr('button', 'versionButtonHint', locale),
+            excludeSemantics: true,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: ListTile(
+                contentPadding: const EdgeInsets.only(left: 16, right: 20),
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.green.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.verified_rounded,
+                    color: Colors.green[700],
+                    size: 22,
+                  ),
                 ),
-                child: Icon(
-                  Icons.verified_rounded,
-                  color: Colors.green[700],
-                  size: 22,
+                title: Text(
+                  l10n.appVersion,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    color: Colors.black87,
+                  ),
                 ),
-              ),
-              title: Text(
-                l10n.appVersion,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                  color: Colors.black87,
+                subtitle: const Text(
+                  '1.0.0',
+                  style: TextStyle(color: Colors.grey, fontSize: 13),
                 ),
-              ),
-              subtitle: const Text(
-                '1.0.0',
-                style: TextStyle(color: Colors.grey, fontSize: 13),
-              ),
-              trailing: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.green[50],
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  l10n.latest,
-                  style: TextStyle(
-                    color: Colors.green,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
+                trailing: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.green[50],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    l10n.latest,
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
@@ -674,15 +719,19 @@ class _SettingsPageState extends State<SettingsPage> {
 
           const Divider(indent: 20, endIndent: 20, height: 0),
 
-          // Terms & Privacy
-          _buildAboutItem(
-            icon: Icons.shield_rounded,
-            iconColor: Colors.purple,
-            title: l10n.termsPrivacy,
-            subtitle: l10n.readOurPolicies,
-            onTap: () {
-              // Navigasi ke halaman terms
-            },
+          Semantics(
+            label: tr('button', 'termsButtonLabel', locale),
+            hint: tr('button', 'termsButtonHint', locale),
+            excludeSemantics: true,
+            child: _buildAboutItem(
+              icon: Icons.shield_rounded,
+              iconColor: Colors.purple,
+              title: l10n.termsPrivacy,
+              subtitle: l10n.readOurPolicies,
+              onTap: () {
+                // Navigasi ke halaman terms
+              },
+            ),
           ),
         ],
       ),
@@ -736,6 +785,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildDangerZoneSection(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final locale = languageProvider.locale;
     final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
@@ -771,48 +822,53 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           const SizedBox(height: 12),
 
-          ListTile(
-            contentPadding: const EdgeInsets.only(left: 16, right: 20),
-            leading: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.1),
-                shape: BoxShape.circle,
+          Semantics(
+            label: tr('button', 'deleteAccountButtonLabel', locale),
+            hint: tr('button', 'deleteAccountButtonHint', locale),
+            excludeSemantics: true,
+            child: ListTile(
+              contentPadding: const EdgeInsets.only(left: 16, right: 20),
+              leading: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.delete_forever_rounded,
+                  color: Colors.red[700],
+                  size: 22,
+                ),
               ),
-              child: Icon(
-                Icons.delete_forever_rounded,
-                color: Colors.red[700],
-                size: 22,
+              title: Text(
+                l10n.deleteAccount,
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  color: Colors.red[700],
+                ),
               ),
+              subtitle: Text(
+                l10n.permanentDeleteWarning,
+                style: TextStyle(color: Colors.grey[600], fontSize: 13),
+              ),
+              trailing: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.chevron_right_rounded,
+                  size: 18,
+                  color: Colors.red,
+                ),
+              ),
+              onTap: () {
+                _showDeleteAccountDialog();
+              },
             ),
-            title: Text(
-              l10n.deleteAccount,
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-                color: Colors.red[700],
-              ),
-            ),
-            subtitle: Text(
-              l10n.permanentDeleteWarning,
-              style: TextStyle(color: Colors.grey[600], fontSize: 13),
-            ),
-            trailing: Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.chevron_right_rounded,
-                size: 18,
-                color: Colors.red,
-              ),
-            ),
-            onTap: () {
-              _showDeleteAccountDialog();
-            },
           ),
         ],
       ),
