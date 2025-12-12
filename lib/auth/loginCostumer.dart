@@ -25,13 +25,51 @@ class _LoginCustomerState extends State<LoginCustomer> {
   final TextEditingController passwordController = TextEditingController();
 
   Future<void> logincustomers(lang) async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
     if (!_formKey.currentState!.validate()){
-      SemanticsService.announce(
-        tr('button', 'loginKosong', lang),
-        TextDirection.ltr);
-      
+      if (email.isEmpty && password.isEmpty) {
+            SemanticsService.announce(
+              tr('button', 'loginKosong', lang),
+              TextDirection.ltr,
+            );
+            return;
+          }
+      if(email.isEmpty){
+        SemanticsService.announce(
+          tr('button', 'emailkosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+      if(password.isEmpty){
+        SemanticsService.announce(
+          tr('button', 'passwordkosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+      if (!emailRegex.hasMatch(email)) {
+        SemanticsService.announce(
+          tr('button', 'emailFormatSalah', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (password.length < 6) {
+        SemanticsService.announce(
+          tr('button', 'passwordPendek', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+        
       return;
     }
+    
+    
 
     final db = CustomerDatabase();
 

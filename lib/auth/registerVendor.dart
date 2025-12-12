@@ -112,10 +112,221 @@ class _RegisterVendorState extends State<RegisterVendor> {
   Future<void> _saveVendor(BuildContext context,lang) async {
     final l10n = AppLocalizations.of(context)!;
     if (!_formKey.currentState!.validate()){
-      SemanticsService.announce(
-        tr('button', 'registerKosong', lang),
-        TextDirection.ltr);
-      
+      if (_namatokoController.text.isEmpty &&
+      _emailController.text.isEmpty &&
+      _teleponController.text.isEmpty &&
+      selectedCategory == null &&
+      _alamatController.text.isEmpty &&
+      _deskripsiController.text.isEmpty &&
+      _hargaBasicController.text.isEmpty &&
+      _jasaBasicController.text.isEmpty &&
+      _hargaPremiumController.text.isEmpty &&
+      _jasaPremiumController.text.isEmpty &&
+      _hargaCustomController.text.isEmpty &&
+      _jasaCustomController.text.isEmpty &&
+      _passwordController.text.isEmpty &&
+      _confirmController.text.isEmpty) {
+        SemanticsService.announce(
+          tr('button', 'registerKosong', lang),
+          TextDirection.ltr,
+        );
+      return;
+    }
+      if (_namatokoController.text.isEmpty) {
+        SemanticsService.announce(
+          tr('button', 'namaTokoKosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (_emailController.text.isEmpty) {
+        SemanticsService.announce(
+          tr('button', 'emailKosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+      if (!emailRegex.hasMatch(_emailController.text)) {
+        SemanticsService.announce(
+          tr('button', 'emailFormatSalah', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (_teleponController.text.isEmpty) {
+        SemanticsService.announce(
+          tr('button', 'teleponKosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (!RegExp(r'^[0-9]+$').hasMatch(_teleponController.text)) {
+        SemanticsService.announce(
+          tr('button', 'teleponFormatSalah', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (selectedCategory == null) {
+        SemanticsService.announce(
+          tr('button', 'kategoriKosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (_alamatController.text.isEmpty) {
+        SemanticsService.announce(
+          tr('button', 'alamatKosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (_deskripsiController.text.isEmpty) {
+        SemanticsService.announce(
+          tr('button', 'deskripsiKosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (_hargaBasicController.text.isEmpty) {
+        SemanticsService.announce(
+          tr('button', 'hargaKosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      final hb = int.tryParse(_hargaBasicController.text);
+      if (hb == null) {
+        SemanticsService.announce(
+          tr('button', 'hargaTidakValid', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (hb > 10000000) {
+        SemanticsService.announce(
+          tr('button', 'hargaTerlaluBesar', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (_jasaBasicController.text.isEmpty) {
+        SemanticsService.announce(
+          tr('button', 'jasaKosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (_hargaPremiumController.text.isEmpty) {
+        SemanticsService.announce(
+          tr('button', 'hargaKosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      final hp = int.tryParse(_hargaPremiumController.text);
+      if (hp == null) {
+        SemanticsService.announce(
+          tr('button', 'hargaTidakValid', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (hp > 10000000) {
+        SemanticsService.announce(
+          tr('button', 'hargaTerlaluBesar', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (_jasaPremiumController.text.isEmpty) {
+        SemanticsService.announce(
+          tr('button', 'jasaKosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (_hargaCustomController.text.isEmpty) {
+        SemanticsService.announce(
+          tr('button', 'hargaKosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      final hc = int.tryParse(_hargaCustomController.text);
+      if (hc == null) {
+        SemanticsService.announce(
+          tr('button', 'hargaTidakValid', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (hc > 10000000) {
+        SemanticsService.announce(
+          tr('button', 'hargaTerlaluBesar', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (_jasaCustomController.text.isEmpty) {
+        SemanticsService.announce(
+          tr('button', 'jasaKosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (_passwordController.text.isEmpty) {
+        SemanticsService.announce(
+          tr('button', 'passwordKosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (_passwordController.text.length < 6) {
+        SemanticsService.announce(
+          tr('button', 'passwordPendek', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (_confirmController.text.isEmpty) {
+        SemanticsService.announce(
+          tr('button', 'confirmKosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if (_confirmController.text != _passwordController.text) {
+        SemanticsService.announce(
+          tr('button', 'passwordTidakSama', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
       return;
     }
 

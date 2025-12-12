@@ -114,12 +114,104 @@ class _RegisterCustomerState extends State<RegisterCustomer> {
     final l10n = AppLocalizations.of(context)!;
     try {
       if (!_formKey.currentState!.validate()){
-        SemanticsService.announce(
-        tr('button', 'registerKosong', lang),
-        TextDirection.ltr);
-        return;
-      } 
+        if(_namaController.text.isEmpty && _emailController.text.isEmpty && _passwordController.text.isEmpty && _confirmController.text.isEmpty && _teleponController.text.isEmpty && _alamatController.text.isEmpty){
+          SemanticsService.announce(
+            tr('button', 'registerKosong', lang),
+            TextDirection.ltr,
+          );
+          return;
+        }
+        if (_namaController.text.isEmpty) {
+          SemanticsService.announce(
+            tr('button', 'namaKosong', lang),
+            TextDirection.ltr,
+          );
+          return;
+        }
 
+        if (_emailController.text.isEmpty) {
+          SemanticsService.announce(
+            tr('button', 'emailKosong', lang),
+            TextDirection.ltr,
+          );
+          return;
+        }
+
+        final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+        if (!emailRegex.hasMatch(_emailController.text)) {
+          SemanticsService.announce(
+            tr('button', 'emailFormatSalah', lang),
+            TextDirection.ltr,
+          );
+          return;
+        }
+
+        if (_passwordController.text.isEmpty) {
+          SemanticsService.announce(
+            tr('button', 'passwordKosong', lang),
+            TextDirection.ltr,
+          );
+          return;
+        }
+
+        if (_passwordController.text.length < 6) {
+          SemanticsService.announce(
+            tr('button', 'passwordPendek', lang),
+            TextDirection.ltr,
+          );
+          return;
+        }
+
+        if (_confirmController.text.isEmpty) {
+          SemanticsService.announce(
+            tr('button', 'confirmKosong', lang),
+            TextDirection.ltr,
+          );
+          return;
+        }
+
+        if (_confirmController.text != _passwordController.text) {
+          SemanticsService.announce(
+            tr('button', 'passwordTidakSama', lang),
+            TextDirection.ltr,
+          );
+          return;
+        }
+
+        if (_teleponController.text.isEmpty) {
+          SemanticsService.announce(
+            tr('button', 'teleponKosong', lang),
+            TextDirection.ltr,
+          );
+          return;
+        }
+
+        if (!RegExp(r'^[0-9]+$').hasMatch(_teleponController.text)) {
+          SemanticsService.announce(
+            tr('button', 'teleponFormatSalah', lang),
+            TextDirection.ltr,
+          );
+          return;
+        }
+
+        if (_teleponController.text.length < 10) {
+          SemanticsService.announce(
+            tr('error', 'teleponPendek', lang),
+            TextDirection.ltr,
+          );
+          return;
+        }
+
+        if (_alamatController.text.isEmpty) {
+          SemanticsService.announce(
+            tr('error', 'alamatKosong', lang),
+            TextDirection.ltr,
+          );
+          return;
+        }
+        return;
+      }
+       
       bool granted = await _requestContactPermission(context);
       if (!granted) return;
 

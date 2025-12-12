@@ -1,16 +1,89 @@
 import 'package:flutter/material.dart';
 
 const Map<String, Map<String, Map<String, String>>> semanticsText = {
-  'button': {
-    "registerKosong" : {
-      "id" : "untuk melanjutkan pendaftaran akun silahkan isi formulir pendaftaran terlebih dahulu",
-      "en" : "To continue with the account registration, please fill out the registration form first."
+'button': {
+    "namaTokoKosong": {
+      "id": "Nama toko tidak boleh kosong.",
+      "en": "Store name cannot be empty."
+    },
+    "emailKosong": {
+      "id": "Email tidak boleh kosong.",
+      "en": "Email cannot be empty."
+    },
+    "emailFormatSalah": {
+      "id": "Format email tidak valid.",
+      "en": "Invalid email format."
+    },
+    "teleponKosong": {
+      "id": "Nomor telepon tidak boleh kosong.",
+      "en": "Phone number cannot be empty."
+    },
+    "teleponFormatSalah": {
+      "id": "Nomor telepon hanya boleh angka.",
+      "en": "Phone number must contain digits only."
+    },
+    "kategoriKosong": {
+      "id": "Kategori toko harus dipilih.",
+      "en": "Store category must be selected."
+    },
+    "alamatKosong": {
+      "id": "Alamat tidak boleh kosong.",
+      "en": "Address cannot be empty."
+    },
+    "deskripsiKosong": {
+      "id": "Deskripsi toko tidak boleh kosong.",
+      "en": "Store description cannot be empty."
+    },
+    "hargaKosong": {
+      "id": "Harga tidak boleh kosong.",
+      "en": "Price cannot be empty."
+    },
+    "hargaTidakValid": {
+      "id": "Harga harus berupa angka.",
+      "en": "Price must be a number."
+    },
+    "hargaTerlaluBesar": {
+      "id": "Harga tidak boleh lebih dari 10 juta.",
+      "en": "Price cannot exceed 10 million."
+    },
+    "jasaKosong": {
+      "id": "Deskripsi jasa tidak boleh kosong.",
+      "en": "Service description cannot be empty."
+    },
+    "passwordKosong": {
+      "id": "Password tidak boleh kosong.",
+      "en": "Password cannot be empty."
+    },
+    "passwordPendek": {
+      "id": "Password minimal 6 karakter.",
+      "en": "Password must be at least 6 characters."
+    },
+    "confirmKosong": {
+      "id": "Konfirmasi password tidak boleh kosong.",
+      "en": "Confirmation password cannot be empty."
+    },
+    "passwordTidakSama": {
+      "id": "Password dan konfirmasi tidak sama.",
+      "en": "Password and confirmation do not match."
+    },
+    "registerKosong": {
+      "id": "Silakan lengkapi formulir terlebih dahulu.",
+      "en": "Please complete the registration form first."
+    },
+    
+    "teleponPendek": {
+      "id": "Nomor telepon minimal 10 digit.",
+      "en": "Phone number must be at least 10 digits."
     },
     "loginKosong" : {
       "id" : "email atau password anda masih kosong, silahkan isi terlebih dahulu",
       "en" : "Your email and password are blank. Please fill it in first."
     },
     "loginProcessing" : {
+      "id" : "Sedang memproses login",
+      "en" : "processing login"
+    },
+    "registerProcessing" : {
       "id" : "Sedang memproses login",
       "en" : "processing login"
     },
