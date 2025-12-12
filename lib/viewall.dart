@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
+import 'package:projek_uts_mbr/category/category_consts.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/helper/semantics.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
@@ -41,15 +42,37 @@ class _ViewAllPageState extends State<ViewAllPage> {
 
   void _filterData(String query) async {
     await Eventlogs().logSearchBarUsed(query);
-    Vendordatabase vendordatabase = Vendordatabase();
 
     if (query.isEmpty) {
-      setState(() {
-        filteredVendors = allVendors;
-      });
+      setState(() => filteredVendors = allVendors);
       return;
     }
 
+    final l10n = AppLocalizations.of(context)!;
+    Vendordatabase vendordatabase = Vendordatabase();
+
+    // 1. Cek apakah query adalah kategori
+    final categoryCode = CategoryConst.searchLabelToCode(query, l10n);
+    print("search label to code : ${categoryCode}");
+    if (categoryCode != null) {
+      // Ambil seluruh data vendor sesuai kategori
+      final allData = await vendordatabase.getData();
+
+      List<Penyedia> result = [];
+
+      for (var vm in allData) {
+        // Konversi kategori database ke code
+        final dbCode = CategoryConst.dbLabelToCode[vm.kategori];
+        if (dbCode == categoryCode) {
+          result.addAll(vm.penyedia);
+        }
+      }
+
+      setState(() => filteredVendors = result);
+      return;
+    }
+
+    //bukan kategori, maka text search normal
     final results = await vendordatabase.searchVendors(query);
 
     setState(() {

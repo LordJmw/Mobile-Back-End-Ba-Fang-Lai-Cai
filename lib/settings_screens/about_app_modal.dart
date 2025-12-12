@@ -91,9 +91,7 @@ class AboutAppModal extends StatelessWidget {
                 label: l10n.termsPrivacy,
                 excludeSemantics: true,
                 child: TextButton(
-                  onPressed: () {
-                    // Navigasi ke halaman terms
-                  },
+                  onPressed: () {},
                   child: Text(l10n.termsPrivacy),
                 ),
               ),
@@ -101,9 +99,7 @@ class AboutAppModal extends StatelessWidget {
                 label: l10n.privacyPolicy,
                 excludeSemantics: true,
                 child: TextButton(
-                  onPressed: () {
-                    // Navigasi ke halaman privacy
-                  },
+                  onPressed: () {},
                   child: Text(l10n.privacyPolicy),
                 ),
               ),

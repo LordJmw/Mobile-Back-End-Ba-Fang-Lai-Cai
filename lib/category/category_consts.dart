@@ -142,4 +142,26 @@ class CategoryConst {
     }
     return code;
   }
+
+  static String? searchLabelToCode(String query, AppLocalizations l10n) {
+    query = query.toLowerCase().trim();
+
+    // Bandingkan dengan label Bahasa Indonesia
+    for (var entry in dbLabelToCode.entries) {
+      if (entry.key.toLowerCase().contains(query)) {
+        return entry.value;
+      }
+    }
+
+    // Bandingkan dengan label yang sudah dilokalisasi (English)
+    final localized = getLocalizedCategories(l10n);
+    for (var cat in localized) {
+      final label = (cat["label"] as String).toLowerCase();
+      if (label.contains(query)) {
+        return cat["code"];
+      }
+    }
+
+    return null;
+  }
 }

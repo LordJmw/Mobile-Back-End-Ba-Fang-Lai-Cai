@@ -302,8 +302,8 @@ class _CategoryPageState extends State<CategoryPage> {
     List<Penyedia> result = [];
     for (var vendorModel in data) {
       for (var penyedia in vendorModel.penyedia) {
-        final kategoriName = vendorModel
-            .kategori; // Ini adalah dbLabel (misal: "Fotografi & Videografi")
+        final kategoriName =
+            vendorModel.kategori; // dbLabel (misal: "Fotografi & Videografi")
         final hargaBasic = penyedia.harga.basic.harga;
         final rating = penyedia.rating;
 
@@ -488,7 +488,6 @@ class _CategoryPageState extends State<CategoryPage> {
                                           min: 0,
                                           max: 10000000,
 
-                                          // --- Perbaikan penting untuk screen reader ---
                                           semanticFormatterCallback:
                                               (double newValue) {
                                                 return "Rp ${formatPrice(newValue.round())}";
