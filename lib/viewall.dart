@@ -185,15 +185,8 @@ class _ViewAllPageState extends State<ViewAllPage> {
     required Locale lang,
   }) {
     return Semantics(
-      label: trDetail(
-        'button',
-        'kategoriCard',
-        lang,
-        name,
-        "${rating}",
-        "${price}",
-      ),
-      hint: trDropDown('button', 'kategoriCard', lang, name),
+      label: tr('button', 'kategoriCard', lang, params: {"name1" : name,"name2" : rating.toString(),"name3" : price.toString()}),
+      hint: tr('button', 'kategoriCardHint', lang, params:  {"name1" : name}),
       child: GestureDetector(
         onTap: () {
           Navigator.push(

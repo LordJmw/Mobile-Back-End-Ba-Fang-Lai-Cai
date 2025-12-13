@@ -244,20 +244,20 @@ const Map<String, Map<String, Map<String, String>>> semanticsText = {
       'en': 'double tap to view {name} category page',
     },
     'vendorCardLabel': {
-      'id': 'Vendor dengan nama {name} dan rating',
-      'en': 'Vendor with name {name} and rating',
+      'id':'Vendor dengan nama {name1} dan rating {name2}',
+      'en':'Vendor with name {name1} and rating {name2}',
     },
     'vendorCardHint': {
       'id': 'ketuk dua kali untuk melihat detail {name}',
       'en': 'double tap to view detail {name}',
     },
     'portofolioCardLabel': {
-      'id': 'Portofolio dengan nama {name} dan deksripsi',
-      'en': 'Portfolio with name {name} and description',
+      'id':'Portofolio dengan nama {name1} dan deksripsi {name2}',
+      'en':'Portfolio with name {name1} and description name2}',
     },
     'portofolioCardHint': {
-      'id': 'ketuk dua kali untuk melihat detail {name}',
-      'en': 'double tap to view detail {name}',
+      'id':'ketuk dua kali untuk melihat detail {name}',
+      'en':'double tap to view detail {name}',
     },
     'fotoVendorLabel': {
       'id': 'Foto profil untuk {name}',
@@ -328,9 +328,9 @@ const Map<String, Map<String, Map<String, String>>> semanticsText = {
       'id': 'ketuk dua kali untuk mengubah foto profil anda',
       'en': 'double tap to change your profile picture',
     },
-    'fullPaketLabel': {
-      'id': 'Paket {name1} dengan harga',
-      'en': 'Package {name1} with price',
+    'fullPaketLabel':{
+     'id':'Paket {name1} dengan harga {name2}',
+     'en':'Package {name1} with price {name2}'
     },
     'editPaketButtonLabel': {
       'id': 'Tombol Edit Paket',
@@ -370,7 +370,16 @@ const Map<String, Map<String, Map<String, String>>> semanticsText = {
     },
   },
   'textButton': {
-    'deskripsiVendorCard': {'id': 'Tentang {name1} ', 'en': 'about {name1}'},
+    'detailVendor': {
+      'id':
+          'Detail vendor dengan nama {name1}, rating {name2} dari {name3} ulasan',
+      'en':
+          'Vendor details with name {name1}, rating {name2} from {name3} reviews',
+    },
+    'deskripsiVendorCard':{
+      'id': 'Tentang {name1} , {name2}',
+      'en': 'about {name1} , {name2}',
+    },
     'registerAkunTextBLabel': {
       'id': 'Tombol Daftar Akun, jika ingin mendaftar akun baru',
       'en': 'Register Account Button, if you want to register a new account',
@@ -436,28 +445,21 @@ const Map<String, Map<String, Map<String, String>>> semanticsText = {
       'id': 'Kolom pilih paket, ketuk dua kali jika ingin memilih paket',
       'en': 'Select package column, double-tap to select a package',
     },
-    'pilihPaketPesanF': {
-      'id':
-          'kamu memilih paket {name}, ketuk dua kali jika ingin mengganti paket',
-      'en':
-          'You have selected the {name} package. Tap twice if you want to change the package.',
+    'pilihPaketPesanF':{
+      'id':'kamu memilih paket {name}, ketuk dua kali jika ingin mengganti paket',
+      'en':'You have selected the {name} package. Tap twice if you want to change the package.'
     },
-    'pemesananLokasi': {
-      'id':
-          'Kolom Lokasi Acara, ketuk dua kali jika ingin mengisi kolom lokasi acara',
-      'en':
-          'Event Location column, double tap if you want to fill in the event location column',
+    'pemesananLokasi':{
+      'id':'Kolom Lokasi Acara, ketuk dua kali jika ingin mengisi kolom lokasi acara',
+      'en':'Event Location column, double tap if you want to fill in the event location column'
     },
     'pemesananTglTLabel': {
-      'id':
-          'Kolom Tanggal Acara, ketuk dua kali jika ingin memilih tanggal acara',
+      'id': 'Kolom Tanggal Acara, ketuk dua kali jika ingin memilih tanggal acara',
       'en': 'Event Date Column, double tap to select the event date',
     },
     'pemesananTglFLabel': {
-      'id':
-          'Anda telah memilih tanggal {name}, ketuk dua kali jika ingin mengganti tanggal acara ',
-      'en':
-          'You have selected {name}. Tap twice if you want to change the event date.',
+      'id': 'Anda telah memilih tanggal {name}, ketuk dua kali jika ingin mengganti tanggal acara ',
+      'en': 'You have selected {name}. Tap twice if you want to change the event date.',
     },
     'rentangHargaLabel': {
       'id': 'Rentang harga mulai dari 0 rupiah sampai 10 juta rupiah',
@@ -612,82 +614,91 @@ const Map<String, Map<String, Map<String, String>>> semanticsText = {
   },
 };
 
-// Untuk Semantics selain dari dropdown
-String tr(String group, String key, Locale locale) {
+String tr(
+  String group,
+  String key,
+  Locale locale, {
+  Map<String, String>? params,
+}) {
   final lang = locale.languageCode;
 
-  final String base =
-      semanticsText[group]?[key]?[lang] ??
-      semanticsText[group]?[key]?['id'] ??
-      '';
+  String base = semanticsText[group]?[key]?[lang]
+      ?? semanticsText[group]?[key]?['id']
+      ?? '';
 
-  print(base);
+  if (params == null) return base;
+
+  params.forEach((placeholder, value) {
+    base = base.replaceAll("{$placeholder}", value);
+    print(placeholder);
+  });
+
   return base;
 }
 
-// Khusus untuk dropdown
-String trDropDown(
-  String group,
-  String key,
-  Locale locale,
-  String categoryName,
-) {
-  final lang = locale.languageCode;
-  String base =
-      semanticsText[group]?[key]?[lang] ??
-      semanticsText[group]?[key]?['id'] ??
-      '';
-  print(categoryName);
-  return base.replaceAll("{name}", categoryName);
-}
+// // Khusus untuk dropdown
+// String trDropDown(
+//   String group,
+//   String key,
+//   Locale locale,
+//   String categoryName,
+// ) {
+//   final lang = locale.languageCode;
+//   String base =
+//       semanticsText[group]?[key]?[lang] ??
+//       semanticsText[group]?[key]?['id'] ??
+//       '';
+//   print(categoryName);
+//   return base.replaceAll("{name}", categoryName);
+// }
 
-String trDetail(
-  String group,
-  String key,
-  Locale locale,
-  String name1,
-  String name2,
-  String name3,
-) {
-  final lang = locale.languageCode;
-  String base =
-      semanticsText[group]?[key]?[lang] ??
-      semanticsText[group]?[key]?['id'] ??
-      '';
-  final test = base
-      .replaceAll("{name1}", name1)
-      .replaceAll("{name2}", name2)
-      .replaceAll("{name3}", name3);
-  print(test);
-  return base
-      .replaceAll("{name1}", name1)
-      .replaceAll("{name2}", name2)
-      .replaceAll("{name3}", name3);
-}
+// String trDetail(
+//   String group,
+//   String key,
+//   Locale locale,
+//   String name1,
+//   String name2,
+//   String name3,
+// ) {
+//   final lang = locale.languageCode;
+//   String base =
+//       semanticsText[group]?[key]?[lang] ??
+//       semanticsText[group]?[key]?['id'] ??
+//       '';
+//   final test = base
+//       .replaceAll("{name1}", name1)
+//       .replaceAll("{name2}", name2)
+//       .replaceAll("{name3}", name3);
+//   print(test);
+//   return base
+//       .replaceAll("{name1}", name1)
+//       .replaceAll("{name2}", name2)
+//       .replaceAll("{name3}", name3);
+// }
 
-String trCard(
-  String group,
-  String key,
-  Locale locale,
-  String name1,
-  String name2,
-  String name3,
-  String name4,
-) {
-  final lang = locale.languageCode;
-  String base =
-      semanticsText[group]?[key]?[lang] ??
-      semanticsText[group]?[key]?['id'] ??
-      '';
-  final test = base
-      .replaceAll("{name1}", name1)
-      .replaceAll("{name2}", name2)
-      .replaceAll("{name3}", name3)
-      .replaceAll("{name4}", name4);
-  print(test);
-  return base
-      .replaceAll("{name1}", name1)
-      .replaceAll("{name2}", name2)
-      .replaceAll("{name3}", name3)
-      .replaceAll("{name4}", name4);
-}
+// String trCard(
+//   String group,
+//   String key,
+//   Locale locale,
+//   String name1,
+//   String name2,
+//   String name3,
+//   String name4,
+// ) {
+//   final lang = locale.languageCode;
+//   String base =
+//       semanticsText[group]?[key]?[lang] ??
+//       semanticsText[group]?[key]?['id'] ??
+//       '';
+//   final test = base
+//       .replaceAll("{name1}", name1)
+//       .replaceAll("{name2}", name2)
+//       .replaceAll("{name3}", name3)
+//       .replaceAll("{name4}", name4);
+//   print(test);
+//   return base
+//       .replaceAll("{name1}", name1)
+//       .replaceAll("{name2}", name2)
+//       .replaceAll("{name3}", name3)
+//       .replaceAll("{name4}", name4);
+// }

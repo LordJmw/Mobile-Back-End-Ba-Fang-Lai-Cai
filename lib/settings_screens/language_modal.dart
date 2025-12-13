@@ -163,10 +163,10 @@ class _LanguageModalState extends State<LanguageModal> {
     required Locale lang,
   }) {
     return Semantics(
-      label: trDropDown('button', 'languageButtonLabel', lang, language),
-      hint: isSelected
-          ? trDropDown('button', 'languageButtonTHint', lang, language)
-          : trDropDown('button', 'languageButtonFHint', lang, language),
+      label: tr('button', 'languageButtonLabel', lang, params: {"name" : language}),
+      hint: isSelected ? 
+      tr('button', 'languageButtonTHint', lang, params: {"name" : language}) :
+      tr('button', 'languageButtonFHint', lang, params: {"name" : language}),
       excludeSemantics: true,
       child: GestureDetector(
         onTap: onTap,

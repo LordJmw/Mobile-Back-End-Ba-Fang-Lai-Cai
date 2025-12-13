@@ -731,14 +731,14 @@ class _CategoryPageState extends State<CategoryPage> {
                                         clipBehavior: Clip.antiAlias,
                                         child: Semantics(
                                           excludeSemantics: true,
-                                          label: trDetail(
-                                            'button',
-                                            'kategoriCard',
+                                          label: tr(
+                                            'button', 
+                                            'kategoriCard', 
                                             lang,
-                                            penyedia.nama,
-                                            '${penyedia.rating}',
-                                            '${formatPrice(getBasicPrice(penyedia))}',
-                                          ),
+                                            params : {
+                                              "name1" : penyedia.nama,
+                                              "name2" : '${penyedia.rating}', 
+                                              "name3" : '${formatPrice(getBasicPrice(penyedia))}'}),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,

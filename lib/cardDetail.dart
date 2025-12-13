@@ -120,14 +120,14 @@ class _CarddetailState extends State<Carddetail> {
                     child: Semantics(
                       excludeSemantics: true,
                       container: true,
-                      label: trDetail(
-                        'textButton',
+                      label: tr(
+                        'textButton', 
                         'detailVendor',
                         lang,
-                        vendor!.penyedia.first.nama,
-                        vendor!.penyedia.first.rating.toStringAsFixed(1),
-                        '${testimoniList.length}',
-                      ),
+                        params: {
+                          "name1" : vendor!.penyedia.first.nama, 
+                          "name2": vendor!.penyedia.first.rating.toStringAsFixed(1), 
+                          "name3":'${testimoniList.length}'}),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -181,13 +181,13 @@ class _CarddetailState extends State<Carddetail> {
                       excludeSemantics: true,
                       container: true,
                       label:
-                          trDropDown(
+                          tr(
                             'textButton',
-                            'deskripsiVendorCard',
-                            lang,
-                            vendor!.penyedia.first.nama.split(" ").first,
-                          ) +
-                          ", ${vendor!.penyedia.first.deskripsi}",
+                            'deskripsiVendorCard', 
+                            lang, 
+                            params: {
+                              "name1" : vendor!.penyedia.first.nama.split(" ").first,
+                              "name2":"${vendor!.penyedia.first.deskripsi}"}),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

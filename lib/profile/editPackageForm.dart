@@ -84,12 +84,7 @@ class _EditPackageFormState extends State<EditPackageForm> {
             children: [
               Semantics(
                 label: tr('textField', 'namaPaketLabel', lang),
-                hint: trDropDown(
-                  'textField',
-                  'namaPaketHint',
-                  lang,
-                  widget.packageName,
-                ),
+                hint: tr('textField', 'namaPaketHint', lang, params: {"name" : widget.packageName}),
                 excludeSemantics: true,
                 child: TextFormField(
                   initialValue: widget.packageName,
@@ -103,18 +98,8 @@ class _EditPackageFormState extends State<EditPackageForm> {
               const SizedBox(height: 20),
 
               Semantics(
-                label: trDropDown(
-                  'textField',
-                  'hargaEditLabel',
-                  lang,
-                  widget.packageName,
-                ),
-                hint: trDropDown(
-                  'textField',
-                  'hargaEditHint',
-                  lang,
-                  widget.packageName,
-                ),
+                label: tr('textField', 'hargaEditLabel',lang ),
+                hint: tr('textField', 'hargaEditHint', lang ),
                 excludeSemantics: true,
                 child: TextFormField(
                   controller: _hargaController,

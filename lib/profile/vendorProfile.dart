@@ -488,13 +488,11 @@ class _VendorprofileState extends State<Vendorprofile> {
 
       return Semantics(
         container: true,
-        label: trDropDown(
-          'container',
-          'packageContainerLabel',
+        label: tr(
+          'button',
+          'fullPaketLabel',
           lang,
-          packageName,
-          // hargaText,
-          // jasaText,
+          params: {"name1" : packageName , "name2" : hargaText},
         ),
         child: Card(
           margin: const EdgeInsets.only(bottom: 12),
@@ -511,54 +509,30 @@ class _VendorprofileState extends State<Vendorprofile> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Semantics(
-                          label: trDropDown(
-                            'text',
-                            'packageNameLabel',
-                            lang,
-                            packageName,
-                          ),
-                          child: Text(
-                            packageName.toUpperCase(),
-                            style: const TextStyle(
-                              color: Colors.pink,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),
+                        Text(
+                          packageName.toUpperCase(),
+                          style: const TextStyle(
+                            color: Colors.pink,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
                           ),
                         ),
                         const SizedBox(height: 10),
-                        Semantics(
-                          label: trDropDown(
-                            'text',
-                            'packagePriceLabel',
-                            lang,
-                            hargaText,
-                          ),
-                          child: Text(
-                            hargaText,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
+                        Text(
+                          hargaText,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 10),
-                    Semantics(
-                      label: trDropDown(
-                        'text',
-                        'packageServiceLabel',
-                        lang,
-                        jasaText,
-                      ),
-                      child: Text(
-                        jasaText,
-                        style: const TextStyle(fontSize: 14),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                    Text(
+                      jasaText,
+                      style: const TextStyle(fontSize: 14),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -569,13 +543,8 @@ class _VendorprofileState extends State<Vendorprofile> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Semantics(
-                        label: trDropDown(
-                          'button',
-                          'editPackageButtonLabel',
-                          lang,
-                          packageName,
-                        ),
-                        hint: tr('button', 'editPackageButtonHint', lang),
+                        label: tr('button', 'editPaketButtonLabel', lang),
+                        hint: tr('button', 'editPaketButtonHint', lang),
                         excludeSemantics: true,
                         child: IconButton(
                           icon: const Icon(
@@ -589,13 +558,8 @@ class _VendorprofileState extends State<Vendorprofile> {
                         ),
                       ),
                       Semantics(
-                        label: trDropDown(
-                          'button',
-                          'deletePackageButtonLabel',
-                          lang,
-                          packageName,
-                        ),
-                        hint: tr('button', 'deletePackageButtonHint', lang),
+                        label: tr('button', 'deletePaketButtonLabel', lang),
+                        hint: tr('button', 'deletePaketButtonHint', lang),
                         excludeSemantics: true,
                         child: IconButton(
                           icon: const Icon(

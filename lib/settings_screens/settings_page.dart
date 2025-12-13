@@ -426,18 +426,8 @@ class _SettingsPageState extends State<SettingsPage> {
           const SizedBox(height: 12),
 
           Semantics(
-            label: trDropDown(
-              'button',
-              'settingsLanguageLabel',
-              locale,
-              _selectedLanguage,
-            ),
-            hint: trDropDown(
-              'button',
-              'settingsLanguageHint',
-              locale,
-              _selectedLanguage,
-            ),
+            label: tr('button', 'settingsLanguageLabel', languageProvider.locale, params:{"name": _selectedLanguage}),
+            hint: tr('button', 'settingsLanguageHint', languageProvider.locale, params:{"name": _selectedLanguage}),
             excludeSemantics: true,
             child: _buildSettingItem(
               icon: Icons.language_rounded,

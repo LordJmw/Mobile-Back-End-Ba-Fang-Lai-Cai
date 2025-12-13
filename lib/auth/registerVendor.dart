@@ -467,11 +467,11 @@ class _RegisterVendorState extends State<RegisterVendor> {
                   Semantics(
                     label: selectedCategory == null
                         ? tr("textField", "kategoriTokoLabelT", lang)
-                        : trDropDown(
+                        : tr(
                             'textField',
                             "kategoriTokoLabelF",
                             lang,
-                            '$selectedCategory',
+                            params: {'name' : '$selectedCategory'},
                           ),
                     hint: selectedCategory == null
                         ? tr("textField", "kategoriTokoHintT", lang)
@@ -488,12 +488,7 @@ class _RegisterVendorState extends State<RegisterVendor> {
                             (e) => DropdownMenuItem(
                               value: e,
                               child: Semantics(
-                                label: trDropDown(
-                                  'textField',
-                                  'vendorCategoryItemLabel',
-                                  lang,
-                                  e,
-                                ),
+                                label: tr('textField', 'vendorCategoryItemLabel', lang, params: {"name" : e} ),
                                 excludeSemantics: true,
                                 child: Text(e),
                               ),
@@ -545,8 +540,8 @@ class _RegisterVendorState extends State<RegisterVendor> {
                   ),
                   const SizedBox(height: 10),
                   Semantics(
-                    label: trDropDown('textField', 'hargaLabel', lang, 'Basic'),
-                    hint: trDropDown('textField', 'hargaHint', lang, 'Basic'),
+                    label: tr('textField', 'hargaLabel', lang, params: {"name" : 'Basic'}),
+                    hint: tr('textField', 'hargaHint', lang,params: {"name" : 'Basic'}),
                     excludeSemantics: true,
                     child: TextFormField(
                       controller: _hargaBasicController,
@@ -565,8 +560,8 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     ),
                   ),
                   Semantics(
-                    label: trDropDown('textField', 'jasaLabel', lang, 'Basic'),
-                    hint: trDropDown('textField', 'jasaHint', lang, 'Basic'),
+                    label: tr('textField', 'jasaLabel', lang, params : {"name" : 'Basic'}),
+                    hint: tr('textField', 'jasaHint', lang, params : {"name" : 'Basic'}),
                     excludeSemantics: true,
                     child: TextFormField(
                       controller: _jasaBasicController,
@@ -584,13 +579,8 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     ),
                   ),
                   Semantics(
-                    label: trDropDown(
-                      'textField',
-                      'hargaLabel',
-                      lang,
-                      'Premium',
-                    ),
-                    hint: trDropDown('textField', 'hargaHint', lang, 'Premium'),
+                    label: tr('textField', 'hargaLabel', lang, params: {"name" : 'Premium'}),
+                    hint: tr('textField', 'hargaHint', lang,params: {"name" : 'Premium'}),
                     excludeSemantics: true,
                     child: TextFormField(
                       controller: _hargaPremiumController,
@@ -609,13 +599,8 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     ),
                   ),
                   Semantics(
-                    label: trDropDown(
-                      'textField',
-                      'jasaLabel',
-                      lang,
-                      'Premium',
-                    ),
-                    hint: trDropDown('textField', 'jasaHint', lang, 'Premium'),
+                    label: tr('textField', 'jasaLabel', lang, params: {"name" : 'Premium'}),
+                    hint: tr('textField', 'jasaHint', lang, params: {"name" : 'Premium'}),
                     excludeSemantics: true,
                     child: TextFormField(
                       controller: _jasaPremiumController,
@@ -633,13 +618,8 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     ),
                   ),
                   Semantics(
-                    label: trDropDown(
-                      'textField',
-                      'hargaLabel',
-                      lang,
-                      'Custom',
-                    ),
-                    hint: trDropDown('textField', 'hargaHint', lang, 'Custom'),
+                    label: tr('textField', 'hargaLabel', lang, params: {"name" : 'Custom'}),
+                    hint: tr('textField', 'hargaHint', lang, params: {"name" : 'Custom'}),
                     excludeSemantics: true,
                     child: TextFormField(
                       controller: _hargaCustomController,
@@ -658,8 +638,8 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     ),
                   ),
                   Semantics(
-                    label: trDropDown('textField', 'jasaLabel', lang, 'Custom'),
-                    hint: trDropDown('textField', 'jasaHint', lang, 'Custom'),
+                    label: tr('textField', 'jasaLabel', lang, params: {"name" : 'Custom'}),
+                    hint: tr('textField', 'jasaHint', lang, params: {"name" : 'Custom'}),
                     excludeSemantics: true,
                     child: TextFormField(
                       controller: _jasaCustomController,

@@ -119,20 +119,10 @@ class _HomePageState extends State<HomePage> {
                     itemBuilder: (context, index) {
                       final vendor = vendors[index];
                       return Semantics(
-                        label:
-                            trDropDown(
-                              'button',
-                              'vendorCardLabel',
-                              lang,
-                              vendor.penyedia.first.nama,
-                            ) +
-                            vendor.penyedia.first.rating.toString(),
-                        hint: trDropDown(
-                          'button',
-                          'vendorCardHint',
-                          lang,
-                          vendor.penyedia.first.nama,
-                        ),
+                        label: tr('button', 'vendorCardLabel', lang,params:  {
+                          "name1":vendor.penyedia.first.nama,
+                          "name2": '${vendor.penyedia.first.rating}'}),
+                        hint: tr('button', 'vendorCardHint', lang,params:  {"name":vendor.penyedia.first.nama,}),
                         excludeSemantics: true,
                         child: _buildVendorCard(
                           context,
@@ -310,8 +300,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildCategory(IconData icon, String label, String code, Locale lang) {
     return Semantics(
-      label: trDropDown('button', 'kategoriButtonLabel', lang, label),
-      hint: trDropDown('button', 'kategoriButtonHint', lang, label),
+      label: tr('button', 'kategoriButtonLabel', lang, params: {"name" : label}),
+      hint: tr('button', 'kategoriButtonHint', lang, params: {"name" : label}),
       excludeSemantics: true,
       child: SizedBox(
         width: 90,
@@ -415,8 +405,8 @@ class _HomePageState extends State<HomePage> {
     Locale lang,
   ) {
     return Semantics(
-      label: trDropDown('button', 'portofolioCardLabel', lang, name) + desc,
-      hint: trDropDown('button', 'portofolioCardHint', lang, name),
+      label: tr('button', 'portofolioCardLabel', lang, params: {"name1":name,"name2":desc}),
+      hint: tr('button', 'portofolioCardHint', lang, params: {"name":name}),
       excludeSemantics: true,
       child: GestureDetector(
         onTap: () async {
@@ -480,8 +470,8 @@ class _HomePageState extends State<HomePage> {
     Locale lang,
   ) {
     return Semantics(
-      label: trDropDown('button', 'komentarCardLabel', lang, user) + text,
-      hint: trDropDown('button', 'komentarCardHint', lang, user),
+      label: tr('button', 'komentarCardLabel', lang, params: {"name":user}) + text,
+      hint: tr('button', 'komentarCardHint', lang, params:  {"name":user}),
       excludeSemantics: true,
       child: GestureDetector(
         onTap: () {

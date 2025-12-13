@@ -373,12 +373,7 @@ class _OrderPageState extends State<OrderPage> {
                               excludeSemantics: true,
                               label: selectedDate == null
                                   ? tr('textField', 'pemesananTglTLabel', lang)
-                                  : trDropDown(
-                                      'textField',
-                                      'pemesananTglFLabel',
-                                      lang,
-                                      "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
-                                    ),
+                                  : tr('textField', 'pemesananTglFLabel', lang, params:  {"name" : "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}"}),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -441,12 +436,7 @@ class _OrderPageState extends State<OrderPage> {
                             child: Semantics(
                               label: selectedPackage == null
                                   ? tr('textField', 'pilihPaketPesanT', lang)
-                                  : trDropDown(
-                                      'textField',
-                                      'pilihPaketPesanF',
-                                      lang,
-                                      '${selectedPackage}',
-                                    ),
+                                  : tr('textField', 'pilihPaketPesanF', lang, params:{"name" : '${selectedPackage}'}),
                               excludeSemantics: true,
                               container: true,
                               child: Column(
