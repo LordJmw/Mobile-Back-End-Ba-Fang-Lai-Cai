@@ -42,17 +42,19 @@ class _LoginCustomerState extends State<LoginCustomer> {
         );
         return;
       }
-      if(password.isEmpty){
-        SemanticsService.announce(
-          tr('button', 'passwordkosong', lang),
-          TextDirection.ltr,
-        );
-        return;
-      }
+
       final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
       if (!emailRegex.hasMatch(email)) {
         SemanticsService.announce(
           tr('button', 'emailFormatSalah', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+
+      if(password.isEmpty){
+        SemanticsService.announce(
+          tr('button', 'passwordKosong', lang),
           TextDirection.ltr,
         );
         return;

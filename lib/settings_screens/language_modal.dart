@@ -123,8 +123,8 @@ class _LanguageModalState extends State<LanguageModal> {
               width: double.infinity,
               height: 50,
               child: Semantics(
-                label: tr('button', 'saveLanguageButtonLabel', lang),
-                hint: tr('button', 'saveLanguageButtonHint', lang),
+                label: tr('button', 'simpanPerubahanLabel', lang),
+                hint: tr('button', 'simpanPerubahanHint', lang),
                 excludeSemantics: true,
                 child: ElevatedButton(
                   onPressed: () {
