@@ -11,6 +11,7 @@ import 'package:projek_uts_mbr/main.dart';
 import 'package:projek_uts_mbr/model/purchaseHistoryModel.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
 import 'package:projek_uts_mbr/services/dataServices.dart';
+import 'package:projek_uts_mbr/services/notification_services.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 import 'package:provider/provider.dart';
 
@@ -237,16 +238,29 @@ class _OrderPageState extends State<OrderPage> {
         status: 'pending',
       );
 
-      print("Purchase details dibuat: ${purchaseDetails.toJson()}"); // Debug
+      print("Purchase details dibuat: ${purchaseDetails.toJson()}");
 
       final purchaseHistory = PurchaseHistory(
         purchaseDetails: purchaseDetails,
         purchaseDate: DateTime.now(),
       );
 
-      print("Menambahkan ke database..."); // Debug
+      print("Menambahkan ke database...");
       await _purchaseDb.addPurchaseHistory(purchaseHistory);
-      print("Berhasil ditambahkan ke database"); // Debug
+      print("Berhasil ditambahkan ke database");
+
+      final notifStatus = await sessionManager.getNotificationStatus();
+      if (notifStatus) {
+        print("status notif pas beli on");
+        await NotificationServices.scheduleOrderReminder(
+          context: context,
+          eventDate: selectedDate!,
+          vendorName: widget.namaVendor,
+          packageName: selectedPackage!,
+        );
+      } else if (!notifStatus) {
+        print("status notif pas beli off");
+      }
 
       await Eventlogs().beliPaket(
         widget.namaVendor,
@@ -270,7 +284,7 @@ class _OrderPageState extends State<OrderPage> {
         (route) => false,
       );
     } catch (e) {
-      print("ERROR dalam beliPaket: $e"); // Debug penting
+      print("ERROR dalam beliPaket: $e");
       _showError("Terjadi kesalahan: $e");
       setState(() => isBuying = false);
     }
@@ -373,7 +387,15 @@ class _OrderPageState extends State<OrderPage> {
                               excludeSemantics: true,
                               label: selectedDate == null
                                   ? tr('textField', 'pemesananTglTLabel', lang)
-                                  : tr('textField', 'pemesananTglFLabel', lang, params:  {"name" : "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}"}),
+                                  : tr(
+                                      'textField',
+                                      'pemesananTglFLabel',
+                                      lang,
+                                      params: {
+                                        "name":
+                                            "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
+                                      },
+                                    ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -436,7 +458,12 @@ class _OrderPageState extends State<OrderPage> {
                             child: Semantics(
                               label: selectedPackage == null
                                   ? tr('textField', 'pilihPaketPesanT', lang)
-                                  : tr('textField', 'pilihPaketPesanF', lang, params:{"name" : '${selectedPackage}'}),
+                                  : tr(
+                                      'textField',
+                                      'pilihPaketPesanF',
+                                      lang,
+                                      params: {"name": '${selectedPackage}'},
+                                    ),
                               excludeSemantics: true,
                               container: true,
                               child: Column(

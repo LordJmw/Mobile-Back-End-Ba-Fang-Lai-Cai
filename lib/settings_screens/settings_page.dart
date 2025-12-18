@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/auth/loginCostumer.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
@@ -19,7 +20,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool _notificationsEnabled = true;
+  bool _notificationsEnabled = false;
   String _selectedLanguage = 'Indonesia';
 
   final TextEditingController _passwordController = TextEditingController();
@@ -271,6 +272,21 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _loadNotificationStatus();
+  }
+
+  Future<void> _loadNotificationStatus() async {
+    final sessionManager = SessionManager();
+    final status = await sessionManager.getNotificationStatus();
+
+    setState(() {
+      _notificationsEnabled = status;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
     final locale = languageProvider.locale;
@@ -426,8 +442,18 @@ class _SettingsPageState extends State<SettingsPage> {
           const SizedBox(height: 12),
 
           Semantics(
-            label: tr('button', 'settingsLanguageLabel', languageProvider.locale, params:{"name": _selectedLanguage}),
-            hint: tr('button', 'settingsLanguageHint', languageProvider.locale, params:{"name": _selectedLanguage}),
+            label: tr(
+              'button',
+              'settingsLanguageLabel',
+              languageProvider.locale,
+              params: {"name": _selectedLanguage},
+            ),
+            hint: tr(
+              'button',
+              'settingsLanguageHint',
+              languageProvider.locale,
+              params: {"name": _selectedLanguage},
+            ),
             excludeSemantics: true,
             child: _buildSettingItem(
               icon: Icons.language_rounded,
@@ -526,19 +552,56 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       trailing: Switch(
         value: _notificationsEnabled,
-        onChanged: (value) {
+        onChanged: (value) async {
+          final l10n = AppLocalizations.of(context)!;
+          final sessionManager = SessionManager();
+
+          if (value) {
+            print("notif user di set true");
+            final isAllowed = await AwesomeNotifications()
+                .isNotificationAllowed();
+
+            if (!isAllowed) {
+              final allow = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(l10n.notifPermissionTitle),
+                  content: Text(l10n.notifPermissionDesc),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text(l10n.notifPermissionCancel),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: Text(l10n.notifPermissionAllow),
+                    ),
+                  ],
+                ),
+              );
+
+              if (allow == true) {
+                await AwesomeNotifications()
+                    .requestPermissionToSendNotifications();
+              } else {
+                return;
+              }
+            }
+
+            await sessionManager.setNotificationEnabled(true);
+          } else {
+            print("switch ke false");
+            await AwesomeNotifications().cancelAllSchedules();
+            await AwesomeNotifications().cancelAll();
+
+            await sessionManager.setNotificationEnabled(false);
+          }
+
           setState(() {
             _notificationsEnabled = value;
           });
         },
-        activeColor: Colors.pink[250],
-        activeTrackColor: Colors.pink[100],
       ),
-      onTap: () {
-        setState(() {
-          _notificationsEnabled = !_notificationsEnabled;
-        });
-      },
     );
   }
 

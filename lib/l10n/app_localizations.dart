@@ -1100,6 +1100,42 @@ abstract class AppLocalizations {
   /// **'?'**
   String get unknownInitial;
 
+  /// No description provided for @notifPermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Notifications'**
+  String get notifPermissionTitle;
+
+  /// No description provided for @notifPermissionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'We need notification permission to remind you about your orders and inform you about latest promotions.'**
+  String get notifPermissionDesc;
+
+  /// No description provided for @notifPermissionAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get notifPermissionAllow;
+
+  /// No description provided for @notifPermissionCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get notifPermissionCancel;
+
+  /// No description provided for @notificationAppointmentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Reminder'**
+  String get notificationAppointmentTitle;
+
+  /// No description provided for @notificationAppointmentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You have an order for {packageName} today'**
+  String notificationAppointmentBody(Object packageName);
+
   /// No description provided for @welcome.
   ///
   /// In en, this message translates to:

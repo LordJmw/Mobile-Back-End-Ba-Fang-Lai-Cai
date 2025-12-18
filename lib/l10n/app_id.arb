@@ -200,6 +200,15 @@
 
   "unknownInitial": "?",
 
+  
+  "notifPermissionTitle": "Aktifkan Notifikasi",
+  "notifPermissionDesc": "Kami memerlukan izin notifikasi untuk mengingatkan pesanan Anda dan memberi tahu promo terbaru.",
+  "notifPermissionAllow": "Izinkan",
+  "notifPermissionCancel": "Batal",
+   "notificationAppointmentTitle": "Pengingat Pesanan",
+  "notificationAppointmentBody": "Anda memiliki pesanan untuk {packageName} pada hari ini",
+
+
   "welcome": "Selamat Datang!",
   "loginToContinue": "Masuk untuk melanjutkan",
   "password": "Password",

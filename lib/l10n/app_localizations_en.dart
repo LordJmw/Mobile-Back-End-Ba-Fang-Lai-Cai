@@ -546,6 +546,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unknownInitial => '?';
 
   @override
+  String get notifPermissionTitle => 'Enable Notifications';
+
+  @override
+  String get notifPermissionDesc =>
+      'We need notification permission to remind you about your orders and inform you about latest promotions.';
+
+  @override
+  String get notifPermissionAllow => 'Allow';
+
+  @override
+  String get notifPermissionCancel => 'Cancel';
+
+  @override
+  String get notificationAppointmentTitle => 'Order Reminder';
+
+  @override
+  String notificationAppointmentBody(Object packageName) {
+    return 'You have an order for $packageName today';
+  }
+
+  @override
   String get welcome => 'Welcome!';
 
   @override

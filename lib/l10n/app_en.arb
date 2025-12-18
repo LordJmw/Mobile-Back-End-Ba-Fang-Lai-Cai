@@ -200,6 +200,14 @@
 
   "unknownInitial": "?",
 
+  "notifPermissionTitle": "Enable Notifications",
+  "notifPermissionDesc": "We need notification permission to remind you about your orders and inform you about latest promotions.",
+  "notifPermissionAllow": "Allow",
+  "notifPermissionCancel": "Cancel",
+  "notificationAppointmentTitle": "Order Reminder",
+  "notificationAppointmentBody": "You have an order for {packageName} today",
+  
+
   "welcome": "Welcome!",
   "loginToContinue": "Login to continue",
   "password": "Password",

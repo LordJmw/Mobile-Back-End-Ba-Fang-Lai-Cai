@@ -546,6 +546,27 @@ class AppLocalizationsId extends AppLocalizations {
   String get unknownInitial => '?';
 
   @override
+  String get notifPermissionTitle => 'Aktifkan Notifikasi';
+
+  @override
+  String get notifPermissionDesc =>
+      'Kami memerlukan izin notifikasi untuk mengingatkan pesanan Anda dan memberi tahu promo terbaru.';
+
+  @override
+  String get notifPermissionAllow => 'Izinkan';
+
+  @override
+  String get notifPermissionCancel => 'Batal';
+
+  @override
+  String get notificationAppointmentTitle => 'Pengingat Pesanan';
+
+  @override
+  String notificationAppointmentBody(Object packageName) {
+    return 'Anda memiliki pesanan untuk $packageName pada hari ini';
+  }
+
+  @override
   String get welcome => 'Selamat Datang!';
 
   @override

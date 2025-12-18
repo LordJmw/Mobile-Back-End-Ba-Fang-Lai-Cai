@@ -4,6 +4,7 @@ class SessionManager {
   final String IS_LOGGED_IN = "isLoggedIn";
   final String EMAIL = "email";
   final String userType = "userType";
+  final String notif_status = "notifEnabled";
 
   Future<void> createLoginSession(String email, String type) async {
     final prefs = await SharedPreferences.getInstance();
@@ -17,6 +18,7 @@ class SessionManager {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(IS_LOGGED_IN);
     await prefs.remove(EMAIL);
+    await prefs.remove(notif_status);
 
     final keys = prefs.getKeys();
     for (var key in keys) {
@@ -40,5 +42,16 @@ class SessionManager {
   Future<String?> getUserType() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(userType);
+  }
+
+  Future<void> setNotificationEnabled(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(notif_status, value);
+  }
+
+  Future<bool> getNotificationStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    print(prefs.getBool(notif_status));
+    return prefs.getBool(notif_status) ?? false; //set defaultnya ke off
   }
 }
