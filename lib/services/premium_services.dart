@@ -45,8 +45,7 @@ class PremiumService {
 
   Future<bool> checkIfPremiumActive(String customerEmail) async {
     try {
-      final customer = await _customerDb.getCustomerByEmail(customerEmail);
-      return customer?.isPremiumActive ?? false;
+      return CustomerDatabase().isUserPremium();
     } catch (e) {
       print('Error checking premium status: $e');
       return false;

@@ -209,7 +209,15 @@ class CustomerDatabase {
 
   Future<bool> isUserPremium() async {
     CustomerModel? currCustomer = await getCurrentCustomer();
-    return currCustomer!.isPremiumUser;
+    if (currCustomer!.isPremiumUser) {
+      bool isItExpired = currCustomer.isPremiumExpired;
+      print("expire : ${isItExpired}");
+      if (isItExpired) {
+        return false;
+      }
+      return true;
+    }
+    return false;
   }
 
   Future<void> signOut() async {

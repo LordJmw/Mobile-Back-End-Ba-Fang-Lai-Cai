@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/helper/semantics.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
+import 'package:projek_uts_mbr/model/CustomerModel.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/order.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
@@ -88,6 +90,7 @@ class _CarddetailState extends State<Carddetail> {
   }
 
   bool _initialized = false;
+  bool isPremium = false;
 
   @override
   void didChangeDependencies() {
@@ -101,8 +104,20 @@ class _CarddetailState extends State<Carddetail> {
   @override
   void initState() {
     // TODO: implement initState
+    isUserPremium();
     _loadBannerAd();
+
     super.initState();
+  }
+
+  Future<void> isUserPremium() async {
+    bool isItPremium = await CustomerDatabase().isUserPremium();
+    if (isItPremium) {
+      setState(() {
+        isPremium = isItPremium;
+        print("is premium user adalah : ${isPremium}");
+      });
+    }
   }
 
   @override
@@ -435,7 +450,7 @@ class _CarddetailState extends State<Carddetail> {
                             ),
                           );
                         }).toList(),
-                        if (bannerAd != null)
+                        if (bannerAd != null && !isPremium)
                           Padding(
                             padding: const EdgeInsets.only(top: 16, bottom: 8),
                             child: SizedBox(

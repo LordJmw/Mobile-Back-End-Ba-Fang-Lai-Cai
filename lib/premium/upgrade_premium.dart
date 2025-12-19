@@ -321,11 +321,10 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
   bool isPremium = false;
 
   Future<void> isUserPremium() async {
-    CustomerModel? customer = await CustomerDatabase().getCurrentCustomer();
-    if (customer != null) {
-      print("di page upgrade premium : ${customer.isPremiumUser}");
+    bool stillPremium = await CustomerDatabase().isUserPremium();
+    if (stillPremium) {
       setState(() {
-        isPremium = customer.isPremiumUser;
+        isPremium = stillPremium;
       });
       print("isPremium : ${isPremium}");
     }

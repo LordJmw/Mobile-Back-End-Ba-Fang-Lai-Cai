@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/category/category_consts.dart';
@@ -8,6 +10,24 @@ import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
 import 'package:provider/provider.dart';
+
+List<Penyedia> flattenVendorData(List<Vendormodel> data) {
+  final List<Penyedia> result = [];
+  for (var vm in data) {
+    result.addAll(vm.penyedia);
+  }
+  return result;
+}
+
+List<Penyedia> filterVendorByQuery(Map<String, dynamic> params) {
+  final List<Penyedia> vendors = params['vendors'];
+  final String query = params['query'].toLowerCase();
+
+  return vendors.where((v) {
+    return v.nama.toLowerCase().contains(query) ||
+        v.deskripsi.toLowerCase().contains(query);
+  }).toList();
+}
 
 class ViewAllPage extends StatefulWidget {
   const ViewAllPage({super.key});
@@ -21,6 +41,7 @@ class _ViewAllPageState extends State<ViewAllPage> {
   List<Penyedia> allVendors = [];
   List<Penyedia> filteredVendors = [];
   final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
 
   @override
   void initState() {
@@ -31,13 +52,17 @@ class _ViewAllPageState extends State<ViewAllPage> {
   Future<List<Penyedia>> fetchData() async {
     Vendordatabase vendordatabase = Vendordatabase();
     final data = await vendordatabase.getData();
-    final List<Penyedia> penyediaList = [];
-    for (var vm in data) {
-      penyediaList.addAll(vm.penyedia);
-    }
+    final penyediaList = await compute(flattenVendorData, data);
     allVendors = penyediaList;
     filteredVendors = penyediaList;
     return penyediaList;
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      _filterData(query);
+    });
   }
 
   void _filterData(String query) async {
@@ -73,7 +98,10 @@ class _ViewAllPageState extends State<ViewAllPage> {
     }
 
     //bukan kategori, maka text search normal
-    final results = await vendordatabase.searchVendors(query);
+    final results = await compute(filterVendorByQuery, {
+      'vendors': allVendors,
+      'query': query,
+    });
 
     setState(() {
       filteredVendors = results;
@@ -99,6 +127,13 @@ class _ViewAllPageState extends State<ViewAllPage> {
 
     hargaList.sort();
     return hargaList.first;
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -139,7 +174,7 @@ class _ViewAllPageState extends State<ViewAllPage> {
                         horizontal: 16,
                       ),
                     ),
-                    onChanged: _filterData,
+                    onChanged: _onSearchChanged,
                   ),
                 ),
               ),
@@ -185,8 +220,17 @@ class _ViewAllPageState extends State<ViewAllPage> {
     required Locale lang,
   }) {
     return Semantics(
-      label: tr('button', 'kategoriCard', lang, params: {"name1" : name,"name2" : rating.toString(),"name3" : price.toString()}),
-      hint: tr('button', 'kategoriCardHint', lang, params:  {"name1" : name}),
+      label: tr(
+        'button',
+        'kategoriCard',
+        lang,
+        params: {
+          "name1": name,
+          "name2": rating.toString(),
+          "name3": price.toString(),
+        },
+      ),
+      hint: tr('button', 'kategoriCardHint', lang, params: {"name1": name}),
       child: GestureDetector(
         onTap: () {
           Navigator.push(
