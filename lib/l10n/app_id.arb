@@ -357,6 +357,7 @@
   "premiumPopupMessage": "Dapatkan pengalaman terbaik tanpa iklan dan dengan fitur eksklusif",
   "premiumPopupUpgrade": "Lihat Paket",
   "premiumPopupLater": "Nanti Saja",
+  "alreadyPremiumUser" : "Anda Sudah Menjadi User Premium",
 
    "backButtonLabel": "Tombol kembali",
   "backButtonHint": "Kembali ke halaman sebelumnya",

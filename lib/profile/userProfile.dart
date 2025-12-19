@@ -42,6 +42,14 @@ class _UserProfileState extends State<UserProfile> {
     _customerController = StreamController<CustomerModel?>();
     _purchaseHistoryController = StreamController<List<PurchaseHistory>>();
     _loadCustomerData();
+    checkStatus();
+  }
+
+  void checkStatus() async {
+    CustomerModel? customer = await CustomerDatabase().getCurrentCustomer();
+    if (customer != null) {
+      print("${customer.email} ${customer.isPremiumUser}");
+    }
   }
 
   @override

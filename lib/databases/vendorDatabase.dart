@@ -1,11 +1,57 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:projek_uts_mbr/databases/database.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/services/dataServices.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
+
+// isolate
+
+List<Map<String, dynamic>> processVendorRows(List<Map<String, dynamic>> rows) {
+  final List<Map<String, dynamic>> normalized = rows.map((row) {
+    final r = Map<String, dynamic>.from(row);
+
+    try {
+      r['harga'] = r['harga'] != null && r['harga'].toString().isNotEmpty
+          ? jsonDecode(r['harga'])
+          : {};
+    } catch (_) {
+      r['harga'] = {};
+    }
+
+    try {
+      r['testimoni'] =
+          r['testimoni'] != null && r['testimoni'].toString().isNotEmpty
+          ? jsonDecode(r['testimoni'])
+          : [];
+    } catch (_) {
+      r['testimoni'] = [];
+    }
+
+    return r;
+  }).toList();
+
+  // grouping by kategori
+  final Map<String, List<Map<String, dynamic>>> grouped = {};
+
+  for (final row in normalized) {
+    final kategori = (row['kategori'] ?? '').toString();
+    if (kategori.isEmpty) continue;
+
+    grouped.putIfAbsent(kategori, () => []).add(row);
+  }
+
+  // flatten lagi agar bisa dikembalikan
+  final List<Map<String, dynamic>> result = [];
+
+  grouped.forEach((_, list) {
+    list.sort((a, b) => (b['rating'] as num).compareTo(a['rating'] as num));
+    result.addAll(list);
+  });
+
+  return result;
+}
 
 class Vendordatabase {
   Dataservices dataservices = Dataservices();
@@ -350,52 +396,5 @@ class Vendordatabase {
       where: 'email = ?',
       whereArgs: [email],
     );
-  }
-
-  List<Map<String, dynamic>> processVendorRows(
-    List<Map<String, dynamic>> rows,
-  ) {
-    final List<Map<String, dynamic>> normalized = rows.map((row) {
-      final r = Map<String, dynamic>.from(row);
-
-      try {
-        r['harga'] = r['harga'] != null && r['harga'].toString().isNotEmpty
-            ? jsonDecode(r['harga'])
-            : {};
-      } catch (_) {
-        r['harga'] = {};
-      }
-
-      try {
-        r['testimoni'] =
-            r['testimoni'] != null && r['testimoni'].toString().isNotEmpty
-            ? jsonDecode(r['testimoni'])
-            : [];
-      } catch (_) {
-        r['testimoni'] = [];
-      }
-
-      return r;
-    }).toList();
-
-    // grouping by kategori
-    final Map<String, List<Map<String, dynamic>>> grouped = {};
-
-    for (final row in normalized) {
-      final kategori = (row['kategori'] ?? '').toString();
-      if (kategori.isEmpty) continue;
-
-      grouped.putIfAbsent(kategori, () => []).add(row);
-    }
-
-    // flatten lagi agar bisa dikembalikan
-    final List<Map<String, dynamic>> result = [];
-
-    grouped.forEach((_, list) {
-      list.sort((a, b) => (b['rating'] as num).compareTo(a['rating'] as num));
-      result.addAll(list);
-    });
-
-    return result;
   }
 }

@@ -20,6 +20,31 @@ class _CarddetailState extends State<Carddetail> {
   Vendormodel? vendor;
   bool loading = true;
   String errorMessage = '';
+  BannerAd? bannerAd;
+
+  final _bannerAdId = 'ca-app-pub-3940256099942544/9214589741';
+
+  void _loadBannerAd() {
+    if (bannerAd != null) return;
+
+    final ad = BannerAd(
+      size: AdSize.banner,
+      adUnitId: _bannerAdId,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            bannerAd = ad as BannerAd;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+    );
+
+    ad.load();
+  }
 
   String formatPrice(int price) {
     String temp = price.toString();
@@ -76,7 +101,7 @@ class _CarddetailState extends State<Carddetail> {
   @override
   void initState() {
     // TODO: implement initState
-
+    _loadBannerAd();
     super.initState();
   }
 
@@ -410,6 +435,15 @@ class _CarddetailState extends State<Carddetail> {
                             ),
                           );
                         }).toList(),
+                        if (bannerAd != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16, bottom: 8),
+                            child: SizedBox(
+                              height: bannerAd!.size.height.toDouble(),
+                              width: bannerAd!.size.width.toDouble(),
+                              child: AdWidget(ad: bannerAd!),
+                            ),
+                          ),
                       ],
                     ),
                   ),

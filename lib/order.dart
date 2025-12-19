@@ -216,6 +216,7 @@ class _OrderPageState extends State<OrderPage> {
       SessionManager sessionManager = SessionManager();
       String? userType = await sessionManager.getUserType();
       String? email = await sessionManager.getEmail();
+      bool isPremium = await CustomerDatabase().isUserPremium();
 
       print("User type: $userType, Email: $email"); // Debug
 
@@ -281,7 +282,10 @@ class _OrderPageState extends State<OrderPage> {
 
       // Tunggu sebentar sebelum navigate agar user bisa melihat snackbar
       await Future.delayed(const Duration(seconds: 2));
-      adsServices.showInterAd();
+      if (isPremium == false) {
+        adsServices.showInterAd();
+      }
+
       setState(() => isBuying = false);
 
       Navigator.pushAndRemoveUntil(

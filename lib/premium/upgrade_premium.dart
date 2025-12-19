@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/helper/semantics.dart';
+import 'package:projek_uts_mbr/model/CustomerModel.dart';
+import 'package:projek_uts_mbr/services/premium_services.dart';
 import 'package:provider/provider.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
 
@@ -101,15 +104,57 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
       _isProcessing = true;
     });
 
-    // Simulasi proses pembayaran
-    await Future.delayed(Duration(seconds: 2));
+    try {
+      final premiumService = PremiumService();
+      final customerDatabase = CustomerDatabase();
 
-    setState(() {
-      _isProcessing = false;
-    });
+      final customer = await customerDatabase.getCurrentCustomer();
+      if (customer == null) {
+        print('User tidak ditemukan. Silakan login ulang.');
+        setState(() => _isProcessing = false);
+        return;
+      }
 
-    // Tampilkan dialog sukses
-    _showSuccessDialog();
+      final isAlreadyPremium = await premiumService.checkIfPremiumActive(
+        customer.email,
+      );
+
+      print('email ${customer.email} status premium : ${isAlreadyPremium}');
+      if (isAlreadyPremium) {
+        print('Anda sudah memiliki akses premium aktif.');
+        setState(() => _isProcessing = false);
+        return;
+      }
+
+      DateTime expiryDate;
+      if (_selectedPlan == 'monthly') {
+        expiryDate = DateTime.now().add(Duration(days: 30));
+      } else {
+        expiryDate = DateTime.now().add(Duration(days: 365));
+      }
+
+      final success = await premiumService.upgradeToPremium(
+        customerEmail: customer.email,
+        expiryDate: expiryDate,
+        paymentMethod: _selectedPaymentMethod,
+      );
+
+      if (success) {
+        print(
+          "customer setelah beli status premium : ${customer.isPremiumActive}",
+        );
+        _showSuccessDialog();
+      } else {
+        print('Gagal memproses upgrade. Silakan coba lagi.');
+      }
+    } catch (e) {
+      print('Error during upgrade: $e');
+      print('Terjadi kesalahan: $e');
+    } finally {
+      if (mounted) {
+        setState(() => _isProcessing = false);
+      }
+    }
   }
 
   void _showSuccessDialog() {
@@ -271,6 +316,27 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
         );
       },
     );
+  }
+
+  bool isPremium = false;
+
+  Future<void> isUserPremium() async {
+    CustomerModel? customer = await CustomerDatabase().getCurrentCustomer();
+    if (customer != null) {
+      print("di page upgrade premium : ${customer.isPremiumUser}");
+      setState(() {
+        isPremium = customer.isPremiumUser;
+      });
+      print("isPremium : ${isPremium}");
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    isUserPremium();
+
+    super.initState();
   }
 
   @override
@@ -576,46 +642,39 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
                 child: SizedBox(
                   width: double.infinity,
                   height: 56,
-                  child: ElevatedButton(
-                    onPressed: _isProcessing ? null : _processUpgrade,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      elevation: 3,
-                    ),
-                    child: _isProcessing
-                        ? SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 3,
+                  child: isPremium
+                      ? Center(child: Text(l10n.alreadyPremiumUser))
+                      : ElevatedButton(
+                          onPressed: _isProcessing ? null : _processUpgrade,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.pink,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
                             ),
-                          )
-                        : Text(
-                            '${l10n.premiumUpgradeButton} - Rp ${selectedPlan['price']}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                            elevation: 3,
                           ),
-                  ),
+                          child: _isProcessing
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 3,
+                                  ),
+                                )
+                              : Text(
+                                  '${l10n.premiumUpgradeButton} - Rp ${selectedPlan['price']}',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                        ),
                 ),
               ),
             ),
             SizedBox(height: 12),
-            // TextButton(
-            //   onPressed: () {
-            //     // Restore purchase functionality
-            //   },
-            //   child: Text(
-            //     l10n.premiumRestorePurchase,
-            //     style: TextStyle(color: Colors.pink),
-            //   ),
-            // ),
           ],
         ),
       ),

@@ -725,6 +725,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get premiumPopupLater => 'Nanti Saja';
 
   @override
+  String get alreadyPremiumUser => 'Anda Sudah Menjadi User Premium';
+
+  @override
   String get backButtonLabel => 'Tombol kembali';
 
   @override

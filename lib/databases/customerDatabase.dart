@@ -153,6 +153,43 @@ class CustomerDatabase {
     }
   }
 
+  Future<bool> updateCustomerPremiumStatus({
+    required String customerEmail,
+    required bool isPremiumUser,
+    required DateTime expiryDate,
+    DateTime? startDate,
+  }) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> query = await firestorDb
+          .collection("customers")
+          .where("email", isEqualTo: customerEmail)
+          .limit(1)
+          .get();
+
+      if (query.docs.isEmpty) {
+        print("customer dengan email $customerEmail tidak ditemukan");
+        return false;
+      }
+
+      String id = query.docs.first.id;
+
+      Map<String, dynamic> premiumUpdate = {
+        'isPremiumUser': isPremiumUser,
+        'premiumExpiryDate': expiryDate.toIso8601String(),
+        'premiumStartDate': (startDate ?? DateTime.now()).toIso8601String(),
+        'premiumUpdatedAt': FieldValue.serverTimestamp(),
+      };
+
+      await firestorDb.collection("customers").doc(id).update(premiumUpdate);
+
+      print("Premium status updated for $customerEmail");
+      return true;
+    } catch (e) {
+      print("Error updating premium status: $e");
+      return false;
+    }
+  }
+
   Future<void> printAllCustomers() async {
     final db = await _dbService.getDatabase();
     final Customers = await db.query('Customer');
@@ -168,6 +205,11 @@ class CustomerDatabase {
       throw Exception("NO_USER_LOGGED_IN");
     }
     return user.uid;
+  }
+
+  Future<bool> isUserPremium() async {
+    CustomerModel? currCustomer = await getCurrentCustomer();
+    return currCustomer!.isPremiumUser;
   }
 
   Future<void> signOut() async {

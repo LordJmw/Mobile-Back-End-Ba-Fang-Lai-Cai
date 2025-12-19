@@ -724,6 +724,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get premiumPopupLater => 'Maybe Later';
 
   @override
+  String get alreadyPremiumUser => 'You are Already a Premium User';
+
+  @override
   String get backButtonLabel => 'Back button';
 
   @override

@@ -255,6 +255,7 @@
   "premiumPopupMessage": "Get the best experience without ads and with exclusive features",
   "premiumPopupUpgrade": "View Plans",
   "premiumPopupLater": "Maybe Later",
+  "alreadyPremiumUser" : "You are Already a Premium User",
 
   "backButtonLabel": "Back button",
   "backButtonHint": "Go back to previous page",

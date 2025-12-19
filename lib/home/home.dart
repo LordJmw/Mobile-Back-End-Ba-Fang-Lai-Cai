@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/helper/localization_helper.dart';
@@ -15,6 +14,19 @@ import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 
 import 'package:provider/provider.dart';
+
+import 'package:flutter/foundation.dart';
+
+List<Vendormodel> sortVendorByRating(List<Vendormodel> vendors) {
+  vendors.sort(
+    (a, b) => b.penyedia.first.rating.compareTo(a.penyedia.first.rating),
+  );
+  return vendors.take(8).toList();
+}
+
+List<Vendormodel> loadPortFeedsCompute(List<Vendormodel> vendors) {
+  return vendors.take(8).toList();
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -60,17 +72,6 @@ class _HomePageState extends State<HomePage> {
     Vendordatabase vendordatabase = Vendordatabase();
     List<Vendormodel> allVendors = await vendordatabase.getData();
     return compute(loadPortFeedsCompute, allVendors);
-  }
-
-  List<Vendormodel> sortVendorByRating(List<Vendormodel> vendors) {
-    vendors.sort(
-      (a, b) => b.penyedia.first.rating.compareTo(a.penyedia.first.rating),
-    );
-    return vendors.take(8).toList();
-  }
-
-  List<Vendormodel> loadPortFeedsCompute(List<Vendormodel> vendors) {
-    return vendors.take(8).toList();
   }
 
   Future<List<Vendormodel>> _loadFeeds() async {

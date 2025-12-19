@@ -1418,6 +1418,12 @@ abstract class AppLocalizations {
   /// **'Maybe Later'**
   String get premiumPopupLater;
 
+  /// No description provided for @alreadyPremiumUser.
+  ///
+  /// In en, this message translates to:
+  /// **'You are Already a Premium User'**
+  String get alreadyPremiumUser;
+
   /// No description provided for @backButtonLabel.
   ///
   /// In en, this message translates to:
