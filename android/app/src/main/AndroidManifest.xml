@@ -19,7 +19,6 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
-    <!-- QUERIES Harus di sini -->
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
@@ -52,7 +51,9 @@
             </intent-filter>
 
         </activity>
-
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2381380010552044~5420622648"/>
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

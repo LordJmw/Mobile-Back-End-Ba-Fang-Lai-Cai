@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/helper/semantics.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
@@ -73,6 +74,13 @@ class _CarddetailState extends State<Carddetail> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final lang = Provider.of<LanguageProvider>(context).locale;
     final l10n = AppLocalizations.of(context)!;
@@ -90,7 +98,9 @@ class _CarddetailState extends State<Carddetail> {
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 241, 240, 240),
+
       appBar: AppBar(title: Text(l10n.vendorDetails), centerTitle: true),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -121,13 +131,16 @@ class _CarddetailState extends State<Carddetail> {
                       excludeSemantics: true,
                       container: true,
                       label: tr(
-                        'textButton', 
+                        'textButton',
                         'detailVendor',
                         lang,
                         params: {
-                          "name1" : vendor!.penyedia.first.nama, 
-                          "name2": vendor!.penyedia.first.rating.toStringAsFixed(1), 
-                          "name3":'${testimoniList.length}'}),
+                          "name1": vendor!.penyedia.first.nama,
+                          "name2": vendor!.penyedia.first.rating
+                              .toStringAsFixed(1),
+                          "name3": '${testimoniList.length}',
+                        },
+                      ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -180,14 +193,15 @@ class _CarddetailState extends State<Carddetail> {
                     child: Semantics(
                       excludeSemantics: true,
                       container: true,
-                      label:
-                          tr(
-                            'textButton',
-                            'deskripsiVendorCard', 
-                            lang, 
-                            params: {
-                              "name1" : vendor!.penyedia.first.nama.split(" ").first,
-                              "name2":"${vendor!.penyedia.first.deskripsi}"}),
+                      label: tr(
+                        'textButton',
+                        'deskripsiVendorCard',
+                        lang,
+                        params: {
+                          "name1": vendor!.penyedia.first.nama.split(" ").first,
+                          "name2": "${vendor!.penyedia.first.deskripsi}",
+                        },
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

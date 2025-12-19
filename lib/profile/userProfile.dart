@@ -15,6 +15,7 @@ import 'package:projek_uts_mbr/helper/semantics.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/model/CustomerModel.dart';
 import 'package:projek_uts_mbr/model/purchaseHistoryModel.dart';
+import 'package:projek_uts_mbr/premium/upgrade_premium.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 import 'package:projek_uts_mbr/settings_screens/settings_page.dart';
@@ -1212,6 +1213,100 @@ class _UserProfileState extends State<UserProfile> {
                               color: Colors.pink,
                             ),
                             onTap: () => _inviteFriends(context),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    Semantics(
+                      label: tr('card', 'premiumUpgradeCardLabel', lang),
+                      hint: tr('card', 'premiumUpgradeCardHint', lang),
+                      child: Card(
+                        // color: Colors.pink[50],
+                        margin: EdgeInsets.only(bottom: 16),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PremiumUpgradePage(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.purple[100],
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.stars,
+                                    color: Colors.purple,
+                                    size: 28,
+                                  ),
+                                ),
+                                SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            l10n.premiumTitle,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.purple[800],
+                                            ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 2,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.amber,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: Text(
+                                              l10n.premiumProBadge,
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 4),
+                                      Text(
+                                        l10n.premiumSubtitle,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.purple[600],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 16,
+                                  color: Colors.purple,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

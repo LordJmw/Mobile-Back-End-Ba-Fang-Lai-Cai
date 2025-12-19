@@ -274,6 +274,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
+    //apakah user sudah enable notif
     _loadNotificationStatus();
   }
 
@@ -551,16 +552,19 @@ class _SettingsPageState extends State<SettingsPage> {
         style: TextStyle(color: Colors.grey[600], fontSize: 13),
       ),
       trailing: Switch(
+        //value dari notificationsEnabled disimpan di sharedPreference agar ketika user back
+        //atau reload, notifnya tetap on/off
         value: _notificationsEnabled,
         onChanged: (value) async {
           final l10n = AppLocalizations.of(context)!;
           final sessionManager = SessionManager();
 
           if (value) {
+            //kalau switch notif on, maka dicek nantinya apakah sudah diizinkan permission notifnya
             print("notif user di set true");
             final isAllowed = await AwesomeNotifications()
                 .isNotificationAllowed();
-
+            //jika belum akan ditunjukkan dialog ke user
             if (!isAllowed) {
               final allow = await showDialog<bool>(
                 context: context,
@@ -581,16 +585,21 @@ class _SettingsPageState extends State<SettingsPage> {
               );
 
               if (allow == true) {
+                //jika sudah allow user, awesome notifications akan meminta izin mengirim notif
                 await AwesomeNotifications()
                     .requestPermissionToSendNotifications();
               } else {
                 return;
               }
             }
-
+            //set notif ke on/true
             await sessionManager.setNotificationEnabled(true);
           } else {
+            //jika user turn off switch, maka status di sessionManager menjadi false
+            //misalkan pun jika pas user beli notif on, namun sebelum hari-h/ sebelum default jam reminder(9 pagi)
+            // di ubah ke off, maka notif tersebut juga di cancel
             print("switch ke false");
+            //ketika off, maka seluruh pembelian yang telah dijadwalkan untuk di reminder, akan di cancel
             await AwesomeNotifications().cancelAllSchedules();
             await AwesomeNotifications().cancelAll();
 

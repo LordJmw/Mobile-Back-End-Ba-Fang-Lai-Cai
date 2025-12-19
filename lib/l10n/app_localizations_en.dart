@@ -567,6 +567,210 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get premiumTitle => 'Upgrade to Premium';
+
+  @override
+  String get premiumProBadge => 'PRO';
+
+  @override
+  String get premiumSubtitle => 'Enjoy ad-free experience';
+
+  @override
+  String get premiumFeaturesTitle => 'Premium Features';
+
+  @override
+  String get premiumFeatureNoAds => 'No Ads';
+
+  @override
+  String get premiumFeatureNoAdsDesc =>
+      'Enjoy the app without ad interruptions';
+
+  @override
+  String get premiumFeaturePriority => 'Priority Support';
+
+  @override
+  String get premiumFeaturePriorityDesc => 'Get faster help from our team';
+
+  @override
+  String get premiumFeatureBadge => 'PRO Badge';
+
+  @override
+  String get premiumFeatureBadgeDesc =>
+      'Display premium status on your profile';
+
+  @override
+  String get premiumFeatureEarlyAccess => 'Early Access';
+
+  @override
+  String get premiumFeatureEarlyAccessDesc => 'Try new features before others';
+
+  @override
+  String get premiumMonthly => 'Monthly';
+
+  @override
+  String get premiumYearly => 'Yearly';
+
+  @override
+  String premiumYearlySave(Object percent) {
+    return 'Save $percent%';
+  }
+
+  @override
+  String premiumPricePerMonth(Object price) {
+    return '$price/month';
+  }
+
+  @override
+  String get premiumCurrentPlan => 'Current Plan';
+
+  @override
+  String get premiumFreePlan => 'Free';
+
+  @override
+  String get premiumUpgradeButton => 'Upgrade Now';
+
+  @override
+  String get premiumManageSubscription => 'Manage Subscription';
+
+  @override
+  String get premiumRestorePurchase => 'Restore Purchase';
+
+  @override
+  String premiumTrialAvailable(Object days) {
+    return 'Try $days days free';
+  }
+
+  @override
+  String get premiumTerms =>
+      'By upgrading, you agree to our Terms of Service and Privacy Policy';
+
+  @override
+  String get premiumSuccessTitle => 'Upgrade Successful!';
+
+  @override
+  String get premiumSuccessMessage =>
+      'Congratulations! Your account is now premium. Enjoy all exclusive features.';
+
+  @override
+  String get premiumErrorTitle => 'Upgrade Failed';
+
+  @override
+  String get premiumErrorMessage =>
+      'An error occurred. Please try again or contact support.';
+
+  @override
+  String get premiumAlreadyPremium => 'Already Premium';
+
+  @override
+  String get premiumAlreadyPremiumMessage =>
+      'Your account already has premium access.';
+
+  @override
+  String get premiumCardMainTitle => 'Upgrade Your Experience';
+
+  @override
+  String get premiumCardTapToUpgrade => 'Tap to upgrade';
+
+  @override
+  String get premiumSettingsItem => 'Premium Subscription';
+
+  @override
+  String get premiumSettingsDesc => 'Upgrade to remove ads';
+
+  @override
+  String get premiumAppBarButton => 'Premium';
+
+  @override
+  String get premiumAppBarButtonHint => 'Open premium page';
+
+  @override
+  String get premiumFeatureUnlimited => 'Unlimited';
+
+  @override
+  String get premiumFeatureUnlimitedDesc => 'Unlimited access to all vendors';
+
+  @override
+  String get premiumFeatureAdvancedFilter => 'Advanced Filter';
+
+  @override
+  String get premiumFeatureAdvancedFilterDesc =>
+      'Filter vendors with specific criteria';
+
+  @override
+  String get premiumFeatureSaveEvents => 'Save Events';
+
+  @override
+  String get premiumFeatureSaveEventsDesc =>
+      'Save and reschedule favorite events';
+
+  @override
+  String get premiumFeatureCustomTheme => 'Custom Theme';
+
+  @override
+  String get premiumFeatureCustomThemeDesc =>
+      'Customize app appearance to your liking';
+
+  @override
+  String get premiumPopupTitle => 'Want to Upgrade?';
+
+  @override
+  String get premiumPopupMessage =>
+      'Get the best experience without ads and with exclusive features';
+
+  @override
+  String get premiumPopupUpgrade => 'View Plans';
+
+  @override
+  String get premiumPopupLater => 'Maybe Later';
+
+  @override
+  String get backButtonLabel => 'Back button';
+
+  @override
+  String get backButtonHint => 'Go back to previous page';
+
+  @override
+  String get closePaymentMethodsLabel => 'Close payment methods selection';
+
+  @override
+  String get closePaymentMethodsHint => 'Close list of payment methods';
+
+  @override
+  String paymentMethodLabel(Object name) {
+    return 'Payment method $name';
+  }
+
+  @override
+  String get selectPaymentMethodHint => 'Select this payment method';
+
+  @override
+  String get upgradeNowButtonLabel => 'Upgrade now button';
+
+  @override
+  String get upgradeNowButtonHint =>
+      'Proceed with payment to upgrade to premium';
+
+  @override
+  String get closeSuccessDialogLabel => 'Close success dialog';
+
+  @override
+  String get closeSuccessDialogHint => 'Close upgrade confirmation message';
+
+  @override
+  String choosePlanLabel(Object plan) {
+    return 'Choose $plan plan';
+  }
+
+  @override
+  String get choosePlanHint => 'Select this subscription plan';
+
+  @override
+  String get selectDateLabel => 'Select date';
+
+  @override
+  String get selectDateHint => 'Choose date for payment';
+
+  @override
   String get welcome => 'Welcome!';
 
   @override

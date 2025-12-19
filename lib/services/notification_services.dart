@@ -11,7 +11,7 @@ class NotificationServices {
     required String packageName,
   }) async {
     final l10n = AppLocalizations.of(context)!;
-
+    //jika nanti sudah on, dan user beli paket, reminder di set ke default jam 9 pagi
     final reminderTime = DateTime(
       eventDate.year,
       eventDate.month,

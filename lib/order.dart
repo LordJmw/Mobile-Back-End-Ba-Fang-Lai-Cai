@@ -10,6 +10,7 @@ import 'package:projek_uts_mbr/l10n/app_localizations_en.dart';
 import 'package:projek_uts_mbr/main.dart';
 import 'package:projek_uts_mbr/model/purchaseHistoryModel.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
+import 'package:projek_uts_mbr/services/ads_services.dart';
 import 'package:projek_uts_mbr/services/dataServices.dart';
 import 'package:projek_uts_mbr/services/notification_services.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
@@ -36,10 +37,13 @@ class _OrderPageState extends State<OrderPage> {
   Map<String, int> packages = {};
   bool isLoading = true;
 
+  AdsServices adsServices = AdsServices();
+
   @override
   void initState() {
     super.initState();
     getData();
+    adsServices.loadInterStitialAd();
   }
 
   Future<void> getDataFromDatabase() async {
@@ -252,6 +256,7 @@ class _OrderPageState extends State<OrderPage> {
       final notifStatus = await sessionManager.getNotificationStatus();
       if (notifStatus) {
         print("status notif pas beli on");
+        //hanya jadwalkan reminder jika user set notifikasi on
         await NotificationServices.scheduleOrderReminder(
           context: context,
           eventDate: selectedDate!,
@@ -259,6 +264,7 @@ class _OrderPageState extends State<OrderPage> {
           packageName: selectedPackage!,
         );
       } else if (!notifStatus) {
+        //jika tidak tidak akan dijadwalkan
         print("status notif pas beli off");
       }
 
@@ -275,7 +281,7 @@ class _OrderPageState extends State<OrderPage> {
 
       // Tunggu sebentar sebelum navigate agar user bisa melihat snackbar
       await Future.delayed(const Duration(seconds: 2));
-
+      adsServices.showInterAd();
       setState(() => isBuying = false);
 
       Navigator.pushAndRemoveUntil(

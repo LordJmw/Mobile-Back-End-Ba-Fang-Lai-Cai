@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:projek_uts_mbr/auth/logincostumer.dart';
 import 'package:projek_uts_mbr/home/home.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
@@ -15,6 +18,7 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  unawaited(MobileAds.instance.initialize());
   //load bahasa dari sharedPreference sebelum app berjalan
   final languageProvider = LanguageProvider();
   await languageProvider.loadLocale();

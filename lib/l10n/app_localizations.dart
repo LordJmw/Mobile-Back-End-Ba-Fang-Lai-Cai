@@ -1136,6 +1136,372 @@ abstract class AppLocalizations {
   /// **'You have an order for {packageName} today'**
   String notificationAppointmentBody(Object packageName);
 
+  /// No description provided for @premiumTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Premium'**
+  String get premiumTitle;
+
+  /// No description provided for @premiumProBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'PRO'**
+  String get premiumProBadge;
+
+  /// No description provided for @premiumSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enjoy ad-free experience'**
+  String get premiumSubtitle;
+
+  /// No description provided for @premiumFeaturesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Features'**
+  String get premiumFeaturesTitle;
+
+  /// No description provided for @premiumFeatureNoAds.
+  ///
+  /// In en, this message translates to:
+  /// **'No Ads'**
+  String get premiumFeatureNoAds;
+
+  /// No description provided for @premiumFeatureNoAdsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Enjoy the app without ad interruptions'**
+  String get premiumFeatureNoAdsDesc;
+
+  /// No description provided for @premiumFeaturePriority.
+  ///
+  /// In en, this message translates to:
+  /// **'Priority Support'**
+  String get premiumFeaturePriority;
+
+  /// No description provided for @premiumFeaturePriorityDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Get faster help from our team'**
+  String get premiumFeaturePriorityDesc;
+
+  /// No description provided for @premiumFeatureBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'PRO Badge'**
+  String get premiumFeatureBadge;
+
+  /// No description provided for @premiumFeatureBadgeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Display premium status on your profile'**
+  String get premiumFeatureBadgeDesc;
+
+  /// No description provided for @premiumFeatureEarlyAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Early Access'**
+  String get premiumFeatureEarlyAccess;
+
+  /// No description provided for @premiumFeatureEarlyAccessDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Try new features before others'**
+  String get premiumFeatureEarlyAccessDesc;
+
+  /// No description provided for @premiumMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get premiumMonthly;
+
+  /// No description provided for @premiumYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get premiumYearly;
+
+  /// No description provided for @premiumYearlySave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save {percent}%'**
+  String premiumYearlySave(Object percent);
+
+  /// No description provided for @premiumPricePerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'{price}/month'**
+  String premiumPricePerMonth(Object price);
+
+  /// No description provided for @premiumCurrentPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Plan'**
+  String get premiumCurrentPlan;
+
+  /// No description provided for @premiumFreePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get premiumFreePlan;
+
+  /// No description provided for @premiumUpgradeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade Now'**
+  String get premiumUpgradeButton;
+
+  /// No description provided for @premiumManageSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Subscription'**
+  String get premiumManageSubscription;
+
+  /// No description provided for @premiumRestorePurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Purchase'**
+  String get premiumRestorePurchase;
+
+  /// No description provided for @premiumTrialAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Try {days} days free'**
+  String premiumTrialAvailable(Object days);
+
+  /// No description provided for @premiumTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'By upgrading, you agree to our Terms of Service and Privacy Policy'**
+  String get premiumTerms;
+
+  /// No description provided for @premiumSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade Successful!'**
+  String get premiumSuccessTitle;
+
+  /// No description provided for @premiumSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Congratulations! Your account is now premium. Enjoy all exclusive features.'**
+  String get premiumSuccessMessage;
+
+  /// No description provided for @premiumErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade Failed'**
+  String get premiumErrorTitle;
+
+  /// No description provided for @premiumErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred. Please try again or contact support.'**
+  String get premiumErrorMessage;
+
+  /// No description provided for @premiumAlreadyPremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Already Premium'**
+  String get premiumAlreadyPremium;
+
+  /// No description provided for @premiumAlreadyPremiumMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account already has premium access.'**
+  String get premiumAlreadyPremiumMessage;
+
+  /// No description provided for @premiumCardMainTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade Your Experience'**
+  String get premiumCardMainTitle;
+
+  /// No description provided for @premiumCardTapToUpgrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to upgrade'**
+  String get premiumCardTapToUpgrade;
+
+  /// No description provided for @premiumSettingsItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Subscription'**
+  String get premiumSettingsItem;
+
+  /// No description provided for @premiumSettingsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to remove ads'**
+  String get premiumSettingsDesc;
+
+  /// No description provided for @premiumAppBarButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium'**
+  String get premiumAppBarButton;
+
+  /// No description provided for @premiumAppBarButtonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Open premium page'**
+  String get premiumAppBarButtonHint;
+
+  /// No description provided for @premiumFeatureUnlimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited'**
+  String get premiumFeatureUnlimited;
+
+  /// No description provided for @premiumFeatureUnlimitedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited access to all vendors'**
+  String get premiumFeatureUnlimitedDesc;
+
+  /// No description provided for @premiumFeatureAdvancedFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Filter'**
+  String get premiumFeatureAdvancedFilter;
+
+  /// No description provided for @premiumFeatureAdvancedFilterDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter vendors with specific criteria'**
+  String get premiumFeatureAdvancedFilterDesc;
+
+  /// No description provided for @premiumFeatureSaveEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Events'**
+  String get premiumFeatureSaveEvents;
+
+  /// No description provided for @premiumFeatureSaveEventsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and reschedule favorite events'**
+  String get premiumFeatureSaveEventsDesc;
+
+  /// No description provided for @premiumFeatureCustomTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Theme'**
+  String get premiumFeatureCustomTheme;
+
+  /// No description provided for @premiumFeatureCustomThemeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize app appearance to your liking'**
+  String get premiumFeatureCustomThemeDesc;
+
+  /// No description provided for @premiumPopupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to Upgrade?'**
+  String get premiumPopupTitle;
+
+  /// No description provided for @premiumPopupMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Get the best experience without ads and with exclusive features'**
+  String get premiumPopupMessage;
+
+  /// No description provided for @premiumPopupUpgrade.
+  ///
+  /// In en, this message translates to:
+  /// **'View Plans'**
+  String get premiumPopupUpgrade;
+
+  /// No description provided for @premiumPopupLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Maybe Later'**
+  String get premiumPopupLater;
+
+  /// No description provided for @backButtonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Back button'**
+  String get backButtonLabel;
+
+  /// No description provided for @backButtonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back to previous page'**
+  String get backButtonHint;
+
+  /// No description provided for @closePaymentMethodsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Close payment methods selection'**
+  String get closePaymentMethodsLabel;
+
+  /// No description provided for @closePaymentMethodsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Close list of payment methods'**
+  String get closePaymentMethodsHint;
+
+  /// No description provided for @paymentMethodLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment method {name}'**
+  String paymentMethodLabel(Object name);
+
+  /// No description provided for @selectPaymentMethodHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select this payment method'**
+  String get selectPaymentMethodHint;
+
+  /// No description provided for @upgradeNowButtonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade now button'**
+  String get upgradeNowButtonLabel;
+
+  /// No description provided for @upgradeNowButtonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Proceed with payment to upgrade to premium'**
+  String get upgradeNowButtonHint;
+
+  /// No description provided for @closeSuccessDialogLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Close success dialog'**
+  String get closeSuccessDialogLabel;
+
+  /// No description provided for @closeSuccessDialogHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Close upgrade confirmation message'**
+  String get closeSuccessDialogHint;
+
+  /// No description provided for @choosePlanLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose {plan} plan'**
+  String choosePlanLabel(Object plan);
+
+  /// No description provided for @choosePlanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select this subscription plan'**
+  String get choosePlanHint;
+
+  /// No description provided for @selectDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select date'**
+  String get selectDateLabel;
+
+  /// No description provided for @selectDateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose date for payment'**
+  String get selectDateHint;
+
   /// No description provided for @welcome.
   ///
   /// In en, this message translates to:

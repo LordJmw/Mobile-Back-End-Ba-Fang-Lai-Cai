@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/analytics/eventLogs.dart';
 import 'package:projek_uts_mbr/helper/localization_helper.dart';
@@ -52,22 +53,30 @@ class _HomePageState extends State<HomePage> {
     Vendordatabase vendordatabase = Vendordatabase();
     List<Vendormodel> allVendors = await vendordatabase.getData();
 
-    allVendors.sort(
-      (a, b) => b.penyedia.first.rating.compareTo(a.penyedia.first.rating),
-    );
-    return allVendors.take(8).toList();
+    return compute(sortVendorByRating, allVendors);
   }
 
   Future<List<Vendormodel>> _loadPortfolios() async {
     Vendordatabase vendordatabase = Vendordatabase();
     List<Vendormodel> allVendors = await vendordatabase.getData();
-    return allVendors.take(8).toList();
+    return compute(loadPortFeedsCompute, allVendors);
+  }
+
+  List<Vendormodel> sortVendorByRating(List<Vendormodel> vendors) {
+    vendors.sort(
+      (a, b) => b.penyedia.first.rating.compareTo(a.penyedia.first.rating),
+    );
+    return vendors.take(8).toList();
+  }
+
+  List<Vendormodel> loadPortFeedsCompute(List<Vendormodel> vendors) {
+    return vendors.take(8).toList();
   }
 
   Future<List<Vendormodel>> _loadFeeds() async {
     Vendordatabase vendordatabase = Vendordatabase();
     List<Vendormodel> allVendors = await vendordatabase.getData();
-    return allVendors.take(8).toList();
+    return compute(loadPortFeedsCompute, allVendors);
   }
 
   String _getFirstTestimonial(List<Testimoni> list) {
@@ -119,10 +128,21 @@ class _HomePageState extends State<HomePage> {
                     itemBuilder: (context, index) {
                       final vendor = vendors[index];
                       return Semantics(
-                        label: tr('button', 'vendorCardLabel', lang,params:  {
-                          "name1":vendor.penyedia.first.nama,
-                          "name2": '${vendor.penyedia.first.rating}'}),
-                        hint: tr('button', 'vendorCardHint', lang,params:  {"name":vendor.penyedia.first.nama,}),
+                        label: tr(
+                          'button',
+                          'vendorCardLabel',
+                          lang,
+                          params: {
+                            "name1": vendor.penyedia.first.nama,
+                            "name2": '${vendor.penyedia.first.rating}',
+                          },
+                        ),
+                        hint: tr(
+                          'button',
+                          'vendorCardHint',
+                          lang,
+                          params: {"name": vendor.penyedia.first.nama},
+                        ),
                         excludeSemantics: true,
                         child: _buildVendorCard(
                           context,
@@ -300,8 +320,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildCategory(IconData icon, String label, String code, Locale lang) {
     return Semantics(
-      label: tr('button', 'kategoriButtonLabel', lang, params: {"name" : label}),
-      hint: tr('button', 'kategoriButtonHint', lang, params: {"name" : label}),
+      label: tr('button', 'kategoriButtonLabel', lang, params: {"name": label}),
+      hint: tr('button', 'kategoriButtonHint', lang, params: {"name": label}),
       excludeSemantics: true,
       child: SizedBox(
         width: 90,
@@ -405,8 +425,13 @@ class _HomePageState extends State<HomePage> {
     Locale lang,
   ) {
     return Semantics(
-      label: tr('button', 'portofolioCardLabel', lang, params: {"name1":name,"name2":desc}),
-      hint: tr('button', 'portofolioCardHint', lang, params: {"name":name}),
+      label: tr(
+        'button',
+        'portofolioCardLabel',
+        lang,
+        params: {"name1": name, "name2": desc},
+      ),
+      hint: tr('button', 'portofolioCardHint', lang, params: {"name": name}),
       excludeSemantics: true,
       child: GestureDetector(
         onTap: () async {
@@ -470,8 +495,10 @@ class _HomePageState extends State<HomePage> {
     Locale lang,
   ) {
     return Semantics(
-      label: tr('button', 'komentarCardLabel', lang, params: {"name":user}) + text,
-      hint: tr('button', 'komentarCardHint', lang, params:  {"name":user}),
+      label:
+          tr('button', 'komentarCardLabel', lang, params: {"name": user}) +
+          text,
+      hint: tr('button', 'komentarCardHint', lang, params: {"name": user}),
       excludeSemantics: true,
       child: GestureDetector(
         onTap: () {

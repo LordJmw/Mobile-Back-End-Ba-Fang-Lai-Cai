@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:projek_uts_mbr/databases/database.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/services/dataServices.dart';
@@ -61,52 +62,24 @@ class Vendordatabase {
 
     if (rows.isEmpty) return [];
 
-    final List<Map<String, dynamic>> normalized = rows
-        .map((r) => Map<String, dynamic>.from(r))
-        .map((row) {
-          try {
-            row['harga'] =
-                row['harga'] != null && row['harga'].toString().isNotEmpty
-                ? jsonDecode(row['harga'])
-                : {};
-          } catch (_) {
-            row['harga'] = {};
-          }
-
-          try {
-            row['testimoni'] =
-                row['testimoni'] != null &&
-                    row['testimoni'].toString().isNotEmpty
-                ? jsonDecode(row['testimoni'])
-                : [];
-          } catch (_) {
-            row['testimoni'] = [];
-          }
-
-          return row;
-        })
-        .toList();
+    // memindahkan kerja berat ke isolate
+    final processedRows = await compute(
+      processVendorRows,
+      rows.map((e) => Map<String, dynamic>.from(e)).toList(),
+    );
 
     final Map<String, List<Penyedia>> groupedByKategori = {};
 
-    for (final row in normalized) {
+    for (final row in processedRows) {
       final kategori = (row['kategori'] ?? '').toString();
-      if (kategori.isEmpty) continue;
-
       final penyedia = Penyedia.fromJson(row);
+
       groupedByKategori.putIfAbsent(kategori, () => []).add(penyedia);
     }
 
-    final List<Vendormodel> vendors = groupedByKategori.entries.map((entry) {
-      final kategori = entry.key;
-      final penyediaList = entry.value;
-
-      penyediaList.sort((a, b) => b.rating.compareTo(a.rating));
-
-      return Vendormodel(kategori: kategori, penyedia: penyediaList);
+    return groupedByKategori.entries.map((entry) {
+      return Vendormodel(kategori: entry.key, penyedia: entry.value);
     }).toList();
-
-    return vendors;
   }
 
   Future<void> deletePackage(String vendorEmail, String packageName) async {
@@ -377,5 +350,52 @@ class Vendordatabase {
       where: 'email = ?',
       whereArgs: [email],
     );
+  }
+
+  List<Map<String, dynamic>> processVendorRows(
+    List<Map<String, dynamic>> rows,
+  ) {
+    final List<Map<String, dynamic>> normalized = rows.map((row) {
+      final r = Map<String, dynamic>.from(row);
+
+      try {
+        r['harga'] = r['harga'] != null && r['harga'].toString().isNotEmpty
+            ? jsonDecode(r['harga'])
+            : {};
+      } catch (_) {
+        r['harga'] = {};
+      }
+
+      try {
+        r['testimoni'] =
+            r['testimoni'] != null && r['testimoni'].toString().isNotEmpty
+            ? jsonDecode(r['testimoni'])
+            : [];
+      } catch (_) {
+        r['testimoni'] = [];
+      }
+
+      return r;
+    }).toList();
+
+    // grouping by kategori
+    final Map<String, List<Map<String, dynamic>>> grouped = {};
+
+    for (final row in normalized) {
+      final kategori = (row['kategori'] ?? '').toString();
+      if (kategori.isEmpty) continue;
+
+      grouped.putIfAbsent(kategori, () => []).add(row);
+    }
+
+    // flatten lagi agar bisa dikembalikan
+    final List<Map<String, dynamic>> result = [];
+
+    grouped.forEach((_, list) {
+      list.sort((a, b) => (b['rating'] as num).compareTo(a['rating'] as num));
+      result.addAll(list);
+    });
+
+    return result;
   }
 }

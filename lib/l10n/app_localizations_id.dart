@@ -567,6 +567,212 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String get premiumTitle => 'Upgrade ke Premium';
+
+  @override
+  String get premiumProBadge => 'PRO';
+
+  @override
+  String get premiumSubtitle => 'Nikmati pengalaman tanpa iklan';
+
+  @override
+  String get premiumFeaturesTitle => 'Fitur Premium';
+
+  @override
+  String get premiumFeatureNoAds => 'Tanpa Iklan';
+
+  @override
+  String get premiumFeatureNoAdsDesc => 'Nikmati aplikasi tanpa gangguan iklan';
+
+  @override
+  String get premiumFeaturePriority => 'Prioritas Dukungan';
+
+  @override
+  String get premiumFeaturePriorityDesc =>
+      'Dapatkan bantuan lebih cepat dari tim kami';
+
+  @override
+  String get premiumFeatureBadge => 'Lencana PRO';
+
+  @override
+  String get premiumFeatureBadgeDesc =>
+      'Tampilkan status premium di profil Anda';
+
+  @override
+  String get premiumFeatureEarlyAccess => 'Akses Awal';
+
+  @override
+  String get premiumFeatureEarlyAccessDesc =>
+      'Coba fitur baru sebelum yang lain';
+
+  @override
+  String get premiumMonthly => 'Bulanan';
+
+  @override
+  String get premiumYearly => 'Tahunan';
+
+  @override
+  String premiumYearlySave(Object percent) {
+    return 'Hemat $percent%';
+  }
+
+  @override
+  String premiumPricePerMonth(Object price) {
+    return '$price/bulan';
+  }
+
+  @override
+  String get premiumCurrentPlan => 'Paket Saat Ini';
+
+  @override
+  String get premiumFreePlan => 'Gratis';
+
+  @override
+  String get premiumUpgradeButton => 'Upgrade Sekarang';
+
+  @override
+  String get premiumManageSubscription => 'Kelola Langganan';
+
+  @override
+  String get premiumRestorePurchase => 'Pulihkan Pembelian';
+
+  @override
+  String premiumTrialAvailable(Object days) {
+    return 'Coba $days hari gratis';
+  }
+
+  @override
+  String get premiumTerms =>
+      'Dengan upgrade, Anda menyetujui Ketentuan Layanan dan Kebijakan Privasi kami';
+
+  @override
+  String get premiumSuccessTitle => 'Upgrade Berhasil!';
+
+  @override
+  String get premiumSuccessMessage =>
+      'Selamat! Akun Anda sekarang premium. Nikmati semua fitur eksklusif.';
+
+  @override
+  String get premiumErrorTitle => 'Upgrade Gagal';
+
+  @override
+  String get premiumErrorMessage =>
+      'Terjadi kesalahan. Silakan coba lagi atau hubungi dukungan.';
+
+  @override
+  String get premiumAlreadyPremium => 'Anda Sudah Premium';
+
+  @override
+  String get premiumAlreadyPremiumMessage =>
+      'Akun Anda sudah memiliki akses premium.';
+
+  @override
+  String get premiumCardMainTitle => 'Tingkatkan Pengalaman Anda';
+
+  @override
+  String get premiumCardTapToUpgrade => 'Ketuk untuk upgrade';
+
+  @override
+  String get premiumSettingsItem => 'Langganan Premium';
+
+  @override
+  String get premiumSettingsDesc => 'Upgrade untuk menghilangkan iklan';
+
+  @override
+  String get premiumAppBarButton => 'Premium';
+
+  @override
+  String get premiumAppBarButtonHint => 'Buka halaman premium';
+
+  @override
+  String get premiumFeatureUnlimited => 'Tak Terbatas';
+
+  @override
+  String get premiumFeatureUnlimitedDesc => 'Akses tanpa batas ke semua vendor';
+
+  @override
+  String get premiumFeatureAdvancedFilter => 'Filter Lanjutan';
+
+  @override
+  String get premiumFeatureAdvancedFilterDesc =>
+      'Filter vendor dengan kriteria spesifik';
+
+  @override
+  String get premiumFeatureSaveEvents => 'Simpan Acara';
+
+  @override
+  String get premiumFeatureSaveEventsDesc =>
+      'Simpan dan atur ulang acara favorit';
+
+  @override
+  String get premiumFeatureCustomTheme => 'Tema Kustom';
+
+  @override
+  String get premiumFeatureCustomThemeDesc =>
+      'Ubah tampilan aplikasi sesuai selera';
+
+  @override
+  String get premiumPopupTitle => 'Ingin Upgrade?';
+
+  @override
+  String get premiumPopupMessage =>
+      'Dapatkan pengalaman terbaik tanpa iklan dan dengan fitur eksklusif';
+
+  @override
+  String get premiumPopupUpgrade => 'Lihat Paket';
+
+  @override
+  String get premiumPopupLater => 'Nanti Saja';
+
+  @override
+  String get backButtonLabel => 'Tombol kembali';
+
+  @override
+  String get backButtonHint => 'Kembali ke halaman sebelumnya';
+
+  @override
+  String get closePaymentMethodsLabel => 'Tutup pemilihan metode pembayaran';
+
+  @override
+  String get closePaymentMethodsHint => 'Tutup daftar metode pembayaran';
+
+  @override
+  String paymentMethodLabel(Object name) {
+    return 'Metode pembayaran $name';
+  }
+
+  @override
+  String get selectPaymentMethodHint => 'Pilih metode pembayaran ini';
+
+  @override
+  String get upgradeNowButtonLabel => 'Tombol upgrade sekarang';
+
+  @override
+  String get upgradeNowButtonHint =>
+      'Lakukan pembayaran untuk upgrade ke premium';
+
+  @override
+  String get closeSuccessDialogLabel => 'Tutup dialog sukses';
+
+  @override
+  String get closeSuccessDialogHint =>
+      'Tutup pesan konfirmasi upgrade berhasil';
+
+  @override
+  String choosePlanLabel(Object plan) {
+    return 'Pilih paket $plan';
+  }
+
+  @override
+  String get choosePlanHint => 'Pilih paket langganan ini';
+
+  @override
+  String get selectDateLabel => 'Pilih tanggal';
+
+  @override
+  String get selectDateHint => 'Pilih tanggal untuk pembayaran';
+
+  @override
   String get welcome => 'Selamat Datang!';
 
   @override
