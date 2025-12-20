@@ -1,5 +1,6 @@
 import 'package:projek_uts_mbr/model/CustomerModel.dart';
 import 'package:projek_uts_mbr/databases/customerDatabase.dart';
+import 'package:projek_uts_mbr/services/notification_services.dart';
 
 class PremiumService {
   final CustomerDatabase _customerDb = CustomerDatabase();
@@ -32,6 +33,10 @@ class PremiumService {
 
       if (success) {
         print('Successfully upgraded $customerEmail to premium');
+        await NotificationServices.schedulePremiumReminder(
+          customerEmail: customerEmail,
+          expiryDate: expiryDate,
+        );
       } else {
         print('Failed to update premium status for $customerEmail');
       }
@@ -49,6 +54,19 @@ class PremiumService {
     } catch (e) {
       print('Error checking premium status: $e');
       return false;
+    }
+  }
+
+  Future<int> premiumDaysLeft() async {
+    try {
+      DateTime? premiumExpiryDate = await CustomerDatabase().getExpiryDate();
+      print("expire nya ${premiumExpiryDate}");
+      final now = DateTime.now();
+      if (now.isAfter(premiumExpiryDate!)) return 0;
+      return premiumExpiryDate!.difference(now).inDays;
+    } catch (e) {
+      print("Error getting info about remaining premium subscription days");
+      rethrow;
     }
   }
 

@@ -220,6 +220,13 @@ class CustomerDatabase {
     return false;
   }
 
+  Future<DateTime?> getExpiryDate() async {
+    CustomerModel? currCustomer = await getCurrentCustomer();
+    if (currCustomer!.isPremiumUser) {
+      return currCustomer.premiumExpiryDate;
+    }
+  }
+
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
   }

@@ -728,6 +728,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get alreadyPremiumUser => 'Anda Sudah Menjadi User Premium';
 
   @override
+  String premiumDaysLeft(Object days) {
+    return 'Paket anda tersisa $days hari lagi';
+  }
+
+  @override
   String get backButtonLabel => 'Tombol kembali';
 
   @override

@@ -727,6 +727,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get alreadyPremiumUser => 'You are Already a Premium User';
 
   @override
+  String premiumDaysLeft(Object days) {
+    return 'Your subscription is active for another $days days';
+  }
+
+  @override
   String get backButtonLabel => 'Back button';
 
   @override

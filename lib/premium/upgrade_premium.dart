@@ -3,7 +3,9 @@ import 'package:projek_uts_mbr/databases/customerDatabase.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/helper/semantics.dart';
 import 'package:projek_uts_mbr/model/CustomerModel.dart';
+import 'package:projek_uts_mbr/services/notification_services.dart';
 import 'package:projek_uts_mbr/services/premium_services.dart';
+import 'package:projek_uts_mbr/services/sessionManager.dart';
 import 'package:provider/provider.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
 
@@ -138,15 +140,21 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
         expiryDate: expiryDate,
         paymentMethod: _selectedPaymentMethod,
       );
-
       if (success) {
         print(
           "customer setelah beli status premium : ${customer.isPremiumActive}",
         );
-        _showSuccessDialog();
       } else {
         print('Gagal memproses upgrade. Silakan coba lagi.');
       }
+      final notifStatus = await SessionManager().getNotificationStatus();
+      if (notifStatus == true) {
+        NotificationServices.schedulePremiumReminder(
+          customerEmail: customer.email,
+          expiryDate: expiryDate,
+        );
+      }
+      _showSuccessDialog();
     } catch (e) {
       print('Error during upgrade: $e');
       print('Terjadi kesalahan: $e');
@@ -319,6 +327,7 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
   }
 
   bool isPremium = false;
+  int PremiumDaysLeft = 0;
 
   Future<void> isUserPremium() async {
     bool stillPremium = await CustomerDatabase().isUserPremium();
@@ -330,11 +339,19 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
     }
   }
 
+  Future<void> premiumSubscriptionLeft() async {
+    int remainingPremiumDays = await PremiumService().premiumDaysLeft();
+    setState(() {
+      PremiumDaysLeft = remainingPremiumDays;
+    });
+    print("sisa premium di init : ${PremiumDaysLeft}");
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     isUserPremium();
-
+    premiumSubscriptionLeft();
     super.initState();
   }
 
@@ -642,7 +659,14 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
                   width: double.infinity,
                   height: 56,
                   child: isPremium
-                      ? Center(child: Text(l10n.alreadyPremiumUser))
+                      ? Center(
+                          child: Column(
+                            children: [
+                              Text('${l10n.alreadyPremiumUser}'),
+                              Text(l10n.premiumDaysLeft(PremiumDaysLeft)),
+                            ],
+                          ),
+                        )
                       : ElevatedButton(
                           onPressed: _isProcessing ? null : _processUpgrade,
                           style: ElevatedButton.styleFrom(

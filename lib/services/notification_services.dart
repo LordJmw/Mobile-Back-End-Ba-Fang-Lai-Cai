@@ -42,4 +42,71 @@ class NotificationServices {
       ),
     );
   }
+
+  static Future<void> schedulePremiumReminder({
+    required String customerEmail,
+    required DateTime expiryDate,
+  }) async {
+    final oneDayBefore = expiryDate.subtract(Duration(days: 1));
+
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: Random().nextInt(100000),
+        channelKey: 'basic_channel',
+        title: 'Premium Subscription Reminder',
+        body:
+            'Premium Anda akan berakhir besok. Perpanjang sekarang untuk tetap menikmati fitur eksklusif!',
+        notificationLayout: NotificationLayout.Default,
+        category: NotificationCategory.Reminder,
+        payload: {
+          'type': 'premium_reminder',
+          'customerEmail': customerEmail,
+          'daysLeft': '1',
+          'expiryDate': expiryDate.toIso8601String(),
+        },
+      ),
+      schedule: NotificationCalendar(
+        year: oneDayBefore.year,
+        month: oneDayBefore.month,
+        day: oneDayBefore.day,
+        hour: 10, // 10 AM
+        minute: 0,
+        second: 0,
+        preciseAlarm: true,
+        allowWhileIdle: true,
+      ),
+    );
+
+    print('Scheduled premium reminder for 1 day before expiry: $oneDayBefore');
+
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: Random().nextInt(100000),
+        channelKey: 'basic_channel',
+        title: 'Premium Subscription Expired',
+        body:
+            'Premium Anda telah berakhir. Upgrade sekarang untuk kembali menikmati fitur tanpa iklan!',
+        notificationLayout: NotificationLayout.Default,
+        category: NotificationCategory.Reminder,
+        payload: {
+          'type': 'premium_expired',
+          'customerEmail': customerEmail,
+          'daysLeft': '0',
+          'expiryDate': expiryDate.toIso8601String(),
+        },
+      ),
+      schedule: NotificationCalendar(
+        year: expiryDate.year,
+        month: expiryDate.month,
+        day: expiryDate.day,
+        hour: 9, // 9 AM
+        minute: 0,
+        second: 0,
+        preciseAlarm: true,
+        allowWhileIdle: true,
+      ),
+    );
+
+    print('Scheduled premium expired notification for: $expiryDate');
+  }
 }

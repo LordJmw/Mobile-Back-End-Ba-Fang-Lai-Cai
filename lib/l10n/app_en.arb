@@ -256,6 +256,7 @@
   "premiumPopupUpgrade": "View Plans",
   "premiumPopupLater": "Maybe Later",
   "alreadyPremiumUser" : "You are Already a Premium User",
+  "premiumDaysLeft" : "Your subscription is active for another {days} days",
 
   "backButtonLabel": "Back button",
   "backButtonHint": "Go back to previous page",

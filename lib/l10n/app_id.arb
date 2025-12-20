@@ -358,6 +358,7 @@
   "premiumPopupUpgrade": "Lihat Paket",
   "premiumPopupLater": "Nanti Saja",
   "alreadyPremiumUser" : "Anda Sudah Menjadi User Premium",
+  "premiumDaysLeft" : "Paket anda tersisa {days} hari lagi",
 
    "backButtonLabel": "Tombol kembali",
   "backButtonHint": "Kembali ke halaman sebelumnya",

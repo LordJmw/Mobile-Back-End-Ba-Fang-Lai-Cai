@@ -1424,6 +1424,12 @@ abstract class AppLocalizations {
   /// **'You are Already a Premium User'**
   String get alreadyPremiumUser;
 
+  /// No description provided for @premiumDaysLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Your subscription is active for another {days} days'**
+  String premiumDaysLeft(Object days);
+
   /// No description provided for @backButtonLabel.
   ///
   /// In en, this message translates to:
