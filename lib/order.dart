@@ -6,7 +6,6 @@ import 'package:projek_uts_mbr/databases/purchaseHistoryDatabase.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/helper/semantics.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
-import 'package:projek_uts_mbr/l10n/app_localizations_en.dart';
 import 'package:projek_uts_mbr/main.dart';
 import 'package:projek_uts_mbr/model/purchaseHistoryModel.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
@@ -28,22 +27,25 @@ class OrderPage extends StatefulWidget {
 class _OrderPageState extends State<OrderPage> {
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
-  Purchasehistorydatabase _purchaseDb = Purchasehistorydatabase();
+  final Purchasehistorydatabase _purchaseDb = Purchasehistorydatabase();
 
   DateTime? selectedDate;
   String? selectedPackage;
   int? selectedPrice;
+  int? _originalPrice;
 
   Map<String, int> packages = {};
   bool isLoading = true;
 
   AdsServices adsServices = AdsServices();
+  bool _discountApplied = false;
 
   @override
   void initState() {
     super.initState();
     getData();
     adsServices.loadInterStitialAd();
+    adsServices.loadRewardedAd();
   }
 
   Future<void> getDataFromDatabase() async {
@@ -84,6 +86,7 @@ class _OrderPageState extends State<OrderPage> {
         if (selectedKey != null && packages.containsKey(selectedKey)) {
           selectedPackage = selectedKey;
           selectedPrice = packages[selectedKey];
+          _originalPrice = packages[selectedKey];
         } else {
           selectedPackage = null;
           selectedPrice = null;
@@ -163,6 +166,7 @@ class _OrderPageState extends State<OrderPage> {
         if (selectedKey != null && packages.containsKey(selectedKey)) {
           selectedPackage = selectedKey;
           selectedPrice = packages[selectedKey];
+          _originalPrice = packages[selectedKey];
         } else {
           selectedPackage = null;
           selectedPrice = null;
@@ -334,6 +338,26 @@ class _OrderPageState extends State<OrderPage> {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(backgroundColor: Colors.green, content: Text(msg)));
+  }
+
+  void _showRewardedAd() {
+    final l10n = AppLocalizations.of(context)!;
+    if (_discountApplied) {
+      _showError("Discount has already been applied.");
+      return;
+    }
+
+    if (_originalPrice != null && _originalPrice! > 0) {
+      adsServices.showRewardedAd(() {
+        setState(() {
+          selectedPrice = (_originalPrice! * 0.98).round();
+          _discountApplied = true;
+        });
+        _showSuccess("2% discount applied! New price: Rp $selectedPrice");
+      });
+    } else {
+      _showError(l10n.selectPackageFirst);
+    }
   }
 
   @override
@@ -520,6 +544,8 @@ class _OrderPageState extends State<OrderPage> {
                                             setState(() {
                                               selectedPackage = value;
                                               selectedPrice = packages[value];
+                                              _originalPrice = packages[value];
+                                              _discountApplied = false;
                                             });
                                           },
                                         ),
@@ -557,6 +583,48 @@ class _OrderPageState extends State<OrderPage> {
 
                           const SizedBox(height: 20),
 
+                          Semantics(
+                            label: tr('button', 'adButton', lang),
+                            excludeSemantics: true,
+                            container: true,
+                            child: Row(
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.twatchAdGetDisc,
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: _showRewardedAd,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.pink,
+                                      foregroundColor: Colors.white,
+                                      textStyle: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 15,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          8.0,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!.watchAdGetDisc,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+
                           Text(
                             l10n.priceSummary,
                             style: TextStyle(
@@ -564,6 +632,35 @@ class _OrderPageState extends State<OrderPage> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          if (_discountApplied && _originalPrice != null) ...[
+                            Row(
+                              children: [
+                                Text(l10n.originalPrice),
+                                const Spacer(),
+                                Text(
+                                  "Rp ${_originalPrice!}",
+                                  style: const TextStyle(
+                                    decoration: TextDecoration.lineThrough,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text('${l10n.discount} (2%): '),
+                                const Spacer(),
+                                Text(
+                                  "- Rp ${_originalPrice! - selectedPrice!}",
+                                  style: const TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Divider(thickness: 1, height: 20),
+                          ],
                           Row(
                             children: [
                               Text('${l10n.totalPrice}: '),
@@ -574,6 +671,7 @@ class _OrderPageState extends State<OrderPage> {
                                     : "Rp ${selectedPrice!}",
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
+                                  fontSize: 16,
                                 ),
                               ),
                             ],

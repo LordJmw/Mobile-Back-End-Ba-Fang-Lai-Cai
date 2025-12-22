@@ -1,91 +1,92 @@
 import 'package:flutter/material.dart';
 
 const Map<String, Map<String, Map<String, String>>> semanticsText = {
-'button': {
+  'button': {
     "namaTokoKosong": {
       "id": "Nama toko tidak boleh kosong.",
-      "en": "Store name cannot be empty."
+      "en": "Store name cannot be empty.",
     },
     "emailKosong": {
       "id": "Email tidak boleh kosong.",
-      "en": "Email cannot be empty."
+      "en": "Email cannot be empty.",
     },
     "emailFormatSalah": {
       "id": "Format email tidak valid.",
-      "en": "Invalid email format."
+      "en": "Invalid email format.",
     },
     "teleponKosong": {
       "id": "Nomor telepon tidak boleh kosong.",
-      "en": "Phone number cannot be empty."
+      "en": "Phone number cannot be empty.",
     },
     "teleponFormatSalah": {
       "id": "Nomor telepon hanya boleh angka.",
-      "en": "Phone number must contain digits only."
+      "en": "Phone number must contain digits only.",
     },
     "kategoriKosong": {
       "id": "Kategori toko harus dipilih.",
-      "en": "Store category must be selected."
+      "en": "Store category must be selected.",
     },
     "alamatKosong": {
       "id": "Alamat tidak boleh kosong.",
-      "en": "Address cannot be empty."
+      "en": "Address cannot be empty.",
     },
     "deskripsiKosong": {
       "id": "Deskripsi toko tidak boleh kosong.",
-      "en": "Store description cannot be empty."
+      "en": "Store description cannot be empty.",
     },
     "hargaKosong": {
       "id": "Harga tidak boleh kosong.",
-      "en": "Price cannot be empty."
+      "en": "Price cannot be empty.",
     },
     "hargaTidakValid": {
       "id": "Harga harus berupa angka.",
-      "en": "Price must be a number."
+      "en": "Price must be a number.",
     },
     "hargaTerlaluBesar": {
       "id": "Harga tidak boleh lebih dari 10 juta.",
-      "en": "Price cannot exceed 10 million."
+      "en": "Price cannot exceed 10 million.",
     },
     "jasaKosong": {
       "id": "Deskripsi jasa tidak boleh kosong.",
-      "en": "Service description cannot be empty."
+      "en": "Service description cannot be empty.",
     },
     "passwordKosong": {
       "id": "Password tidak boleh kosong.",
-      "en": "Password cannot be empty."
+      "en": "Password cannot be empty.",
     },
     "passwordPendek": {
       "id": "Password minimal 6 karakter.",
-      "en": "Password must be at least 6 characters."
+      "en": "Password must be at least 6 characters.",
     },
     "confirmKosong": {
       "id": "Konfirmasi password tidak boleh kosong.",
-      "en": "Confirmation password cannot be empty."
+      "en": "Confirmation password cannot be empty.",
     },
     "passwordTidakSama": {
       "id": "Password dan konfirmasi tidak sama.",
-      "en": "Password and confirmation do not match."
+      "en": "Password and confirmation do not match.",
     },
     "registerKosong": {
       "id": "Silakan lengkapi formulir terlebih dahulu.",
-      "en": "Please complete the registration form first."
+      "en": "Please complete the registration form first.",
     },
-    
+
     "teleponPendek": {
       "id": "Nomor telepon minimal 10 digit.",
-      "en": "Phone number must be at least 10 digits."
+      "en": "Phone number must be at least 10 digits.",
     },
-    "loginKosong" : {
-      "id" : "email atau password anda masih kosong, silahkan isi terlebih dahulu",
-      "en" : "Your email and password are blank. Please fill it in first."
+    "loginKosong": {
+      "id":
+          "email atau password anda masih kosong, silahkan isi terlebih dahulu",
+      "en": "Your email and password are blank. Please fill it in first.",
     },
-    "loginProcessing" : {
-      "id" : "Sedang memproses login",
-      "en" : "processing login"
+    "loginProcessing": {
+      "id": "Sedang memproses login",
+      "en": "processing login",
     },
-    "registerProcessing" : {
-      "id" : "Sedang memproses login",
-      "en" : "processing login"
+    "registerProcessing": {
+      "id": "Sedang memproses login",
+      "en": "processing login",
     },
     'bottomNavBarLabel': {'id': 'Halaman home', 'en': 'Home page'},
     'kategoriCard': {
@@ -133,6 +134,12 @@ const Map<String, Map<String, Map<String, String>>> semanticsText = {
     'bayarButton': {
       'id': 'Tombol Pembayaran, Ketuk dua kali jika ingin membayar',
       'en': 'Payment button, double tap if you want to pay',
+    },
+    'adButton': {
+      'id':
+          'Tombol Iklan, Ketuk dua kali jika ingin menonton iklan untuk mendapatkan diskon',
+      'en':
+          'Ad button, double tap if you want to watch an ad to get a discount',
     },
     'notifikasiButtonLabel': {
       'id': 'Tombol Notifikasi',
@@ -244,20 +251,20 @@ const Map<String, Map<String, Map<String, String>>> semanticsText = {
       'en': 'double tap to view {name} category page',
     },
     'vendorCardLabel': {
-      'id':'Vendor dengan nama {name1} dan rating {name2}',
-      'en':'Vendor with name {name1} and rating {name2}',
+      'id': 'Vendor dengan nama {name1} dan rating {name2}',
+      'en': 'Vendor with name {name1} and rating {name2}',
     },
     'vendorCardHint': {
       'id': 'ketuk dua kali untuk melihat detail {name}',
       'en': 'double tap to view detail {name}',
     },
     'portofolioCardLabel': {
-      'id':'Portofolio dengan nama {name1} dan deksripsi {name2}',
-      'en':'Portfolio with name {name1} and description name2}',
+      'id': 'Portofolio dengan nama {name1} dan deksripsi {name2}',
+      'en': 'Portfolio with name {name1} and description name2}',
     },
     'portofolioCardHint': {
-      'id':'ketuk dua kali untuk melihat detail {name}',
-      'en':'double tap to view detail {name}',
+      'id': 'ketuk dua kali untuk melihat detail {name}',
+      'en': 'double tap to view detail {name}',
     },
     'fotoVendorLabel': {
       'id': 'Foto profil untuk {name}',
@@ -328,9 +335,9 @@ const Map<String, Map<String, Map<String, String>>> semanticsText = {
       'id': 'ketuk dua kali untuk mengubah foto profil anda',
       'en': 'double tap to change your profile picture',
     },
-    'fullPaketLabel':{
-     'id':'Paket {name1} dengan harga {name2}',
-     'en':'Package {name1} with price {name2}'
+    'fullPaketLabel': {
+      'id': 'Paket {name1} dengan harga {name2}',
+      'en': 'Package {name1} with price {name2}',
     },
     'editPaketButtonLabel': {
       'id': 'Tombol Edit Paket',
@@ -376,7 +383,7 @@ const Map<String, Map<String, Map<String, String>>> semanticsText = {
       'en':
           'Vendor details with name {name1}, rating {name2} from {name3} reviews',
     },
-    'deskripsiVendorCard':{
+    'deskripsiVendorCard': {
       'id': 'Tentang {name1} , {name2}',
       'en': 'about {name1} , {name2}',
     },
@@ -445,21 +452,28 @@ const Map<String, Map<String, Map<String, String>>> semanticsText = {
       'id': 'Kolom pilih paket, ketuk dua kali jika ingin memilih paket',
       'en': 'Select package column, double-tap to select a package',
     },
-    'pilihPaketPesanF':{
-      'id':'kamu memilih paket {name}, ketuk dua kali jika ingin mengganti paket',
-      'en':'You have selected the {name} package. Tap twice if you want to change the package.'
+    'pilihPaketPesanF': {
+      'id':
+          'kamu memilih paket {name}, ketuk dua kali jika ingin mengganti paket',
+      'en':
+          'You have selected the {name} package. Tap twice if you want to change the package.',
     },
-    'pemesananLokasi':{
-      'id':'Kolom Lokasi Acara, ketuk dua kali jika ingin mengisi kolom lokasi acara',
-      'en':'Event Location column, double tap if you want to fill in the event location column'
+    'pemesananLokasi': {
+      'id':
+          'Kolom Lokasi Acara, ketuk dua kali jika ingin mengisi kolom lokasi acara',
+      'en':
+          'Event Location column, double tap if you want to fill in the event location column',
     },
     'pemesananTglTLabel': {
-      'id': 'Kolom Tanggal Acara, ketuk dua kali jika ingin memilih tanggal acara',
+      'id':
+          'Kolom Tanggal Acara, ketuk dua kali jika ingin memilih tanggal acara',
       'en': 'Event Date Column, double tap to select the event date',
     },
     'pemesananTglFLabel': {
-      'id': 'Anda telah memilih tanggal {name}, ketuk dua kali jika ingin mengganti tanggal acara ',
-      'en': 'You have selected {name}. Tap twice if you want to change the event date.',
+      'id':
+          'Anda telah memilih tanggal {name}, ketuk dua kali jika ingin mengganti tanggal acara ',
+      'en':
+          'You have selected {name}. Tap twice if you want to change the event date.',
     },
     'rentangHargaLabel': {
       'id': 'Rentang harga mulai dari 0 rupiah sampai 10 juta rupiah',
@@ -556,8 +570,8 @@ const Map<String, Map<String, Map<String, String>>> semanticsText = {
 
     'namaPaketLabel': {'id': 'Kolom Nama Paket', 'en': 'Package Name'},
     'namaPaketHint': {
-      'id': 'Nama Paket anda {name}',
-      'en': 'Your package name {name}',
+      'id': 'Ketuk dua kali untuk mengubah nama paket',
+      'en': 'Double tap to change the package name',
     },
 
     'rentangHargaValue': {
@@ -622,9 +636,10 @@ String tr(
 }) {
   final lang = locale.languageCode;
 
-  String base = semanticsText[group]?[key]?[lang]
-      ?? semanticsText[group]?[key]?['id']
-      ?? '';
+  String base =
+      semanticsText[group]?[key]?[lang] ??
+      semanticsText[group]?[key]?['id'] ??
+      '';
 
   if (params == null) return base;
 
