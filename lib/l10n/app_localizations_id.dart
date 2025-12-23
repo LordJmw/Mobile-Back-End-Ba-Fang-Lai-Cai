@@ -200,8 +200,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get serviceType => 'Jenis Layanan';
 
   @override
-  String get noProductsMatchFilter =>
-      'Tidak ada Produk sesuai filter saat ini!';
+  String get noProductsMatchFilter => 'Tidak ada Produk sesuai filter saat ini!';
 
   @override
   String get paymentPage => 'Halaman Pembayaran';
@@ -246,8 +245,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get loadingData => 'Sedang memuat data...';
 
   @override
-  String get loginAsCustomerToBuy =>
-      'Login sebagai customer untuk dapat membeli paket';
+  String get loginAsCustomerToBuy => 'Login sebagai customer untuk dapat membeli paket';
 
   @override
   String get selectEventDateFirst => 'Pilih tanggal acara terlebih dahulu';
@@ -256,12 +254,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get selectPackageFirst => 'Pilih paket terlebih dahulu';
 
   @override
-  String get packageNotAvailable =>
-      'Paket tidak tersedia. Silakan pilih paket lain.';
+  String get packageNotAvailable => 'Paket tidak tersedia. Silakan pilih paket lain.';
 
   @override
-  String get purchaseSuccessful =>
-      'Pembelian berhasil! Paket telah ditambahkan ke profil Anda.';
+  String get purchaseSuccessful => 'Pembelian berhasil! Paket telah ditambahkan ke profil Anda.';
 
   @override
   String copyright(Object appName) {
@@ -336,19 +332,16 @@ class AppLocalizationsId extends AppLocalizations {
   String get english => 'English';
 
   @override
-  String get aboutAppDescription1 =>
-      'EventHub adalah platform all-in-one untuk menyewa jasa profesional untuk berbagai kebutuhan event Anda.';
+  String get aboutAppDescription1 => 'EventHub adalah platform all-in-one untuk menyewa jasa profesional untuk berbagai kebutuhan event Anda.';
 
   @override
-  String get aboutAppDescription2 =>
-      'Aplikasi ini menghubungkan Customer dengan Vendor terpercaya dalam satu tempat yang mudah digunakan.';
+  String get aboutAppDescription2 => 'Aplikasi ini menghubungkan Customer dengan Vendor terpercaya dalam satu tempat yang mudah digunakan.';
 
   @override
   String get forVendors => 'Untuk Vendor';
 
   @override
-  String get vendorDescription =>
-      'Vendor dapat menambah dan mengelola paket layanan mereka langsung melalui aplikasi, memudahkan dalam menjangkau lebih banyak customer potensial.';
+  String get vendorDescription => 'Vendor dapat menambah dan mengelola paket layanan mereka langsung melalui aplikasi, memudahkan dalam menjangkau lebih banyak customer potensial.';
 
   @override
   String get termsOfService => 'Ketentuan Layanan';
@@ -464,23 +457,19 @@ class AppLocalizationsId extends AppLocalizations {
   String get packagesDeletedByVendor => 'Paket sudah dihapus oleh vendor.';
 
   @override
-  String get thisPackageDeletedByVendor =>
-      'Paket ini sudah dihapus oleh vendor.';
+  String get thisPackageDeletedByVendor => 'Paket ini sudah dihapus oleh vendor.';
 
   @override
   String get deleteAccount => 'Hapus Akun';
 
   @override
-  String get deleteAccountWarning =>
-      'Apakah Anda yakin ingin menghapus akun Anda? Tindakan ini tidak dapat dibatalkan.';
+  String get deleteAccountWarning => 'Apakah Anda yakin ingin menghapus akun Anda? Tindakan ini tidak dapat dibatalkan.';
 
   @override
-  String get deleteAccountConsequences =>
-      'Semua data Anda, pesanan, dan preferensi akan dihapus secara permanen.';
+  String get deleteAccountConsequences => 'Semua data Anda, pesanan, dan preferensi akan dihapus secara permanen.';
 
   @override
-  String get enterPasswordToConfirm =>
-      'Masukkan password Anda untuk konfirmasi:';
+  String get enterPasswordToConfirm => 'Masukkan password Anda untuk konfirmasi:';
 
   @override
   String get enterYourPassword => 'Masukkan password Anda';
@@ -495,12 +484,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get wrongPassword => 'Password salah. Silakan coba lagi.';
 
   @override
-  String get requiresRecentLogin =>
-      'Untuk alasan keamanan, silakan login ulang sebelum menghapus akun.';
+  String get requiresRecentLogin => 'Untuk alasan keamanan, silakan login ulang sebelum menghapus akun.';
 
   @override
-  String get tooManyAttempts =>
-      'Terlalu banyak percobaan. Silakan coba lagi nanti.';
+  String get tooManyAttempts => 'Terlalu banyak percobaan. Silakan coba lagi nanti.';
 
   @override
   String get deleteAccountFailed => 'Gagal menghapus akun. Silakan coba lagi.';
@@ -509,8 +496,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get accountDeletedSuccessfully => 'Akun berhasil dihapus.';
 
   @override
-  String get permanentDeleteWarning =>
-      'Hapus akun dan data Anda secara permanen';
+  String get permanentDeleteWarning => 'Hapus akun dan data Anda secara permanen';
 
   @override
   String get dangerZone => 'Zona Bahaya';
@@ -561,8 +547,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get notifPermissionTitle => 'Aktifkan Notifikasi';
 
   @override
-  String get notifPermissionDesc =>
-      'Kami memerlukan izin notifikasi untuk mengingatkan pesanan Anda dan memberi tahu promo terbaru.';
+  String get notifPermissionDesc => 'Kami memerlukan izin notifikasi untuk mengingatkan pesanan Anda dan memberi tahu promo terbaru.';
 
   @override
   String get notifPermissionAllow => 'Izinkan';
@@ -600,22 +585,19 @@ class AppLocalizationsId extends AppLocalizations {
   String get premiumFeaturePriority => 'Prioritas Dukungan';
 
   @override
-  String get premiumFeaturePriorityDesc =>
-      'Dapatkan bantuan lebih cepat dari tim kami';
+  String get premiumFeaturePriorityDesc => 'Dapatkan bantuan lebih cepat dari tim kami';
 
   @override
   String get premiumFeatureBadge => 'Lencana PRO';
 
   @override
-  String get premiumFeatureBadgeDesc =>
-      'Tampilkan status premium di profil Anda';
+  String get premiumFeatureBadgeDesc => 'Tampilkan status premium di profil Anda';
 
   @override
   String get premiumFeatureEarlyAccess => 'Akses Awal';
 
   @override
-  String get premiumFeatureEarlyAccessDesc =>
-      'Coba fitur baru sebelum yang lain';
+  String get premiumFeatureEarlyAccessDesc => 'Coba fitur baru sebelum yang lain';
 
   @override
   String get premiumMonthly => 'Bulanan';
@@ -654,29 +636,25 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get premiumTerms =>
-      'Dengan upgrade, Anda menyetujui Ketentuan Layanan dan Kebijakan Privasi kami';
+  String get premiumTerms => 'Dengan upgrade, Anda menyetujui Ketentuan Layanan dan Kebijakan Privasi kami';
 
   @override
   String get premiumSuccessTitle => 'Upgrade Berhasil!';
 
   @override
-  String get premiumSuccessMessage =>
-      'Selamat! Akun Anda sekarang premium. Nikmati semua fitur eksklusif.';
+  String get premiumSuccessMessage => 'Selamat! Akun Anda sekarang premium. Nikmati semua fitur eksklusif.';
 
   @override
   String get premiumErrorTitle => 'Upgrade Gagal';
 
   @override
-  String get premiumErrorMessage =>
-      'Terjadi kesalahan. Silakan coba lagi atau hubungi dukungan.';
+  String get premiumErrorMessage => 'Terjadi kesalahan. Silakan coba lagi atau hubungi dukungan.';
 
   @override
   String get premiumAlreadyPremium => 'Anda Sudah Premium';
 
   @override
-  String get premiumAlreadyPremiumMessage =>
-      'Akun Anda sudah memiliki akses premium.';
+  String get premiumAlreadyPremiumMessage => 'Akun Anda sudah memiliki akses premium.';
 
   @override
   String get premiumCardMainTitle => 'Tingkatkan Pengalaman Anda';
@@ -706,29 +684,25 @@ class AppLocalizationsId extends AppLocalizations {
   String get premiumFeatureAdvancedFilter => 'Filter Lanjutan';
 
   @override
-  String get premiumFeatureAdvancedFilterDesc =>
-      'Filter vendor dengan kriteria spesifik';
+  String get premiumFeatureAdvancedFilterDesc => 'Filter vendor dengan kriteria spesifik';
 
   @override
   String get premiumFeatureSaveEvents => 'Simpan Acara';
 
   @override
-  String get premiumFeatureSaveEventsDesc =>
-      'Simpan dan atur ulang acara favorit';
+  String get premiumFeatureSaveEventsDesc => 'Simpan dan atur ulang acara favorit';
 
   @override
   String get premiumFeatureCustomTheme => 'Tema Kustom';
 
   @override
-  String get premiumFeatureCustomThemeDesc =>
-      'Ubah tampilan aplikasi sesuai selera';
+  String get premiumFeatureCustomThemeDesc => 'Ubah tampilan aplikasi sesuai selera';
 
   @override
   String get premiumPopupTitle => 'Ingin Upgrade?';
 
   @override
-  String get premiumPopupMessage =>
-      'Dapatkan pengalaman terbaik tanpa iklan dan dengan fitur eksklusif';
+  String get premiumPopupMessage => 'Dapatkan pengalaman terbaik tanpa iklan dan dengan fitur eksklusif';
 
   @override
   String get premiumPopupUpgrade => 'Lihat Paket';
@@ -853,15 +827,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get upgradeNowButtonLabel => 'Tombol upgrade sekarang';
 
   @override
-  String get upgradeNowButtonHint =>
-      'Lakukan pembayaran untuk upgrade ke premium';
+  String get upgradeNowButtonHint => 'Lakukan pembayaran untuk upgrade ke premium';
 
   @override
   String get closeSuccessDialogLabel => 'Tutup dialog sukses';
 
   @override
-  String get closeSuccessDialogHint =>
-      'Tutup pesan konfirmasi upgrade berhasil';
+  String get closeSuccessDialogHint => 'Tutup pesan konfirmasi upgrade berhasil';
 
   @override
   String get selectDateLabel => 'Pilih tanggal';
@@ -972,16 +944,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get errorAddressRequired => 'Alamat wajib diisi';
 
   @override
-  String get permissionContactRequired =>
-      'Izin kontak diperlukan untuk registrasi.';
+  String get permissionContactRequired => 'Izin kontak diperlukan untuk registrasi.';
 
   @override
-  String get permissionContactDenied =>
-      'Izin kontak ditolak. Aktifkan secara manual di Pengaturan.';
+  String get permissionContactDenied => 'Izin kontak ditolak. Aktifkan secara manual di Pengaturan.';
 
   @override
-  String get permissionContactBlocked =>
-      'Izin kontak diblokir. Aktifkan secara manual di Pengaturan.';
+  String get permissionContactBlocked => 'Izin kontak diblokir. Aktifkan secara manual di Pengaturan.';
 
   @override
   String get registerSuccess => 'Akun berhasil didaftarkan!';
@@ -1085,8 +1054,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get hargaTidakValid => 'Harga tidak valid';
 
   @override
-  String get hargaTidakBolehLebihDari10Juta =>
-      'Harga tidak boleh lebih dari 10 juta';
+  String get hargaTidakBolehLebihDari10Juta => 'Harga tidak boleh lebih dari 10 juta';
 
   @override
   String get registerVendorSuccess => 'Vendor berhasil didaftarkan!';
@@ -1095,8 +1063,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get permissionContactRequiredTitle => 'Izin Kontak Diperlukan';
 
   @override
-  String get permissionContactRequiredMessage =>
-      'Izinkan akses kontak untuk melanjutkan.';
+  String get permissionContactRequiredMessage => 'Izinkan akses kontak untuk melanjutkan.';
 
   @override
   String get cobaLagi => 'Coba Lagi';
@@ -1108,8 +1075,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get permissionDitolakPermanenTitle => 'Izin Ditolak Permanen';
 
   @override
-  String get permissionDitolakPermanenMessage =>
-      'Aktifkan akses kontak dari pengaturan.';
+  String get permissionDitolakPermanenMessage => 'Aktifkan akses kontak dari pengaturan.';
 
   @override
   String get bukaPengaturan => 'Buka Pengaturan';
@@ -1121,15 +1087,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get permissionRequired => 'Izin Diperlukan';
 
   @override
-  String get pleaseAllowContactToRegister =>
-      'Silakan izinkan kontak agar bisa mendaftar.';
+  String get pleaseAllowContactToRegister => 'Silakan izinkan kontak agar bisa mendaftar.';
 
   @override
   String get contactPermissionDenied => 'Izin kontak ditolak.';
 
   @override
-  String get contactPermissionBlocked =>
-      'Izin kontak diblokir. Aktifkan di Pengaturan.';
+  String get contactPermissionBlocked => 'Izin kontak diblokir. Aktifkan di Pengaturan.';
 
   @override
   String get search => 'Cari';

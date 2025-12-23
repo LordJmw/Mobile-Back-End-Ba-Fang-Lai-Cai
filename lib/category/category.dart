@@ -10,6 +10,7 @@ import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
 import 'package:projek_uts_mbr/services/dataServices.dart';
+import 'package:projek_uts_mbr/services/discount_service.dart';
 import 'package:projek_uts_mbr/viewall.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -709,6 +710,10 @@ class _CategoryPageState extends State<CategoryPage> {
                         : Column(
                             children: filterData().isNotEmpty
                                 ? filterData().map((penyedia) {
+                                    final int hargaAsli = getBasicPrice(penyedia);
+                                    final int hargaDiskon = DiscountService
+                                    .applyDiscount(hargaAsli.toDouble())
+                                    .round();
                                     return GestureDetector(
                                       onTap: () {
                                         Navigator.push(
@@ -788,15 +793,38 @@ class _CategoryPageState extends State<CategoryPage> {
                                                       ],
                                                     ),
                                                     const SizedBox(height: 6),
-                                                    Text(
-                                                      "Rp ${formatPrice(getBasicPrice(penyedia))}",
-                                                      style: const TextStyle(
-                                                        fontSize: 15,
-                                                        color: Colors.pink,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                     if (DiscountService.isDiscountActive) ...[
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            "Rp ${formatPrice(hargaAsli)}",
+                                                            style: const TextStyle(
+                                                              fontSize: 13,
+                                                              color: Colors.red,
+                                                              decoration: TextDecoration.lineThrough,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(width: 8),
+                                                          Text(
+                                                            "Rp ${formatPrice(hargaDiskon)}",
+                                                            style: const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Colors.green,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
-                                                    ),
+                                                    ] else ...[
+                                                      Text(
+                                                        "Rp ${formatPrice(hargaAsli)}",
+                                                        style: const TextStyle(
+                                                          fontSize: 15,
+                                                          color: Colors.pink,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ],
                                                 ),
                                               ),

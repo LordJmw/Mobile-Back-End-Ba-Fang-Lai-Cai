@@ -8,6 +8,7 @@ import 'package:projek_uts_mbr/model/CustomerModel.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/order.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
+import 'package:projek_uts_mbr/services/discount_service.dart';
 import 'package:provider/provider.dart';
 
 class Carddetail extends StatefulWidget {
@@ -498,10 +499,41 @@ class _CarddetailState extends State<Carddetail> {
               ),
             ),
             const SizedBox(height: 10),
-            Text(
-              "Rp ${formatPrice(harga)}",
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-            ),
+            if (DiscountService.isDiscountActive) ...[
+              Row(
+                children: [
+                  Text(
+                    "Rp ${formatPrice(harga)}",
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.red,
+                      decoration: TextDecoration.lineThrough,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    "Rp ${formatPrice(DiscountService.applyDiscount(harga.toDouble()).round())}",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      color: Colors.green,
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                "Diskon ${(DiscountService.discountPercent * 100).toInt()}%",
+                style: const TextStyle(color: Colors.red),
+              ),
+            ] else ...[
+              Text(
+                "Rp ${formatPrice(harga)}",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                ),
+              ),
+            ],
             Text(l10n.perEvent),
             const SizedBox(height: 20),
             Column(
