@@ -262,6 +262,76 @@
   "alreadyPremiumUser" : "You are Already a Premium User",
   "premiumDaysLeft" : "Your subscription is active for another {days} days",
 
+  "selectPlan": "Select Plan",
+  "monthlyPlan": "Monthly",
+  "yearlyPlan": "Yearly",
+  "monthlyPrice": "Rp 29,900/month",
+  "yearlyPrice": "Rp 299,000/year",
+  "flexiblePlan": "Flexible",
+  "savePercent": "Save {percent}%",
+  "@savePercent": {
+    "description": "Save percentage for yearly plan",
+    "placeholders": {
+      "percent": {}
+    }
+  },
+  "totalPayment": "Total Payment",
+  "onlyPerMonth": "Only Rp {price}/month",
+  "@onlyPerMonth": {
+    "description": "Price per month for yearly plan",
+    "placeholders": {
+      "price": {}
+    }
+  },
+  "priceFormat": "Rp {price}",
+  "@priceFormat": {
+    "description": "Format price with currency",
+    "placeholders": {
+      "price": {}
+    }
+  },
+  
+  "paymentMethod": "Payment Method",
+  "selectPaymentMethod": "Select Payment Method",
+  "paymentMethodGopay": "GoPay",
+  "paymentMethodOvo": "OVO",
+  "paymentMethodDana": "DANA",
+  "paymentMethodBankTransfer": "Bank Transfer",
+  "paymentMethodCreditCard": "Credit Card",
+  
+  "backToProfile": "Back to Profile",
+  "upgradeButtonText": "Upgrade Now - Rp {price}",
+  "@upgradeButtonText": {
+    "description": "Upgrade button with price",
+    "placeholders": {
+      "price": {}
+    }
+  },
+
+  "alreadyPremiumUser": "You are already a Premium user",
+  "premiumDaysLeft": "Your subscription is active for another {days} days",
+  "@premiumDaysLeft": {
+    "description": "Days left for premium subscription",
+    "placeholders": {
+      "days": {}
+    }
+  },
+  
+  "processing": "Processing...",
+  "upgradeFailed": "Upgrade failed. Please try again",
+  "userNotFound": "User not found. Please login again",
+  "alreadyPremiumActive": "You already have active premium access",
+  
+  "choosePlanLabel": "Choose {plan} plan",
+  "@choosePlanLabel": {
+    "description": "Semantics label for plan selection",
+    "placeholders": {
+      "plan": {}
+    }
+  },
+  "choosePlanHint": "Select this subscription plan",
+  
+
   "backButtonLabel": "Back button",
   "backButtonHint": "Go back to previous page",
   "closePaymentMethodsLabel": "Close payment methods selection",

@@ -62,7 +62,8 @@ import 'app_localizations_id.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -70,7 +71,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -82,17 +84,18 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('id')
+    Locale('id'),
   ];
 
   /// No description provided for @appTitle.
@@ -1442,14 +1445,164 @@ abstract class AppLocalizations {
   /// No description provided for @alreadyPremiumUser.
   ///
   /// In en, this message translates to:
-  /// **'You are Already a Premium User'**
+  /// **'You are already a Premium user'**
   String get alreadyPremiumUser;
 
-  /// No description provided for @premiumDaysLeft.
+  /// Days left for premium subscription
   ///
   /// In en, this message translates to:
   /// **'Your subscription is active for another {days} days'**
   String premiumDaysLeft(Object days);
+
+  /// No description provided for @selectPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Plan'**
+  String get selectPlan;
+
+  /// No description provided for @monthlyPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get monthlyPlan;
+
+  /// No description provided for @yearlyPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get yearlyPlan;
+
+  /// No description provided for @monthlyPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Rp 29,900/month'**
+  String get monthlyPrice;
+
+  /// No description provided for @yearlyPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Rp 299,000/year'**
+  String get yearlyPrice;
+
+  /// No description provided for @flexiblePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Flexible'**
+  String get flexiblePlan;
+
+  /// Save percentage for yearly plan
+  ///
+  /// In en, this message translates to:
+  /// **'Save {percent}%'**
+  String savePercent(Object percent);
+
+  /// No description provided for @totalPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Payment'**
+  String get totalPayment;
+
+  /// Price per month for yearly plan
+  ///
+  /// In en, this message translates to:
+  /// **'Only Rp {price}/month'**
+  String onlyPerMonth(Object price);
+
+  /// Format price with currency
+  ///
+  /// In en, this message translates to:
+  /// **'Rp {price}'**
+  String priceFormat(Object price);
+
+  /// No description provided for @paymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment Method'**
+  String get paymentMethod;
+
+  /// No description provided for @selectPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Payment Method'**
+  String get selectPaymentMethod;
+
+  /// No description provided for @paymentMethodGopay.
+  ///
+  /// In en, this message translates to:
+  /// **'GoPay'**
+  String get paymentMethodGopay;
+
+  /// No description provided for @paymentMethodOvo.
+  ///
+  /// In en, this message translates to:
+  /// **'OVO'**
+  String get paymentMethodOvo;
+
+  /// No description provided for @paymentMethodDana.
+  ///
+  /// In en, this message translates to:
+  /// **'DANA'**
+  String get paymentMethodDana;
+
+  /// No description provided for @paymentMethodBankTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank Transfer'**
+  String get paymentMethodBankTransfer;
+
+  /// No description provided for @paymentMethodCreditCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit Card'**
+  String get paymentMethodCreditCard;
+
+  /// No description provided for @backToProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Profile'**
+  String get backToProfile;
+
+  /// Upgrade button with price
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade Now - Rp {price}'**
+  String upgradeButtonText(Object price);
+
+  /// No description provided for @processing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing...'**
+  String get processing;
+
+  /// No description provided for @upgradeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade failed. Please try again'**
+  String get upgradeFailed;
+
+  /// No description provided for @userNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'User not found. Please login again'**
+  String get userNotFound;
+
+  /// No description provided for @alreadyPremiumActive.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have active premium access'**
+  String get alreadyPremiumActive;
+
+  /// Semantics label for plan selection
+  ///
+  /// In en, this message translates to:
+  /// **'Choose {plan} plan'**
+  String choosePlanLabel(Object plan);
+
+  /// No description provided for @choosePlanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select this subscription plan'**
+  String get choosePlanHint;
 
   /// No description provided for @backButtonLabel.
   ///
@@ -1510,18 +1663,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close upgrade confirmation message'**
   String get closeSuccessDialogHint;
-
-  /// No description provided for @choosePlanLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose {plan} plan'**
-  String choosePlanLabel(Object plan);
-
-  /// No description provided for @choosePlanHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Select this subscription plan'**
-  String get choosePlanHint;
 
   /// No description provided for @selectDateLabel.
   ///
@@ -2244,7 +2385,8 @@ abstract class AppLocalizations {
   String get save;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -2253,25 +2395,26 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'id'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'id'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return AppLocalizationsEn();
-    case 'id': return AppLocalizationsId();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'id':
+      return AppLocalizationsId();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }

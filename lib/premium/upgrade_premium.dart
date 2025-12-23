@@ -25,49 +25,39 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
 
   // Harga
   final Map<String, Map<String, dynamic>> _plans = {
-    'monthly': {
-      'price': 29900,
-      'pricePerMonth': 29900,
-      'savePercent': 0,
-      'label': 'Rp 29.900',
-    },
-    'yearly': {
-      'price': 299000,
-      'pricePerMonth': 24917,
-      'savePercent': 17,
-      'label': 'Rp 299.000/tahun',
-    },
+    'monthly': {'price': 29900, 'pricePerMonth': 29900, 'savePercent': 0},
+    'yearly': {'price': 299000, 'pricePerMonth': 24917, 'savePercent': 17},
   };
 
   // Dummy payment methods
   final List<Map<String, dynamic>> _paymentMethods = [
     {
       'id': 'gopay',
-      'name': 'GoPay',
+      'nameKey': 'paymentMethodGopay',
       'icon': Icons.account_balance_wallet,
       'color': Color(0xFF00AA13),
     },
     {
       'id': 'ovo',
-      'name': 'OVO',
+      'nameKey': 'paymentMethodOvo',
       'icon': Icons.account_balance_wallet,
       'color': Color(0xFF4C2A86),
     },
     {
       'id': 'dana',
-      'name': 'DANA',
+      'nameKey': 'paymentMethodDana',
       'icon': Icons.account_balance_wallet,
       'color': Color(0xFF1081E8),
     },
     {
       'id': 'bank_transfer',
-      'name': 'Transfer Bank',
+      'nameKey': 'paymentMethodBankTransfer',
       'icon': Icons.account_balance,
       'color': Colors.blueGrey,
     },
     {
       'id': 'credit_card',
-      'name': 'Kartu Kredit',
+      'nameKey': 'paymentMethodCreditCard',
       'icon': Icons.credit_card,
       'color': Colors.deepPurple,
     },
@@ -129,6 +119,7 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
       }
 
       DateTime expiryDate;
+      print('selected plan : $_selectedPlan');
       if (_selectedPlan == 'monthly') {
         expiryDate = DateTime.now().add(Duration(days: 30));
       } else {
@@ -144,17 +135,18 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
         print(
           "customer setelah beli status premium : ${customer.isPremiumActive}",
         );
+
+        final notifStatus = await SessionManager().getNotificationStatus();
+        if (notifStatus == true) {
+          NotificationServices.schedulePremiumReminder(
+            customerEmail: customer.email,
+            expiryDate: expiryDate,
+          );
+        }
+        _showSuccessDialog();
       } else {
         print('Gagal memproses upgrade. Silakan coba lagi.');
       }
-      final notifStatus = await SessionManager().getNotificationStatus();
-      if (notifStatus == true) {
-        NotificationServices.schedulePremiumReminder(
-          customerEmail: customer.email,
-          expiryDate: expiryDate,
-        );
-      }
-      _showSuccessDialog();
     } catch (e) {
       print('Error during upgrade: $e');
       print('Terjadi kesalahan: $e');
@@ -210,8 +202,8 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
             child: ExcludeSemantics(
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context); // Close dialog
-                  Navigator.pop(context); // Back to profile
+                  Navigator.pop(context);
+                  Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.pink,
@@ -221,7 +213,7 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
                   ),
                 ),
                 child: Text(
-                  'Kembali ke Profil',
+                  l10n.backToProfile,
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
@@ -254,7 +246,7 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Pilih Metode Pembayaran',
+                    l10n.selectPaymentMethod,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -300,7 +292,7 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
                               ),
                             ),
                             title: Text(
-                              method['name'],
+                              _getPaymentMethodName(method['nameKey'], l10n),
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),
                             trailing: _selectedPaymentMethod == method['id']
@@ -349,7 +341,6 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     isUserPremium();
     premiumSubscriptionLeft();
     super.initState();
@@ -446,7 +437,7 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Pilih Paket',
+                    l10n.selectPlan,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -459,18 +450,18 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
                       _buildPlanCard(
                         context,
                         'monthly',
-                        'Bulanan',
-                        'Rp 29.900/bulan',
-                        'Flexible',
+                        l10n.monthlyPlan,
+                        l10n.monthlyPrice,
+                        l10n.flexiblePlan,
                         _selectedPlan == 'monthly',
                       ),
                       SizedBox(width: 10),
                       _buildPlanCard(
                         context,
                         'yearly',
-                        'Tahunan',
-                        'Rp 299.000/tahun',
-                        'Hemat 17%',
+                        l10n.yearlyPlan,
+                        l10n.yearlyPrice,
+                        l10n.savePercent(_plans['yearly']!['savePercent']),
                         _selectedPlan == 'yearly',
                       ),
                     ],
@@ -490,9 +481,9 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Total Pembayaran'),
+                            Text(l10n.totalPayment),
                             Text(
-                              'Rp ${selectedPlan['price'].toString()}',
+                              l10n.priceFormat(selectedPlan['price']),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -504,7 +495,7 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
                         SizedBox(height: 8),
                         if (_selectedPlan == 'yearly')
                           Text(
-                            'Hanya Rp ${(selectedPlan['pricePerMonth'] as int).toStringAsFixed(0)}/bulan',
+                            l10n.onlyPerMonth(selectedPlan['pricePerMonth']),
                             style: TextStyle(
                               color: Colors.green,
                               fontWeight: FontWeight.w600,
@@ -610,11 +601,14 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
                           )['color'],
                         ),
                       ),
-                      title: Text('Metode Pembayaran'),
+                      title: Text(l10n.paymentMethod),
                       subtitle: Text(
-                        _paymentMethods.firstWhere(
-                          (method) => method['id'] == _selectedPaymentMethod,
-                        )['name'],
+                        _getPaymentMethodName(
+                          _paymentMethods.firstWhere(
+                            (method) => method['id'] == _selectedPaymentMethod,
+                          )['nameKey'],
+                          l10n,
+                        ),
                       ),
                       trailing: Icon(Icons.arrow_forward_ios, size: 16),
                       onTap: _showPaymentMethods,
@@ -662,7 +656,7 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
                       ? Center(
                           child: Column(
                             children: [
-                              Text('${l10n.alreadyPremiumUser}'),
+                              Text(l10n.alreadyPremiumUser),
                               Text(l10n.premiumDaysLeft(PremiumDaysLeft)),
                             ],
                           ),
@@ -686,7 +680,7 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
                                   ),
                                 )
                               : Text(
-                                  '${l10n.premiumUpgradeButton} - Rp ${selectedPlan['price']}',
+                                  l10n.upgradeButtonText(selectedPlan['price']),
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -712,6 +706,8 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
     String subtitle,
     bool isSelected,
   ) {
+    final lang = Provider.of<LanguageProvider>(context, listen: false).locale;
+
     return Expanded(
       child: Card(
         color: isSelected ? Colors.pink[50] : Colors.white,
@@ -722,57 +718,67 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
             width: 2,
           ),
         ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: () {
-            setState(() {
-              _selectedPlan = planId;
-            });
-          },
-          child: Container(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+        child: Semantics(
+          label: tr('card', '${planId}PlanLabel', lang),
+          hint: tr('card', 'selectPlanHint', lang),
+          button: true,
+          child: ExcludeSemantics(
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: () {
+                setState(() {
+                  _selectedPlan = planId;
+                });
+              },
+              child: Container(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: isSelected ? Colors.pink : Colors.grey[300],
-                        border: Border.all(
-                          color: isSelected
-                              ? Colors.pink
-                              : const Color.fromARGB(255, 232, 231, 231),
+                    Row(
+                      children: [
+                        Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isSelected ? Colors.pink : Colors.grey[300],
+                            border: Border.all(
+                              color: isSelected
+                                  ? Colors.pink
+                                  : const Color.fromARGB(255, 232, 231, 231),
+                            ),
+                          ),
+                          child: isSelected
+                              ? Icon(Icons.check, size: 14, color: Colors.white)
+                              : null,
                         ),
-                      ),
-                      child: isSelected
-                          ? Icon(Icons.check, size: 14, color: Colors.white)
-                          : null,
+                        SizedBox(width: 8),
+                        Text(
+                          title,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: isSelected ? Colors.pink : Colors.black,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 8),
+                    SizedBox(height: 12),
                     Text(
-                      title,
+                      price,
                       style: TextStyle(
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: isSelected ? Colors.pink : Colors.black,
                       ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: TextStyle(fontSize: 12, color: Colors.green),
                     ),
                   ],
                 ),
-                SizedBox(height: 12),
-                Text(
-                  price,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: TextStyle(fontSize: 12, color: Colors.green),
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -790,10 +796,6 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
         return l10n.premiumFeaturePriority;
       case 'premiumFeatureEarlyAccess':
         return l10n.premiumFeatureEarlyAccess;
-      case 'premiumFeatureAdvancedFilter':
-        return l10n.premiumFeatureAdvancedFilter;
-      case 'premiumFeatureSaveEvents':
-        return l10n.premiumFeatureSaveEvents;
       default:
         return '';
     }
@@ -809,12 +811,25 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
         return l10n.premiumFeaturePriorityDesc;
       case 'premiumFeatureEarlyAccessDesc':
         return l10n.premiumFeatureEarlyAccessDesc;
-      case 'premiumFeatureAdvancedFilterDesc':
-        return l10n.premiumFeatureAdvancedFilterDesc;
-      case 'premiumFeatureSaveEventsDesc':
-        return l10n.premiumFeatureSaveEventsDesc;
       default:
         return '';
+    }
+  }
+
+  String _getPaymentMethodName(String key, AppLocalizations l10n) {
+    switch (key) {
+      case 'paymentMethodGopay':
+        return l10n.paymentMethodGopay;
+      case 'paymentMethodOvo':
+        return l10n.paymentMethodOvo;
+      case 'paymentMethodDana':
+        return l10n.paymentMethodDana;
+      case 'paymentMethodBankTransfer':
+        return l10n.paymentMethodBankTransfer;
+      case 'paymentMethodCreditCard':
+        return l10n.paymentMethodCreditCard;
+      default:
+        return key;
     }
   }
 }

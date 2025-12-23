@@ -379,6 +379,75 @@
   "selectDateLabel": "Pilih tanggal",
   "selectDateHint": "Pilih tanggal untuk pembayaran",
 
+  "selectPlan": "Pilih Paket",
+  "monthlyPlan": "Bulanan",
+  "yearlyPlan": "Tahunan",
+  "monthlyPrice": "Rp 29.900/bulan",
+  "yearlyPrice": "Rp 299.000/tahun",
+  "flexiblePlan": "Fleksibel",
+  "savePercent": "Hemat {percent}%",
+  "@savePercent": {
+    "description": "Persentase hemat untuk paket tahunan",
+    "placeholders": {
+      "percent": {}
+    }
+  },
+  "totalPayment": "Total Pembayaran",
+  "onlyPerMonth": "Hanya Rp {price}/bulan",
+  "@onlyPerMonth": {
+    "description": "Harga per bulan untuk paket tahunan",
+    "placeholders": {
+      "price": {}
+    }
+  },
+  "priceFormat": "Rp {price}",
+  "@priceFormat": {
+    "description": "Format harga dengan mata uang",
+    "placeholders": {
+      "price": {}
+    }
+  },
+  
+  "paymentMethod": "Metode Pembayaran",
+  "selectPaymentMethod": "Pilih Metode Pembayaran",
+  "paymentMethodGopay": "GoPay",
+  "paymentMethodOvo": "OVO",
+  "paymentMethodDana": "DANA",
+  "paymentMethodBankTransfer": "Transfer Bank",
+  "paymentMethodCreditCard": "Kartu Kredit",
+  
+  "backToProfile": "Kembali ke Profil",
+  "upgradeButtonText": "Upgrade Sekarang - Rp {price}",
+  "@upgradeButtonText": {
+    "description": "Tombol upgrade dengan harga",
+    "placeholders": {
+      "price": {}
+    }
+  },
+  
+  "alreadyPremiumUser": "Anda sudah pengguna Premium",
+  "premiumDaysLeft": "Langganan Anda aktif selama {days} hari lagi",
+  "@premiumDaysLeft": {
+    "description": "Sisa hari untuk langganan premium",
+    "placeholders": {
+      "days": {}
+    }
+  },
+  
+  "processing": "Memproses...",
+  "upgradeFailed": "Upgrade gagal. Silakan coba lagi",
+  "userNotFound": "Pengguna tidak ditemukan. Silakan login ulang",
+  "alreadyPremiumActive": "Anda sudah memiliki akses premium aktif",
+  
+  "choosePlanLabel": "Pilih paket {plan}",
+  "@choosePlanLabel": {
+    "description": "Label semantik untuk pemilihan paket",
+    "placeholders": {
+      "plan": {}
+    }
+  },
+  "choosePlanHint": "Pilih paket langganan ini",
+
 
   "search": "Cari",
   "categories": "Kategori",

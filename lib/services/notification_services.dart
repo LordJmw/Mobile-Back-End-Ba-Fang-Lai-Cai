@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:projek_uts_mbr/helper/app_dates.dart';
+import 'package:projek_uts_mbr/services/discount_service.dart';
 import '../l10n/app_localizations.dart';
 
 class NotificationServices {
@@ -47,6 +49,7 @@ class NotificationServices {
     required String customerEmail,
     required DateTime expiryDate,
   }) async {
+    //untuk reminder 1 hari sebelum expire
     final oneDayBefore = expiryDate.subtract(Duration(days: 1));
 
     await AwesomeNotifications().createNotification(
@@ -69,7 +72,7 @@ class NotificationServices {
         year: oneDayBefore.year,
         month: oneDayBefore.month,
         day: oneDayBefore.day,
-        hour: 10, // 10 AM
+        hour: 10, // default diingatkan pas jam 10 pagi
         minute: 0,
         second: 0,
         preciseAlarm: true,
@@ -79,6 +82,7 @@ class NotificationServices {
 
     print('Scheduled premium reminder for 1 day before expiry: $oneDayBefore');
 
+    //ini untuk notifikasi pas paket premium sudah expire
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: Random().nextInt(100000),
@@ -99,7 +103,7 @@ class NotificationServices {
         year: expiryDate.year,
         month: expiryDate.month,
         day: expiryDate.day,
-        hour: 9, // 9 AM
+        hour: 9, // default diingatkan pada jam 9 pagi
         minute: 0,
         second: 0,
         preciseAlarm: true,
@@ -108,5 +112,40 @@ class NotificationServices {
     );
 
     print('Scheduled premium expired notification for: $expiryDate');
+  }
+
+  static void _showNotif(String title, String body) {
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
+        channelKey: 'basic_channel',
+        title: title,
+        body: body,
+        notificationLayout: NotificationLayout.Default,
+      ),
+    );
+  }
+
+  static bool isTanggalKembar() {
+    final now = DateTime.now();
+    return now.day == now.month;
+  }
+
+  static bool isAnniversary() {
+    final now = DateTime.now();
+    return now.day == AppDates.ANNIV_DAY && now.month == AppDates.ANNIV_MONTH;
+  }
+
+  static Future<void> checkAndTrigger() async {
+    if (isTanggalKembar()) {
+      DiscountService.activateDiscount(0.05); // 5%
+      _showNotif('🎉 Tanggal Kembar!', 'Diskon 5% untuk semua produk 🎁');
+      return;
+    }
+
+    if (isAnniversary()) {
+      DiscountService.activateDiscount(0.10); // 10%
+      _showNotif('🎂 Anniversary App', 'Diskon spesial 30% 🎉');
+    }
   }
 }
