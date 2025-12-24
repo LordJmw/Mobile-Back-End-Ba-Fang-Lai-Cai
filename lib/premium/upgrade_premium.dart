@@ -523,7 +523,7 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
-                      childAspectRatio: 1.5,
+                      childAspectRatio: 1.2,
                     ),
                     itemCount: _premiumFeatures.length,
                     itemBuilder: (context, index) {

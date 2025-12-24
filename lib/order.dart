@@ -39,11 +39,12 @@ class _OrderPageState extends State<OrderPage> {
 
   AdsServices adsServices = AdsServices();
   bool _discountApplied = false;
+  bool _isPremium = false;
 
   @override
   void initState() {
     super.initState();
-    getData();
+    _initializeOrderPage();
     adsServices.loadInterStitialAd();
     adsServices.loadRewardedAd();
   }
@@ -102,6 +103,29 @@ class _OrderPageState extends State<OrderPage> {
       setState(() {
         isLoading = false;
         packages = {};
+      });
+    }
+  }
+
+  // tadi ga premium, sekarang ke premium, di premium iklan tidak nampil abis beli paketan, teirmakasih
+  Future<void> _initializeOrderPage() async {
+    await getData();
+    bool isPremium = await CustomerDatabase().isUserPremium();
+    if (mounted) {
+      setState(() {
+        _isPremium = isPremium;
+      });
+      if (_isPremium && selectedPackage != null && !_discountApplied) {
+        _applyDiscount();
+      }
+    }
+  }
+
+  void _applyDiscount() {
+    if (_originalPrice != null && _originalPrice! > 0) {
+      setState(() {
+        selectedPrice = (_originalPrice! * 0.98).round();
+        _discountApplied = true;
       });
     }
   }
@@ -349,10 +373,7 @@ class _OrderPageState extends State<OrderPage> {
 
     if (_originalPrice != null && _originalPrice! > 0) {
       adsServices.showRewardedAd(() {
-        setState(() {
-          selectedPrice = (_originalPrice! * 0.98).round();
-          _discountApplied = true;
-        });
+        _applyDiscount();
         _showSuccess("2% discount applied! New price: Rp $selectedPrice");
       });
     } else {
@@ -547,6 +568,9 @@ class _OrderPageState extends State<OrderPage> {
                                               _originalPrice = packages[value];
                                               _discountApplied = false;
                                             });
+                                            if (_isPremium) {
+                                              _applyDiscount();
+                                            }
                                           },
                                         ),
                                 ],
@@ -583,47 +607,80 @@ class _OrderPageState extends State<OrderPage> {
 
                           const SizedBox(height: 20),
 
-                          Semantics(
-                            label: tr('button', 'adButton', lang),
-                            excludeSemantics: true,
-                            container: true,
-                            child: Row(
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.twatchAdGetDisc,
-                                  style: TextStyle(fontSize: 10),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: _showRewardedAd,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.pink,
-                                      foregroundColor: Colors.white,
-                                      textStyle: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 15,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          8.0,
+                          if (!_isPremium) ...[
+                            Semantics(
+                              label: tr('button', 'adButton', lang),
+                              excludeSemantics: true,
+                              container: true,
+                              child: Row(
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    )!.twatchAdGetDisc,
+                                    style: TextStyle(fontSize: 10),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: _showRewardedAd,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.pink,
+                                        foregroundColor: Colors.white,
+                                        textStyle: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 15,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            8.0,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    child: Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!.watchAdGetDisc,
+                                      child: Text(
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.watchAdGetDisc,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 20),
+                            const SizedBox(height: 20),
+                          ] else ...[
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.teal.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.teal.shade200),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.teal,
+                                    semanticLabel: "Premium",
+                                  ),
+                                  SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      "Sebagai pengguna premium, diskon 2% telah diterapkan secara otomatis.",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.teal[800],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                          ],
 
                           Text(
                             l10n.priceSummary,
