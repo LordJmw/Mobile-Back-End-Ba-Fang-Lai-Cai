@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:projek_uts_mbr/helper/app_dates.dart';
 import 'package:projek_uts_mbr/services/discount_service.dart';
 import '../l10n/app_localizations.dart';
+import 'package:projek_uts_mbr/services/sessionManager.dart';
 
 class NotificationServices {
   static Future<void> scheduleOrderReminder({
@@ -137,6 +138,10 @@ class NotificationServices {
   }
 
   static Future<void> checkAndTrigger() async {
+    final sessionManager = SessionManager();
+    bool notifEnabled = await sessionManager.getNotificationStatus();
+    if (!notifEnabled) return;
+
     if (isTanggalKembar()) {
       DiscountService.activateDiscount(0.05); // 5%
       _showNotif('🎉 Tanggal Kembar!', 'Diskon 5% untuk semua produk 🎁');
@@ -145,7 +150,7 @@ class NotificationServices {
 
     if (isAnniversary()) {
       DiscountService.activateDiscount(0.10); // 10%
-      _showNotif('🎂 Anniversary App', 'Diskon spesial 30% 🎉');
+      _showNotif('🎂 Anniversary App', 'Diskon spesial 10% 🎉');
     }
   }
 }
