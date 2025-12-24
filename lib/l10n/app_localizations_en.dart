@@ -254,12 +254,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get selectPackageFirst => 'Select a package first';
 
   @override
-  String get packageNotAvailable =>
-      'Package not available. Please choose another package.';
+  String get packageNotAvailable => 'Package not available. Please choose another package.';
 
   @override
-  String get purchaseSuccessful =>
-      'Purchase successful! The package has been added to your profile.';
+  String get purchaseSuccessful => 'Purchase successful! The package has been added to your profile.';
 
   @override
   String copyright(Object appName) {
@@ -334,19 +332,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get english => 'English';
 
   @override
-  String get aboutAppDescription1 =>
-      'EventHub is an all-in-one platform to hire professional services for all your event needs.';
+  String get aboutAppDescription1 => 'EventHub is an all-in-one platform to hire professional services for all your event needs.';
 
   @override
-  String get aboutAppDescription2 =>
-      'This application connects customers with trusted vendors in one easy-to-use place.';
+  String get aboutAppDescription2 => 'This application connects customers with trusted vendors in one easy-to-use place.';
 
   @override
   String get forVendors => 'For Vendors';
 
   @override
-  String get vendorDescription =>
-      'Vendors can add and manage their service packages directly through the app, making it easier to reach more potential customers.';
+  String get vendorDescription => 'Vendors can add and manage their service packages directly through the app, making it easier to reach more potential customers.';
 
   @override
   String get termsOfService => 'Terms of Service';
@@ -418,12 +413,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serviceDescription => 'Service Description (separate with commas)';
 
   @override
-  String get serviceExample =>
-      'Example: Photographer, Videographer, Printed Album';
+  String get serviceExample => 'Example: Photographer, Videographer, Printed Album';
 
   @override
-  String get serviceDescriptionRequired =>
-      'Service description cannot be empty';
+  String get serviceDescriptionRequired => 'Service description cannot be empty';
 
   @override
   String get useCommaSeparator => 'Use commas (,) to separate services';
@@ -461,23 +454,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get packagesDeletedByVendor =>
-      'Packages have been deleted by the vendor.';
+  String get packagesDeletedByVendor => 'Packages have been deleted by the vendor.';
 
   @override
-  String get thisPackageDeletedByVendor =>
-      'This package has been deleted by the vendor.';
+  String get thisPackageDeletedByVendor => 'This package has been deleted by the vendor.';
 
   @override
   String get deleteAccount => 'Delete Account';
 
   @override
-  String get deleteAccountWarning =>
-      'Are you sure you want to delete your account? This action cannot be undone.';
+  String get deleteAccountWarning => 'Are you sure you want to delete your account? This action cannot be undone.';
 
   @override
-  String get deleteAccountConsequences =>
-      'All your data, orders, and preferences will be permanently deleted.';
+  String get deleteAccountConsequences => 'All your data, orders, and preferences will be permanently deleted.';
 
   @override
   String get enterPasswordToConfirm => 'Enter your password to confirm:';
@@ -495,22 +484,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get wrongPassword => 'Incorrect password. Please try again.';
 
   @override
-  String get requiresRecentLogin =>
-      'For security reasons, please log in again before deleting your account.';
+  String get requiresRecentLogin => 'For security reasons, please log in again before deleting your account.';
 
   @override
   String get tooManyAttempts => 'Too many attempts. Please try again later.';
 
   @override
-  String get deleteAccountFailed =>
-      'Failed to delete account. Please try again.';
+  String get deleteAccountFailed => 'Failed to delete account. Please try again.';
 
   @override
   String get accountDeletedSuccessfully => 'Account deleted successfully.';
 
   @override
-  String get permanentDeleteWarning =>
-      'Permanently delete your account and data';
+  String get permanentDeleteWarning => 'Permanently delete your account and data';
 
   @override
   String get dangerZone => 'Danger Zone';
@@ -561,8 +547,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifPermissionTitle => 'Enable Notifications';
 
   @override
-  String get notifPermissionDesc =>
-      'We need notification permission to remind you about your orders and inform you about latest promotions.';
+  String get notifPermissionDesc => 'We need notification permission to remind you about your orders and inform you about latest promotions.';
 
   @override
   String get notifPermissionAllow => 'Allow';
@@ -594,8 +579,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get premiumFeatureNoAds => 'No Ads';
 
   @override
-  String get premiumFeatureNoAdsDesc =>
-      'Enjoy the app without ad interruptions';
+  String get premiumFeatureNoAdsDesc => 'Enjoy the app without ad interruptions';
 
   @override
   String get premiumFeaturePriority => 'Priority Support';
@@ -607,8 +591,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get premiumFeatureBadge => 'PRO Badge';
 
   @override
-  String get premiumFeatureBadgeDesc =>
-      'Display premium status on your profile';
+  String get premiumFeatureBadgeDesc => 'Display premium status on your profile';
 
   @override
   String get premiumFeatureEarlyAccess => 'Early Access';
@@ -653,29 +636,25 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get premiumTerms =>
-      'By upgrading, you agree to our Terms of Service and Privacy Policy';
+  String get premiumTerms => 'By upgrading, you agree to our Terms of Service and Privacy Policy';
 
   @override
   String get premiumSuccessTitle => 'Upgrade Successful!';
 
   @override
-  String get premiumSuccessMessage =>
-      'Congratulations! Your account is now premium. Enjoy all exclusive features.';
+  String get premiumSuccessMessage => 'Congratulations! Your account is now premium. Enjoy all exclusive features.';
 
   @override
   String get premiumErrorTitle => 'Upgrade Failed';
 
   @override
-  String get premiumErrorMessage =>
-      'An error occurred. Please try again or contact support.';
+  String get premiumErrorMessage => 'An error occurred. Please try again or contact support.';
 
   @override
   String get premiumAlreadyPremium => 'Already Premium';
 
   @override
-  String get premiumAlreadyPremiumMessage =>
-      'Your account already has premium access.';
+  String get premiumAlreadyPremiumMessage => 'Your account already has premium access.';
 
   @override
   String get premiumCardMainTitle => 'Upgrade Your Experience';
@@ -705,29 +684,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get premiumFeatureAdvancedFilter => 'Advanced Filter';
 
   @override
-  String get premiumFeatureAdvancedFilterDesc =>
-      'Filter vendors with specific criteria';
+  String get premiumFeatureAdvancedFilterDesc => 'Filter vendors with specific criteria';
 
   @override
   String get premiumFeatureSaveEvents => 'Save Events';
 
   @override
-  String get premiumFeatureSaveEventsDesc =>
-      'Save and reschedule favorite events';
+  String get premiumFeatureSaveEventsDesc => 'Save and reschedule favorite events';
 
   @override
   String get premiumFeatureCustomTheme => 'Custom Theme';
 
   @override
-  String get premiumFeatureCustomThemeDesc =>
-      'Customize app appearance to your liking';
+  String get premiumFeatureCustomThemeDesc => 'Customize app appearance to your liking';
 
   @override
   String get premiumPopupTitle => 'Want to Upgrade?';
 
   @override
-  String get premiumPopupMessage =>
-      'Get the best experience without ads and with exclusive features';
+  String get premiumPopupMessage => 'Get the best experience without ads and with exclusive features';
 
   @override
   String get premiumPopupUpgrade => 'View Plans';
@@ -852,8 +827,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upgradeNowButtonLabel => 'Upgrade now button';
 
   @override
-  String get upgradeNowButtonHint =>
-      'Proceed with payment to upgrade to premium';
+  String get upgradeNowButtonHint => 'Proceed with payment to upgrade to premium';
 
   @override
   String get closeSuccessDialogLabel => 'Close success dialog';
@@ -910,8 +884,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registerCreateTitle => 'Create New Customer Account';
 
   @override
-  String get registerCreateSubtitle =>
-      'Fill in the details to register as a customer';
+  String get registerCreateSubtitle => 'Fill in the details to register as a customer';
 
   @override
   String get registerFullName => 'Full Name';
@@ -971,16 +944,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorAddressRequired => 'Address is required';
 
   @override
-  String get permissionContactRequired =>
-      'Contact permission is required for registration.';
+  String get permissionContactRequired => 'Contact permission is required for registration.';
 
   @override
-  String get permissionContactDenied =>
-      'Contact permission denied. Please enable it manually in Settings.';
+  String get permissionContactDenied => 'Contact permission denied. Please enable it manually in Settings.';
 
   @override
-  String get permissionContactBlocked =>
-      'Contact permission blocked. Please enable it manually in Settings.';
+  String get permissionContactBlocked => 'Contact permission blocked. Please enable it manually in Settings.';
 
   @override
   String get registerSuccess => 'Account registered successfully!';
@@ -997,8 +967,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registerVendorTitle => 'Create New Vendor Account';
 
   @override
-  String get registerVendorSubtitle =>
-      'Fill in the details to register as a vendor';
+  String get registerVendorSubtitle => 'Fill in the details to register as a vendor';
 
   @override
   String get registerVendorName => 'Store Name';
@@ -1094,8 +1063,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get permissionContactRequiredTitle => 'Contact Permission Required';
 
   @override
-  String get permissionContactRequiredMessage =>
-      'Allow contact access to continue.';
+  String get permissionContactRequiredMessage => 'Allow contact access to continue.';
 
   @override
   String get cobaLagi => 'Try Again';
@@ -1107,8 +1075,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get permissionDitolakPermanenTitle => 'Permission Permanently Denied';
 
   @override
-  String get permissionDitolakPermanenMessage =>
-      'Enable contact access from settings.';
+  String get permissionDitolakPermanenMessage => 'Enable contact access from settings.';
 
   @override
   String get bukaPengaturan => 'Open Settings';
@@ -1120,15 +1087,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get permissionRequired => 'Permission Required';
 
   @override
-  String get pleaseAllowContactToRegister =>
-      'Please allow contact access to register.';
+  String get pleaseAllowContactToRegister => 'Please allow contact access to register.';
 
   @override
   String get contactPermissionDenied => 'Contact permission denied.';
 
   @override
-  String get contactPermissionBlocked =>
-      'Contact permission blocked. Enable in Settings.';
+  String get contactPermissionBlocked => 'Contact permission blocked. Enable in Settings.';
 
   @override
   String get search => 'Search';

@@ -9,6 +9,7 @@ import 'package:projek_uts_mbr/helper/semantics.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
+import 'package:projek_uts_mbr/services/discount_service.dart';
 import 'package:provider/provider.dart';
 
 List<Penyedia> flattenVendorData(List<Vendormodel> data) {
@@ -314,14 +315,40 @@ class _ViewAllPageState extends State<ViewAllPage> {
                             ],
                           ),
                           const SizedBox(height: 3),
-                          Text(
-                            "Rp $price",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.pink[400],
+                          if (DiscountService.isDiscountActive) ...[
+                            Row(
+                              children: [
+                                Text(
+                                  "Rp $price",
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    color: Colors.red,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  "Rp ${DiscountService
+                                      .applyDiscount(price.toDouble())
+                                      .round()}",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green[700],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
+                          ] else ...[
+                            Text(
+                              "Rp $price",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.pink[400],
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ],

@@ -11,6 +11,7 @@ import 'package:projek_uts_mbr/model/purchaseHistoryModel.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
 import 'package:projek_uts_mbr/services/ads_services.dart';
 import 'package:projek_uts_mbr/services/dataServices.dart';
+import 'package:projek_uts_mbr/services/discount_service.dart';
 import 'package:projek_uts_mbr/services/notification_services.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 import 'package:provider/provider.dart';
@@ -689,7 +690,7 @@ class _OrderPageState extends State<OrderPage> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          if (_discountApplied && _originalPrice != null) ...[
+                          if (_originalPrice != null) ...[
                             Row(
                               children: [
                                 Text(l10n.originalPrice),
@@ -697,15 +698,36 @@ class _OrderPageState extends State<OrderPage> {
                                 Text(
                                   "Rp ${_originalPrice!}",
                                   style: const TextStyle(
-                                    decoration: TextDecoration.lineThrough,
                                     color: Colors.grey,
                                   ),
                                 ),
                               ],
                             ),
+                          ],
+                          if (DiscountService.isDiscountActive)...[
                             Row(
                               children: [
-                                Text('${l10n.discount} (2%): '),
+                                Text(
+                                  '${l10n.discount} Event (${(DiscountService.discountPercent * 100).toInt()}%)',
+                                ),
+                                const Spacer(),
+                                Text(
+                                  "- Rp ${_originalPrice! - DiscountService
+                                      .applyDiscount(_originalPrice!.toDouble())
+                                      .round()}",
+                                  style: const TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                          ],
+                          if (_discountApplied && _originalPrice != null) ...[
+                            Row(
+                              children: [
+                                Text('${l10n.discount} Ads (2%): '),
                                 const Spacer(),
                                 Text(
                                   "- Rp ${_originalPrice! - selectedPrice!}",
@@ -722,15 +744,31 @@ class _OrderPageState extends State<OrderPage> {
                             children: [
                               Text('${l10n.totalPrice}: '),
                               const Spacer(),
-                              Text(
-                                selectedPrice == null
-                                    ? "Rp 0"
-                                    : "Rp ${selectedPrice!}",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                              if (DiscountService.isDiscountActive)...[
+                                Text(
+                                  selectedPrice == null
+                                      ? "Rp 0"
+                                      : "Rp ${DiscountService
+                                      .applyDiscount(_originalPrice!.toDouble())
+                                      .round()
+                                      - (_originalPrice! - selectedPrice!) }",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
                                 ),
-                              ),
+                              ]else ... [
+                                Text(
+                                  selectedPrice == null
+                                      ? "Rp 0"
+                                      : "Rp ${selectedPrice!}",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ]
+                              
                             ],
                           ),
                           const SizedBox(height: 20),

@@ -10,6 +10,7 @@ import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/profile/userProfile.dart';
 import 'package:projek_uts_mbr/profile/vendorProfile.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
+import 'package:projek_uts_mbr/services/notification_services.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 import 'package:projek_uts_mbr/viewall.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -133,6 +134,7 @@ class _MainScreenState extends State<MainScreen> {
       }
     });
     setProfileSesuaiTipe();
+    NotificationServices.checkAndTrigger();
   }
 
   @override
