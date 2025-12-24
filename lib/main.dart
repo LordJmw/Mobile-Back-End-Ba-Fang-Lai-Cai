@@ -125,14 +125,22 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  Future<void> _initNotification() async {
+    bool isAllowed = await AwesomeNotifications().isNotificationAllowed();
+    if (!isAllowed) {
+      bool allowed = await AwesomeNotifications()
+          .requestPermissionToSendNotifications();
+      if (allowed) {
+        SessionManager().setNotificationEnabled(true);
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-      if (!isAllowed) {
-        AwesomeNotifications().requestPermissionToSendNotifications();
-      }
-    });
+
+    _initNotification();
     setProfileSesuaiTipe();
     NotificationServices.checkAndTrigger();
   }
