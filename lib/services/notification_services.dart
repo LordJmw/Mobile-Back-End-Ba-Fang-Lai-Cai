@@ -142,6 +142,8 @@ class NotificationServices {
     bool notifEnabled = await sessionManager.getNotificationStatus();
     if (!notifEnabled) return;
 
+    DiscountService.deactivateDiscount();
+
     if (isTanggalKembar()) {
       DiscountService.activateDiscount(0.05); // 5%
       _showNotif('🎉 Tanggal Kembar!', 'Diskon 5% untuk semua produk 🎁');
