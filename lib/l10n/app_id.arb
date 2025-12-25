@@ -448,6 +448,9 @@
   },
   "choosePlanHint": "Pilih paket langganan ini",
 
+  "enableNotificationForPremium": "Aktifkan notifikasi agar tidak lupa masa aktif premium",
+  "enableNotificationAction": "Aktifkan",
+
 
   "search": "Cari",
   "categories": "Kategori",

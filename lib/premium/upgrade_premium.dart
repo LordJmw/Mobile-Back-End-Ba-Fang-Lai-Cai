@@ -6,6 +6,7 @@ import 'package:projek_uts_mbr/model/CustomerModel.dart';
 import 'package:projek_uts_mbr/services/notification_services.dart';
 import 'package:projek_uts_mbr/services/premium_services.dart';
 import 'package:projek_uts_mbr/services/sessionManager.dart';
+import 'package:projek_uts_mbr/settings_screens/settings_page.dart';
 import 'package:provider/provider.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
 
@@ -97,6 +98,17 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
     });
 
     try {
+      final notifStatus = await SessionManager().getNotificationStatus();
+      if (notifStatus != true) {
+        //kalau notif nya belum di set allow oleh user tidak akan diproses
+        if (!mounted) return;
+        //tampilkan snackbar yang menyuruh user mengaktifkan notif
+        _showEnableNotificationSnackBar();
+
+        setState(() => _isProcessing = false);
+        return;
+      }
+      //jika sudah di allow maka akan diproses
       final premiumService = PremiumService();
       final customerDatabase = CustomerDatabase();
 
@@ -111,7 +123,8 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
         customer.email,
       );
 
-      print('email ${customer.email} status premium : ${isAlreadyPremium}');
+      print('email ${customer.email} status premium : $isAlreadyPremium');
+
       if (isAlreadyPremium) {
         print('Anda sudah memiliki akses premium aktif.');
         setState(() => _isProcessing = false);
@@ -119,11 +132,10 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
       }
 
       DateTime expiryDate;
-      print('selected plan : $_selectedPlan');
       if (_selectedPlan == 'monthly') {
-        expiryDate = DateTime.now().add(Duration(days: 30));
+        expiryDate = DateTime.now().add(const Duration(days: 30));
       } else {
-        expiryDate = DateTime.now().add(Duration(days: 365));
+        expiryDate = DateTime.now().add(const Duration(days: 365));
       }
 
       final success = await premiumService.upgradeToPremium(
@@ -131,30 +143,44 @@ class _PremiumUpgradePageState extends State<PremiumUpgradePage> {
         expiryDate: expiryDate,
         paymentMethod: _selectedPaymentMethod,
       );
+
       if (success) {
-        print(
-          "customer setelah beli status premium : ${customer.isPremiumActive}",
+        NotificationServices.schedulePremiumReminder(
+          customerEmail: customer.email,
+          expiryDate: expiryDate,
         );
 
-        final notifStatus = await SessionManager().getNotificationStatus();
-        if (notifStatus == true) {
-          NotificationServices.schedulePremiumReminder(
-            customerEmail: customer.email,
-            expiryDate: expiryDate,
-          );
-        }
         _showSuccessDialog();
       } else {
         print('Gagal memproses upgrade. Silakan coba lagi.');
       }
     } catch (e) {
       print('Error during upgrade: $e');
-      print('Terjadi kesalahan: $e');
     } finally {
       if (mounted) {
         setState(() => _isProcessing = false);
       }
     }
+  }
+
+  void _showEnableNotificationSnackBar() {
+    final l10n = AppLocalizations.of(context)!;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(l10n.enableNotificationForPremium),
+        duration: const Duration(seconds: 5),
+        action: SnackBarAction(
+          label: l10n.enableNotificationAction,
+          textColor: Colors.yellow,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SettingsPage()),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   void _showSuccessDialog() {

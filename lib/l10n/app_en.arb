@@ -448,6 +448,9 @@
   "contactPermissionDenied": "Contact permission denied.",
   "contactPermissionBlocked": "Contact permission blocked. Enable in Settings.",
 
+  "enableNotificationForPremium": "Enable notifications so you don’t forget your premium expiry",
+  "enableNotificationAction": "Enable",
+
   "search": "Search",
   "categories": "Categories",
   "viewAll": "View All",

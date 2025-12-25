@@ -52,6 +52,6 @@ class SessionManager {
   Future<bool> getNotificationStatus() async {
     final prefs = await SharedPreferences.getInstance();
     print(prefs.getBool(notif_status));
-    return prefs.getBool(notif_status) ?? false; //set defaultnya ke off
+    return prefs.getBool(notif_status) ?? false;
   }
 }
