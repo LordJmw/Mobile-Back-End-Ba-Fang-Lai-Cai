@@ -19,7 +19,13 @@ import 'package:provider/provider.dart';
 class OrderPage extends StatefulWidget {
   final String namaVendor;
   final String? paketDipilih;
-  const OrderPage({super.key, required this.namaVendor, this.paketDipilih});
+  final bool isTestMode;
+  const OrderPage({
+    super.key,
+    required this.namaVendor,
+    this.paketDipilih,
+    this.isTestMode = false,
+  });
 
   @override
   State<OrderPage> createState() => _OrderPageState();
@@ -45,9 +51,13 @@ class _OrderPageState extends State<OrderPage> {
   @override
   void initState() {
     super.initState();
-    _initializeOrderPage();
-    adsServices.loadInterStitialAd();
-    adsServices.loadRewardedAd();
+    if (widget.isTestMode == true) {
+      isLoading = false;
+    } else {
+      _initializeOrderPage();
+      adsServices.loadInterStitialAd();
+      adsServices.loadRewardedAd();
+    }
   }
 
   Future<void> getDataFromDatabase() async {
@@ -697,14 +707,12 @@ class _OrderPageState extends State<OrderPage> {
                                 const Spacer(),
                                 Text(
                                   "Rp ${_originalPrice!}",
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                  ),
+                                  style: const TextStyle(color: Colors.grey),
                                 ),
                               ],
                             ),
                           ],
-                          if (DiscountService.isDiscountActive)...[
+                          if (DiscountService.isDiscountActive) ...[
                             Row(
                               children: [
                                 Text(
@@ -712,9 +720,7 @@ class _OrderPageState extends State<OrderPage> {
                                 ),
                                 const Spacer(),
                                 Text(
-                                  "- Rp ${_originalPrice! - DiscountService
-                                      .applyDiscount(_originalPrice!.toDouble())
-                                      .round()}",
+                                  "- Rp ${_originalPrice! - DiscountService.applyDiscount(_originalPrice!.toDouble()).round()}",
                                   style: const TextStyle(
                                     color: Colors.green,
                                     fontWeight: FontWeight.bold,
@@ -722,7 +728,6 @@ class _OrderPageState extends State<OrderPage> {
                                 ),
                               ],
                             ),
-
                           ],
                           if (_discountApplied && _originalPrice != null) ...[
                             Row(
@@ -744,20 +749,17 @@ class _OrderPageState extends State<OrderPage> {
                             children: [
                               Text('${l10n.totalPrice}: '),
                               const Spacer(),
-                              if (DiscountService.isDiscountActive)...[
+                              if (DiscountService.isDiscountActive) ...[
                                 Text(
                                   selectedPrice == null
                                       ? "Rp 0"
-                                      : "Rp ${DiscountService
-                                      .applyDiscount(_originalPrice!.toDouble())
-                                      .round()
-                                      - (_originalPrice! - selectedPrice!) }",
+                                      : "Rp ${DiscountService.applyDiscount(_originalPrice!.toDouble()).round() - (_originalPrice! - selectedPrice!)}",
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
                                   ),
                                 ),
-                              ]else ... [
+                              ] else ...[
                                 Text(
                                   selectedPrice == null
                                       ? "Rp 0"
@@ -767,8 +769,7 @@ class _OrderPageState extends State<OrderPage> {
                                     fontSize: 16,
                                   ),
                                 ),
-                              ]
-                              
+                              ],
                             ],
                           ),
                           const SizedBox(height: 20),
@@ -778,6 +779,7 @@ class _OrderPageState extends State<OrderPage> {
                             excludeSemantics: true,
                             container: true,
                             child: ElevatedButton(
+                              key: Key('payButton'),
                               onPressed: () {
                                 beliPaket(context);
                               },

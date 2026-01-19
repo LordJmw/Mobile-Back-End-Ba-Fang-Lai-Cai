@@ -31,7 +31,8 @@ List<Penyedia> filterVendorByQuery(Map<String, dynamic> params) {
 }
 
 class ViewAllPage extends StatefulWidget {
-  const ViewAllPage({super.key});
+  final Future<List<Penyedia>>? futureOverride;
+  const ViewAllPage({super.key, this.futureOverride});
 
   @override
   State<ViewAllPage> createState() => _ViewAllPageState();
@@ -47,7 +48,7 @@ class _ViewAllPageState extends State<ViewAllPage> {
   @override
   void initState() {
     super.initState();
-    futureVendors = fetchData();
+    futureVendors = widget.futureOverride ?? fetchData();
   }
 
   Future<List<Penyedia>> fetchData() async {
@@ -328,9 +329,7 @@ class _ViewAllPageState extends State<ViewAllPage> {
                                 ),
                                 const SizedBox(width: 6),
                                 Text(
-                                  "Rp ${DiscountService
-                                      .applyDiscount(price.toDouble())
-                                      .round()}",
+                                  "Rp ${DiscountService.applyDiscount(price.toDouble()).round()}",
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,

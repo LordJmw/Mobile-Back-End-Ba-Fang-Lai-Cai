@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:projek_uts_mbr/auth/logincostumer.dart';
+import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/home/home.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/profile/userProfile.dart';
@@ -41,7 +42,14 @@ void main() async {
   );
 
   runApp(
-    ChangeNotifierProvider.value(value: languageProvider, child: const MyApp()),
+    MultiProvider(
+      providers: [
+        Provider<SessionManager>(create: (_) => SessionManager()),
+        Provider<Vendordatabase>(create: (_) => Vendordatabase()),
+        ChangeNotifierProvider.value(value: languageProvider),
+      ],
+      child: const MyApp(),
+    ),
   );
 }
 
@@ -69,20 +77,31 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
-  Future<bool> checkLoginStatus() async {
-    SessionManager sessionManager = SessionManager();
-    return await sessionManager.isLoggedIn();
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  Future<bool>? _isLoggedInFuture;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isLoggedInFuture == null) {
+      final sessionManager = Provider.of<SessionManager>(context);
+      _isLoggedInFuture = sessionManager.isLoggedIn();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-      future: checkLoginStatus(),
+      future: _isLoggedInFuture,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator(color: Colors.pink)),
           );
@@ -108,7 +127,7 @@ class _MainScreenState extends State<MainScreen> {
   List<Widget> _pages = [];
 
   Future<String?> getUserType() async {
-    SessionManager sessionManager = SessionManager();
+    final sessionManager = Provider.of<SessionManager>(context, listen: false);
     return await sessionManager.getUserType();
   }
 

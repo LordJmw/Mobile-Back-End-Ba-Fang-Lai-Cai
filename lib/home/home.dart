@@ -4,7 +4,6 @@ import 'package:projek_uts_mbr/helper/localization_helper.dart';
 import 'package:projek_uts_mbr/helper/semantics.dart';
 import 'package:projek_uts_mbr/l10n/app_localizations.dart';
 import 'package:projek_uts_mbr/provider/language_provider.dart';
-
 import 'package:projek_uts_mbr/services/sessionManager.dart';
 import 'package:projek_uts_mbr/category/category_consts.dart';
 import 'package:projek_uts_mbr/main.dart';
@@ -12,9 +11,7 @@ import 'package:projek_uts_mbr/cardDetail.dart';
 import 'package:projek_uts_mbr/category/category.dart';
 import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
 import 'package:projek_uts_mbr/model/VendorModel.dart';
-
 import 'package:provider/provider.dart';
-
 import 'package:flutter/foundation.dart';
 
 List<Vendormodel> sortVendorByRating(List<Vendormodel> vendors) {
@@ -29,15 +26,17 @@ List<Vendormodel> loadPortFeedsCompute(List<Vendormodel> vendors) {
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final Future<R> Function<Q, R>(ComputeCallback<Q, R>, Q) computeFunc;
+  const HomePage({super.key, this.computeFunc = compute});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final SessionManager _sessionManager = SessionManager();
+  late SessionManager _sessionManager;
   final LocalizationHelper _localizationHelper = LocalizationHelper();
+  Vendordatabase? _vendordatabase;
 
   bool _isLoggedIn = false;
   String? _email;
@@ -45,11 +44,18 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+  }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_vendordatabase == null) {
+      _vendordatabase = Provider.of<Vendordatabase>(context);
+      _vendordatabase!.initDataAwal();
+      _vendordatabase!.updatePasswords();
+    }
+    _sessionManager = Provider.of<SessionManager>(context);
     _checkLoginStatus();
-    Vendordatabase vendordatabase = Vendordatabase();
-    vendordatabase.initDataAwal();
-    vendordatabase.updatePasswords();
   }
 
   Future<void> _checkLoginStatus() async {
@@ -62,22 +68,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<List<Vendormodel>> _loadVendors() async {
-    Vendordatabase vendordatabase = Vendordatabase();
-    List<Vendormodel> allVendors = await vendordatabase.getData();
+    List<Vendormodel> allVendors = await _vendordatabase!.getData();
 
-    return compute(sortVendorByRating, allVendors);
+    return widget.computeFunc(sortVendorByRating, allVendors);
   }
 
   Future<List<Vendormodel>> _loadPortfolios() async {
-    Vendordatabase vendordatabase = Vendordatabase();
-    List<Vendormodel> allVendors = await vendordatabase.getData();
-    return compute(loadPortFeedsCompute, allVendors);
+    List<Vendormodel> allVendors = await _vendordatabase!.getData();
+    return widget.computeFunc(loadPortFeedsCompute, allVendors);
   }
 
   Future<List<Vendormodel>> _loadFeeds() async {
-    Vendordatabase vendordatabase = Vendordatabase();
-    List<Vendormodel> allVendors = await vendordatabase.getData();
-    return compute(loadPortFeedsCompute, allVendors);
+    List<Vendormodel> allVendors = await _vendordatabase!.getData();
+    return widget.computeFunc(loadPortFeedsCompute, allVendors);
   }
 
   String _getFirstTestimonial(List<Testimoni> list) {
@@ -144,7 +147,6 @@ class _HomePageState extends State<HomePage> {
                           lang,
                           params: {"name": vendor.penyedia.first.nama},
                         ),
-                        excludeSemantics: true,
                         child: _buildVendorCard(
                           context,
                           vendor.penyedia.first.nama,
@@ -389,6 +391,7 @@ class _HomePageState extends State<HomePage> {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             ClipRRect(
               borderRadius: const BorderRadius.vertical(
@@ -396,21 +399,24 @@ class _HomePageState extends State<HomePage> {
               ),
               child: Image.network(
                 imgPath,
+                key: const Key('vendorCardImage'),
                 height: 100,
                 width: 160,
                 fit: BoxFit.cover,
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
               child: Text(
                 name,
                 style: const TextStyle(fontWeight: FontWeight.bold),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(rating),
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+              child: Text(rating, key: const Key('vendorCardRating')),
             ),
           ],
         ),
@@ -453,6 +459,7 @@ class _HomePageState extends State<HomePage> {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               ClipRRect(
                 borderRadius: const BorderRadius.vertical(
@@ -465,9 +472,10 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       name,
@@ -475,9 +483,16 @@ class _HomePageState extends State<HomePage> {
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 6),
-                    Text(desc, style: const TextStyle(fontSize: 12)),
+                    const SizedBox(height: 4),
+                    Text(
+                      desc,
+                      style: const TextStyle(fontSize: 12),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ],
                 ),
               ),

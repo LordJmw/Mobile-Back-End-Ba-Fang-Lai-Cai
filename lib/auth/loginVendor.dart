@@ -13,7 +13,18 @@ import '../home/home.dart';
 import 'register.dart';
 
 class LoginVendor extends StatefulWidget {
-  LoginVendor({super.key});
+  final Vendordatabase vendordatabase;
+  final SessionManager sessionManager;
+  final Eventlogs eventlogs;
+
+  LoginVendor({
+    super.key,
+    Vendordatabase? vendordatabase,
+    SessionManager? sessionManager,
+    Eventlogs? eventlogs,
+  }) : vendordatabase = vendordatabase ?? Vendordatabase(),
+       sessionManager = sessionManager ?? SessionManager(),
+       eventlogs = eventlogs ?? Eventlogs();
 
   @override
   State<LoginVendor> createState() => _LoginVendorState();
@@ -27,22 +38,22 @@ class _LoginVendorState extends State<LoginVendor> {
   Future<void> loginvendors(lang) async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
-     if (!_formKey.currentState!.validate()){
+    if (!_formKey.currentState!.validate()) {
       if (email.isEmpty && password.isEmpty) {
-            SemanticsService.announce(
-              tr('button', 'loginKosong', lang),
-              TextDirection.ltr,
-            );
-            return;
-          }
-      if(email.isEmpty){
+        SemanticsService.announce(
+          tr('button', 'loginKosong', lang),
+          TextDirection.ltr,
+        );
+        return;
+      }
+      if (email.isEmpty) {
         SemanticsService.announce(
           tr('button', 'emailkosong', lang),
           TextDirection.ltr,
         );
         return;
       }
-      if(password.isEmpty){
+      if (password.isEmpty) {
         SemanticsService.announce(
           tr('button', 'passwordkosong', lang),
           TextDirection.ltr,
@@ -68,8 +79,7 @@ class _LoginVendorState extends State<LoginVendor> {
       return;
     }
 
-    final db = Vendordatabase();
-    final vendor = await db.LoginVendor(
+    final vendor = await widget.vendordatabase.LoginVendor(
       _emailController.text,
       _passwordController.text,
     );
@@ -77,9 +87,11 @@ class _LoginVendorState extends State<LoginVendor> {
     final loc = AppLocalizations.of(context)!;
 
     if (vendor != null) {
-      final sessionManager = SessionManager();
-      await sessionManager.createLoginSession(vendor.email, "vendor");
-      await Eventlogs().logVendorLoginActivity(_emailController.text, "vendor");
+      await widget.sessionManager.createLoginSession(vendor.email, "vendor");
+      await widget.eventlogs.logVendorLoginActivity(
+        _emailController.text,
+        "vendor",
+      );
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -96,6 +108,7 @@ class _LoginVendorState extends State<LoginVendor> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
+          key: const Key('invalid_credentials_snackbar'),
           backgroundColor: Colors.pink,
           content: Text(loc.invalidCredentials),
         ),

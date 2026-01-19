@@ -58,6 +58,7 @@ class CustomerModel {
   }
 
   //ini supaya kalau mau update customer pemanggilannya lebih singkat
+  //misal update customer, ga usah isi semua field
   CustomerModel copyWith({
     String? id,
     String? nama,

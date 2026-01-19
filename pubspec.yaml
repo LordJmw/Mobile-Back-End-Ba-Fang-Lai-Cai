@@ -53,6 +53,7 @@ dependencies:
   flutter_contacts: ^1.1.9+2
   awesome_notifications: any
   google_mobile_ads: ^7.0.0
+  network_image_mock: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +65,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  mockito: ^5.6.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
