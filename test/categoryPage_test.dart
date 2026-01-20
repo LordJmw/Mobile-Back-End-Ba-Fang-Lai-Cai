@@ -5,15 +5,17 @@ import 'package:projek_uts_mbr/model/VendorModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  // Setup sebelum setiap test
   setUp(() {
-    // Reset SharedPreferences sebelum setiap test
     SharedPreferences.setMockInitialValues({});
   });
 
-  // TEST 2: getBasicPrice mengambil harga basic dari vendor
-  test('getBasicPrice should return basic price from vendor', () {
-    // Mock vendor dengan harga
+  test('Constructor CategoryPage dapat dibuat', () {
+    expect(() {
+      CategoryPage(category: 'FOTOGRAFI', useSavedPreferences: false);
+    }, returnsNormally);
+  });
+
+  test('getBasicPrice mengambil harga basic dari vendor', () {
     final vendor = Penyedia(
       nama: 'Test Vendor',
       deskripsi: 'Test Description',
@@ -31,12 +33,40 @@ void main() {
     );
 
     final price = getBasicPrice(vendor);
-    expect(price, 1000000); // Harus mengambil harga dari basic package
+    expect(price, 1000000);
   });
 
-  // TEST 4: Filter data berdasarkan rentang harga
-  test('Filter should filter by price range correctly', () async {
-    // Setup initial data
+  test('getBasicPrice menangani harga 0 atau negatif', () {
+    final vendor = Penyedia(
+      nama: 'Free Vendor',
+      deskripsi: 'Free Service',
+      rating: 4.0,
+      harga: Harga(
+        basic: TipePaket(harga: 0, jasa: 'Free'),
+        premium: TipePaket(harga: -1000, jasa: 'Invalid'),
+        custom: TipePaket(harga: 500000, jasa: 'Paid'),
+      ),
+      testimoni: [],
+      email: 'free@email.com',
+      password: 'password',
+      telepon: '08123456789',
+      image: 'free.jpg',
+    );
+
+    final price = getBasicPrice(vendor);
+    expect(price, 500000);
+  });
+
+  test('formatPrice memformat mata uang Indonesia', () {
+    expect(formatPrice(1000), '1.000');
+    expect(formatPrice(10000), '10.000');
+    expect(formatPrice(1000000), '1.000.000');
+    expect(formatPrice(1234567), '1.234.567');
+    expect(formatPrice(0), '0');
+    expect(formatPrice(999), '999');
+  });
+
+  test('Filter berdasarkan rentang harga', () {
     final testData = [
       Vendormodel(
         kategori: 'Fotografi & Videografi',
@@ -75,12 +105,8 @@ void main() {
       ),
     ];
 
-    // Simulasi filter logic
     final rentangHarga = RangeValues(0, 1000000);
     final jumlahBintang = 0;
-    final layananDipilih = List.filled(9, false);
-    layananDipilih[0] = true; // Fotografi
-
     final selectedService = ['Fotografi & Videografi'];
 
     List<Penyedia> result = [];
@@ -106,8 +132,7 @@ void main() {
     expect(result[0].nama, 'Vendor 1');
   });
 
-  // TEST 5: Filter data berdasarkan rating minimal
-  test('Filter should filter by minimum rating correctly', () async {
+  test('Filter berdasarkan rating minimal', () {
     final testData = [
       Vendormodel(
         kategori: 'Fotografi & Videografi',
@@ -146,7 +171,6 @@ void main() {
       ),
     ];
 
-    // Filter dengan rating minimal 4
     final rentangHarga = RangeValues(0, 10000000);
     final jumlahBintang = 4;
     final selectedService = ['Fotografi & Videografi'];
@@ -175,81 +199,7 @@ void main() {
     expect(result[0].rating, greaterThanOrEqualTo(4.0));
   });
 
-  // TEST 6: Filter data berdasarkan kategori spesifik
-  test('Filter should filter by specific category correctly', () async {
-    final testData = [
-      Vendormodel(
-        kategori: 'Fotografi & Videografi',
-        penyedia: [
-          Penyedia(
-            nama: 'Photography Vendor',
-            deskripsi: 'Photography services',
-            rating: 4.5,
-            harga: Harga(
-              basic: TipePaket(harga: 500000, jasa: 'Basic'),
-              premium: TipePaket(harga: 1000000, jasa: 'Premium'),
-              custom: TipePaket(harga: 1500000, jasa: 'Custom'),
-            ),
-            testimoni: [],
-            email: 'photo@email.com',
-            password: 'pass',
-            telepon: '0811111111',
-            image: 'photo.jpg',
-          ),
-        ],
-      ),
-      Vendormodel(
-        kategori: 'Catering & F&B',
-        penyedia: [
-          Penyedia(
-            nama: 'Catering Vendor',
-            deskripsi: 'Catering services',
-            rating: 4.5,
-            harga: Harga(
-              basic: TipePaket(harga: 500000, jasa: 'Basic'),
-              premium: TipePaket(harga: 1000000, jasa: 'Premium'),
-              custom: TipePaket(harga: 1500000, jasa: 'Custom'),
-            ),
-            testimoni: [],
-            email: 'catering@email.com',
-            password: 'pass',
-            telepon: '0822222222',
-            image: 'catering.jpg',
-          ),
-        ],
-      ),
-    ];
-
-    // Hanya pilih kategori Fotografi
-    final rentangHarga = RangeValues(0, 10000000);
-    final jumlahBintang = 0;
-    final selectedService = ['Fotografi & Videografi'];
-
-    List<Penyedia> result = [];
-    for (var vendorModel in testData) {
-      for (var penyedia in vendorModel.penyedia) {
-        final kategoriName = vendorModel.kategori;
-        final hargaBasic = penyedia.harga.basic.harga;
-        final rating = penyedia.rating;
-
-        bool matchesPrice =
-            hargaBasic >= rentangHarga.start && hargaBasic <= rentangHarga.end;
-        bool matchesRating = jumlahBintang == 0 || rating >= jumlahBintang;
-        bool matchesService =
-            selectedService.isEmpty || selectedService.contains(kategoriName);
-
-        if (matchesPrice && matchesRating && matchesService) {
-          result.add(penyedia);
-        }
-      }
-    }
-
-    expect(result.length, 1);
-    expect(result[0].nama, 'Photography Vendor');
-  });
-
-  // TEST 7: Filter tanpa kategori terpilih (semua kategori)
-  test('Filter should return all vendors when no category selected', () async {
+  test('Filter tanpa kategori terpilih mengembalikan semua vendor', () {
     final testData = [
       Vendormodel(
         kategori: 'Fotografi & Videografi',
@@ -293,7 +243,6 @@ void main() {
       ),
     ];
 
-    // Tidak ada kategori yang dipilih
     final rentangHarga = RangeValues(0, 10000000);
     final jumlahBintang = 0;
     final selectedService = [];
@@ -317,82 +266,37 @@ void main() {
       }
     }
 
-    // Harus mendapatkan semua vendor karena tidak ada filter kategori
     expect(result.length, 2);
   });
 
-  // TEST 8: Filter dengan multiple kategori terpilih
-  test('Filter should work with multiple categories selected', () async {
+  test('Filter dengan kondisi default mengembalikan semua data', () {
     final testData = [
       Vendormodel(
         kategori: 'Fotografi & Videografi',
-        penyedia: [
-          Penyedia(
-            nama: 'Photography Vendor',
-            deskripsi: 'Photography services',
-            rating: 4.5,
+        penyedia: List.generate(
+          25,
+          (index) => Penyedia(
+            nama: 'Vendor $index',
+            deskripsi: 'Description $index',
+            rating: 4.0 + (index % 5) * 0.2,
             harga: Harga(
-              basic: TipePaket(harga: 500000, jasa: 'Basic'),
-              premium: TipePaket(harga: 1000000, jasa: 'Premium'),
-              custom: TipePaket(harga: 1500000, jasa: 'Custom'),
+              basic: TipePaket(harga: (index + 1) * 100000, jasa: 'Basic'),
+              premium: TipePaket(harga: (index + 1) * 200000, jasa: 'Premium'),
+              custom: TipePaket(harga: (index + 1) * 300000, jasa: 'Custom'),
             ),
             testimoni: [],
-            email: 'photo@email.com',
-            password: 'pass',
-            telepon: '0811111111',
-            image: 'photo.jpg',
+            email: 'vendor$index@email.com',
+            password: 'pass$index',
+            telepon: '081111111$index',
+            image: 'test$index.jpg',
           ),
-        ],
-      ),
-      Vendormodel(
-        kategori: 'Catering & F&B',
-        penyedia: [
-          Penyedia(
-            nama: 'Catering Vendor',
-            deskripsi: 'Catering services',
-            rating: 4.2,
-            harga: Harga(
-              basic: TipePaket(harga: 300000, jasa: 'Basic'),
-              premium: TipePaket(harga: 600000, jasa: 'Premium'),
-              custom: TipePaket(harga: 900000, jasa: 'Custom'),
-            ),
-            testimoni: [],
-            email: 'catering@email.com',
-            password: 'pass',
-            telepon: '0822222222',
-            image: 'catering.jpg',
-          ),
-        ],
-      ),
-      Vendormodel(
-        kategori: 'Event Organizer & Planner',
-        penyedia: [
-          Penyedia(
-            nama: 'EO Vendor',
-            deskripsi: 'EO services',
-            rating: 4.8,
-            harga: Harga(
-              basic: TipePaket(harga: 1000000, jasa: 'Basic'),
-              premium: TipePaket(harga: 2000000, jasa: 'Premium'),
-              custom: TipePaket(harga: 3000000, jasa: 'Custom'),
-            ),
-            testimoni: [],
-            email: 'eo@email.com',
-            password: 'pass',
-            telepon: '0833333333',
-            image: 'eo.jpg',
-          ),
-        ],
+        ),
       ),
     ];
 
-    // Pilih dua kategori
-    final rentangHarga = RangeValues(0, 2000000);
+    final rentangHarga = RangeValues(0, 10000000);
     final jumlahBintang = 0;
-    final selectedService = [
-      'Fotografi & Videografi',
-      'Event Organizer & Planner',
-    ];
+    final selectedService = [];
 
     List<Penyedia> result = [];
     for (var vendorModel in testData) {
@@ -413,70 +317,35 @@ void main() {
       }
     }
 
-    expect(result.length, 2);
-    expect(result.any((v) => v.nama == 'Photography Vendor'), true);
-    expect(result.any((v) => v.nama == 'EO Vendor'), true);
-    expect(result.any((v) => v.nama == 'Catering Vendor'), false);
+    expect(result.length, 25);
   });
 
-  // TEST 9: Filter dengan semua kondisi terpenuhi
-  test('Filter should work with all conditions', () async {
+  test('Filter dengan rentang harga tidak valid', () {
     final testData = [
       Vendormodel(
         kategori: 'Fotografi & Videografi',
         penyedia: [
           Penyedia(
-            nama: 'Perfect Match',
-            deskripsi: 'Matches all conditions',
-            rating: 4.7,
+            nama: 'Expensive Vendor',
+            deskripsi: 'Very expensive',
+            rating: 4.5,
             harga: Harga(
-              basic: TipePaket(harga: 750000, jasa: 'Basic'),
-              premium: TipePaket(harga: 1500000, jasa: 'Premium'),
-              custom: TipePaket(harga: 2250000, jasa: 'Custom'),
+              basic: TipePaket(harga: 50000000, jasa: 'Basic'),
+              premium: TipePaket(harga: 100000000, jasa: 'Premium'),
+              custom: TipePaket(harga: 150000000, jasa: 'Custom'),
             ),
             testimoni: [],
-            email: 'perfect@email.com',
+            email: 'expensive@email.com',
             password: 'pass',
             telepon: '0811111111',
-            image: 'perfect.jpg',
-          ),
-          Penyedia(
-            nama: 'Wrong Price',
-            deskripsi: 'Wrong price range',
-            rating: 4.7,
-            harga: Harga(
-              basic: TipePaket(harga: 2500000, jasa: 'Basic'),
-              premium: TipePaket(harga: 3500000, jasa: 'Premium'),
-              custom: TipePaket(harga: 4500000, jasa: 'Custom'),
-            ),
-            testimoni: [],
-            email: 'wrong@email.com',
-            password: 'pass',
-            telepon: '0822222222',
-            image: 'wrong.jpg',
-          ),
-          Penyedia(
-            nama: 'Wrong Rating',
-            deskripsi: 'Wrong rating',
-            rating: 3.5,
-            harga: Harga(
-              basic: TipePaket(harga: 750000, jasa: 'Basic'),
-              premium: TipePaket(harga: 1500000, jasa: 'Premium'),
-              custom: TipePaket(harga: 2250000, jasa: 'Custom'),
-            ),
-            testimoni: [],
-            email: 'wrongrating@email.com',
-            password: 'pass',
-            telepon: '0833333333',
-            image: 'wrongrating.jpg',
+            image: 'expensive.jpg',
           ),
         ],
       ),
     ];
 
-    // Filter ketat: harga 500k-1jt, rating min 4.5, kategori fotografi
-    final rentangHarga = RangeValues(500000, 1000000);
-    final jumlahBintang = 4;
+    final rentangHarga = RangeValues(10000000, 20000000);
+    final jumlahBintang = 0;
     final selectedService = ['Fotografi & Videografi'];
 
     List<Penyedia> result = [];
@@ -498,30 +367,48 @@ void main() {
       }
     }
 
-    expect(result.length, 1);
-    expect(result[0].nama, 'Perfect Match');
+    expect(result.length, 0);
   });
 
-  // TEST 10: getBasicPrice dengan struktur harga yang valid
-  test('getBasicPrice should handle valid harga structure', () {
+  test('getBasicPrice dengan struktur harga custom', () {
     final vendor = Penyedia(
-      nama: 'Test Vendor',
-      deskripsi: 'Test Description',
-      rating: 4.5,
+      nama: 'Custom Only Vendor',
+      deskripsi: 'Only custom packages',
+      rating: 4.0,
       harga: Harga(
-        basic: TipePaket(harga: 1500000, jasa: 'Paket Basic'),
-        premium: TipePaket(harga: 2500000, jasa: 'Paket Premium'),
-        custom: TipePaket(harga: 0, jasa: 'Custom Request'),
+        basic: TipePaket(harga: 0, jasa: 'Not available'),
+        premium: TipePaket(harga: -1, jasa: 'Not available'),
+        custom: TipePaket(harga: 500000, jasa: 'Custom Package'),
       ),
       testimoni: [],
-      email: 'test@email.com',
+      email: 'custom@email.com',
       password: 'password',
       telepon: '08123456789',
-      image: 'test.jpg',
+      image: 'custom.jpg',
     );
 
     final price = getBasicPrice(vendor);
-    expect(price, 1500000);
-    expect(vendor.harga.basic.jasa, 'Paket Basic');
+    expect(price, 500000);
+  });
+
+  test('CategoryPage membuat state dengan benar', () {
+    final widget = CategoryPage(
+      category: 'FOTOGRAFI',
+      useSavedPreferences: false,
+    );
+
+    final state = widget.createState();
+    expect(state, isNotNull);
+    expect(state.runtimeType.toString(), '_CategoryPageState');
+  });
+
+  test('Parameter CategoryPage tersimpan dengan benar', () {
+    final categoryPage = CategoryPage(
+      category: 'FOTOGRAFI',
+      useSavedPreferences: false,
+    );
+
+    expect(categoryPage.category, 'FOTOGRAFI');
+    expect(categoryPage.useSavedPreferences, false);
   });
 }

@@ -1,4 +1,4 @@
 class base_url {
   static const String purchaseHistoryUrl =
-      'http://10.0.2.2:3000/api/purchase-history';
+      'https://my-backend-801307459631.asia-southeast2.run.app/api/purchase-history';
 }

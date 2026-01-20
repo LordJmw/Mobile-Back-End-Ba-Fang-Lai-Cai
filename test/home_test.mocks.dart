@@ -48,6 +48,7 @@ class _FakeLocale_2 extends _i1.SmartFake implements _i4.Locale {
 
 /// A class which mocks [Vendordatabase].
 ///
+/// See the documentation for Mockito's code generation for more information.
 class MockVendordatabase extends _i1.Mock implements _i5.Vendordatabase {
   MockVendordatabase() {
     _i1.throwOnMissingStub(this);

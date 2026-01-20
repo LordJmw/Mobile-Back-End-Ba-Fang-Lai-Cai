@@ -54,6 +54,7 @@ dependencies:
   awesome_notifications: any
   google_mobile_ads: ^7.0.0
   network_image_mock: ^2.1.1
+  build_runner: ^2.10.5
 
 dev_dependencies:
   flutter_test:

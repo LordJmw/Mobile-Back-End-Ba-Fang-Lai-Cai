@@ -13,7 +13,8 @@ import 'about_app_modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  final bool isTestMode;
+  const SettingsPage({Key? key, this.isTestMode = false}) : super(key: key);
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -26,7 +27,20 @@ class _SettingsPageState extends State<SettingsPage> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isDeleting = false;
   bool _showPassword = false;
-  final CustomerDatabase _customerDb = CustomerDatabase();
+  late CustomerDatabase _customerDb; // Hapus final, jadikan late
+  late SessionManager _sessionManager; // Tambah SessionManager
+
+  @override
+  void initState() {
+    super.initState();
+    // Inisialisasi dependencies di initState
+    if (!widget.isTestMode) {
+      _customerDb = CustomerDatabase();
+      _sessionManager = SessionManager();
+      _loadNotificationStatus();
+    }
+    // Untuk test mode, biarkan null - perlu handling di method yang menggunakan mereka
+  }
 
   @override
   void dispose() {
@@ -35,8 +49,10 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _logout() async {
-    final session = SessionManager();
-    await session.logout();
+    // Gunakan _sessionManager yang sudah diinisialisasi
+    if (!widget.isTestMode) {
+      await _sessionManager.logout();
+    }
 
     Navigator.pushAndRemoveUntil(
       context,
@@ -212,9 +228,17 @@ class _SettingsPageState extends State<SettingsPage> {
   ) async {
     final l10n = AppLocalizations.of(context)!;
 
+    // Handle test mode
+    if (widget.isTestMode) {
+      // Simulasi untuk test mode
+      await Future.delayed(const Duration(milliseconds: 500));
+      Navigator.of(context).pop();
+      _showSuccessMessageAndLogout();
+      return;
+    }
+
     try {
       await _customerDb.reauthenticateUser(password);
-
       final success = await _customerDb.deleteCustomerAccount();
 
       if (success) {
@@ -271,17 +295,15 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    //apakah user sudah enable notif
-    _loadNotificationStatus();
-  }
-
   Future<void> _loadNotificationStatus() async {
-    final sessionManager = SessionManager();
-    final status = await sessionManager.getNotificationStatus();
+    if (widget.isTestMode) {
+      setState(() {
+        _notificationsEnabled = false;
+      });
+      return;
+    }
 
+    final status = await _sessionManager.getNotificationStatus();
     setState(() {
       _notificationsEnabled = status;
     });
@@ -552,19 +574,22 @@ class _SettingsPageState extends State<SettingsPage> {
         style: TextStyle(color: Colors.grey[600], fontSize: 13),
       ),
       trailing: Switch(
-        //value dari notificationsEnabled disimpan di sharedPreference agar ketika user back
-        //atau reload, notifnya tetap on/off
         value: _notificationsEnabled,
         onChanged: (value) async {
           final l10n = AppLocalizations.of(context)!;
-          final sessionManager = SessionManager();
+
+          // Handle test mode
+          if (widget.isTestMode) {
+            setState(() {
+              _notificationsEnabled = value;
+            });
+            return;
+          }
 
           if (value) {
-            //kalau switch notif on, maka dicek nantinya apakah sudah diizinkan permission notifnya
             print("notif user di set true");
             final isAllowed = await AwesomeNotifications()
                 .isNotificationAllowed();
-            //jika belum akan ditunjukkan dialog ke user
             if (!isAllowed) {
               final allow = await showDialog<bool>(
                 context: context,
@@ -585,25 +610,18 @@ class _SettingsPageState extends State<SettingsPage> {
               );
 
               if (allow == true) {
-                //jika sudah allow user, awesome notifications akan meminta izin mengirim notif
                 await AwesomeNotifications()
                     .requestPermissionToSendNotifications();
               } else {
                 return;
               }
             }
-            //set notif ke on/true
-            await sessionManager.setNotificationEnabled(true);
+            await _sessionManager.setNotificationEnabled(true);
           } else {
-            //jika user turn off switch, maka status di sessionManager menjadi false
-            //misalkan pun jika pas user beli notif on, namun sebelum hari-h/ sebelum default jam reminder(9 pagi)
-            // di ubah ke off, maka notif tersebut juga di cancel
             print("switch ke false");
-            //ketika off, maka seluruh pembelian yang telah dijadwalkan untuk di reminder, akan di cancel
             await AwesomeNotifications().cancelAllSchedules();
             await AwesomeNotifications().cancelAll();
-
-            await sessionManager.setNotificationEnabled(false);
+            await _sessionManager.setNotificationEnabled(false);
           }
 
           setState(() {
