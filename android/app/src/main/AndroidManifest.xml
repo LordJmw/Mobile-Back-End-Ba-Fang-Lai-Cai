@@ -27,7 +27,7 @@
     </queries>
 
     <application
-        android:label="projek_uts_mbr"
+        android:label="vendorhub"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 

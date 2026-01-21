@@ -1,100 +1,97 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-
 import 'package:projek_uts_mbr/viewall.dart';
-import 'package:projek_uts_mbr/databases/vendorDatabase.dart';
-import 'package:projek_uts_mbr/provider/language_provider.dart';
-import 'package:projek_uts_mbr/l10n/app_localizations.dart';
-
-import 'view_all_page_mock.dart';
+import 'package:projek_uts_mbr/model/VendorModel.dart';
 
 void main() {
-  late Vendordatabase mockDb;
-  late LanguageProvider languageProvider;
+  // ===== helper dummy data =====
+  TipePaket paket() => TipePaket(harga: 100000, jasa: 'Basic');
 
-  setUp(() {
-    mockDb = ViewAllPageMock.buildMockVendorDatabase();
-    languageProvider = LanguageProvider();
-    languageProvider.setLocale(const Locale('id', ''));
+  Harga harga() => Harga(basic: paket(), premium: paket(), custom: paket());
+
+  List<Testimoni> testimoni() => [
+    Testimoni(nama: 'User', isi: 'Bagus', rating: 5),
+  ];
+
+  Penyedia buatPenyedia(String nama) => Penyedia(
+    nama: nama,
+    deskripsi: 'Deskripsi $nama',
+    rating: 4.5,
+    harga: harga(),
+    testimoni: testimoni(),
+    email: '$nama@mail.com',
+    password: '123',
+    telepon: '0811',
+    image: '$nama.png',
+  );
+
+  // ================== TEST ==================
+
+  test('1. flattenVendorData menggabungkan semua penyedia', () {
+    final data = [
+      Vendormodel(kategori: 'Catering', penyedia: [buatPenyedia('A')]),
+      Vendormodel(kategori: 'Dekorasi', penyedia: [buatPenyedia('B')]),
+    ];
+
+    final result = flattenVendorData(data);
+
+    expect(result.length, 2);
   });
 
-  Widget buildTestWidget() {
-    return MultiProvider(
-      providers: [
-        Provider<Vendordatabase>.value(value: mockDb),
-        ChangeNotifierProvider<LanguageProvider>.value(value: languageProvider),
-      ],
-      child: MaterialApp(
-        home: const ViewAllPage(),
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [Locale('en', ''), Locale('id', '')],
-        locale: const Locale('id', ''),
-      ),
-    );
-  }
+  test('2. flattenVendorData mengembalikan list kosong jika input kosong', () {
+    final result = flattenVendorData([]);
+    expect(result, isEmpty);
+  });
 
-  testWidgets(
-    'Menampilkan TextField pencarian dan GridView setelah data dimuat',
-    (tester) async {
-      await tester.pumpWidget(buildTestWidget());
+  test(
+    '3. flattenVendorData tetap berjalan jika salah satu kategori kosong',
+    () {
+      final data = [
+        Vendormodel(kategori: 'Catering', penyedia: []),
+        Vendormodel(kategori: 'Fotografi', penyedia: [buatPenyedia('C')]),
+      ];
 
-      // Tunggu loading selesai
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+      final result = flattenVendorData(data);
 
-      expect(find.byType(TextField), findsOneWidget);
-      expect(find.byType(GridView), findsOneWidget);
-
-      expect(find.text('LensArt Studio'), findsOneWidget);
-      expect(find.text('Golden Frame'), findsOneWidget);
+      expect(result.length, 1);
+      expect(result.first.nama, 'C');
     },
   );
 
-  testWidgets('Fungsi search memfilter vendor berdasarkan teks', (
-    tester,
-  ) async {
-    await tester.pumpWidget(buildTestWidget());
-    await tester.pumpAndSettle(const Duration(seconds: 1));
+  test('4. filterVendorByQuery memfilter berdasarkan nama', () {
+    final vendors = [
+      buatPenyedia('Wedding Organizer'),
+      buatPenyedia('Catering Enak'),
+    ];
 
-    final textField = find.byType(TextField);
-    expect(textField, findsOneWidget);
+    final result = filterVendorByQuery({
+      'vendors': vendors,
+      'query': 'wedding',
+    });
 
-    await tester.enterText(textField, 'lens');
-    await tester.pumpAndSettle(const Duration(seconds: 1));
-
-    expect(find.text('LensArt Studio'), findsOneWidget);
-    expect(find.text('Golden Frame'), findsNothing);
+    expect(result.length, 1);
+    expect(result.first.nama, 'Wedding Organizer');
   });
 
-  testWidgets('Search kosong mengembalikan semua vendor', (tester) async {
-    await tester.pumpWidget(buildTestWidget());
-    await tester.pumpAndSettle(const Duration(seconds: 1));
+  test('5. filterVendorByQuery memfilter berdasarkan deskripsi', () {
+    final vendor = buatPenyedia('Dekorasi');
+    vendor.deskripsi = 'Dekorasi mewah elegan';
 
-    final textField = find.byType(TextField);
-    expect(textField, findsOneWidget);
+    final result = filterVendorByQuery({
+      'vendors': [vendor],
+      'query': 'mewah',
+    });
 
-    await tester.enterText(textField, '');
-    await tester.pumpAndSettle(const Duration(seconds: 1));
-
-    expect(find.text('LensArt Studio'), findsOneWidget);
-    expect(find.text('Golden Frame'), findsOneWidget);
+    expect(result.length, 1);
   });
 
-  testWidgets('Search dengan teks tidak ditemukan', (tester) async {
-    await tester.pumpWidget(buildTestWidget());
-    await tester.pumpAndSettle(const Duration(seconds: 1));
+  test('6. filterVendorByQuery mengembalikan kosong jika tidak cocok', () {
+    final vendors = [buatPenyedia('Sound System'), buatPenyedia('Lighting')];
 
-    final textField = find.byType(TextField);
-    await tester.enterText(textField, 'tidakada');
-    await tester.pumpAndSettle(const Duration(seconds: 1));
+    final result = filterVendorByQuery({
+      'vendors': vendors,
+      'query': 'catering',
+    });
 
-    expect(find.text('LensArt Studio'), findsNothing);
-    expect(find.text('Golden Frame'), findsNothing);
+    expect(result, isEmpty);
   });
 }

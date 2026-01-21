@@ -36,6 +36,7 @@ class _UserProfileState extends State<UserProfile> {
   final SessionManager sessionManager = SessionManager();
   final CustomerDatabase customerDb = CustomerDatabase();
   File? _image;
+  bool _isUpdatingProfile = false;
 
   @override
   void initState() {
@@ -212,34 +213,57 @@ class _UserProfileState extends State<UserProfile> {
               child: Text(AppLocalizations.of(context)!.cancel),
             ),
             ElevatedButton(
-              onPressed: () async {
-                String? imageUrl = customer.fotoProfil;
-                if (_image != null) {
-                  imageUrl = await _profileService.uploadProfilePicture(
-                    _image!,
-                    customer.id.toString(),
-                  );
-                }
+              onPressed: _isUpdatingProfile
+                  ? null // tombol mati
+                  : () async {
+                      setState(() {
+                        _isUpdatingProfile = true;
+                      });
 
-                final updatedCustomer = CustomerModel(
-                  id: customer.id,
-                  nama: namaController.text,
-                  email: customer.email,
-                  password: customer.password,
-                  telepon: teleponController.text,
-                  alamat: alamatController.text,
-                  fotoProfil: imageUrl,
-                );
+                      try {
+                        String? imageUrl = customer.fotoProfil;
+                        if (_image != null) {
+                          imageUrl = await _profileService.uploadProfilePicture(
+                            _image!,
+                            customer.id.toString(),
+                          );
+                        }
 
-                final success = await _profileService.updateUserProfile(
-                  updatedCustomer,
-                );
-                Navigator.pop(context);
-                if (success) {
-                  _refreshData();
-                }
-              },
-              child: Text(AppLocalizations.of(context)!.save),
+                        final updatedCustomer = CustomerModel(
+                          id: customer.id,
+                          nama: namaController.text,
+                          email: customer.email,
+                          password: customer.password,
+                          telepon: teleponController.text,
+                          alamat: alamatController.text,
+                          fotoProfil: imageUrl,
+                        );
+
+                        final success = await _profileService.updateUserProfile(
+                          updatedCustomer,
+                        );
+
+                        Navigator.pop(context);
+
+                        if (success) {
+                          _refreshData();
+                        }
+                      } finally {
+                        setState(() {
+                          _isUpdatingProfile = false;
+                        });
+                      }
+                    },
+              child: _isUpdatingProfile
+                  ? SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : Text(AppLocalizations.of(context)!.save),
             ),
           ],
         );
