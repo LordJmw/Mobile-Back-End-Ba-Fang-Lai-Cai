@@ -685,6 +685,7 @@ class _RegisterVendorState extends State<RegisterVendor> {
                     hint: tr('button', 'registerAkunButtonHint', lang),
                     excludeSemantics: true,
                     child: ElevatedButton(
+                      key: const Key('registerVendorButton'),
                       onPressed: () {
                         _saveVendor(context,lang);
                       },
